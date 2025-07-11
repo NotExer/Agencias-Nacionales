@@ -1,0 +1,88 @@
+{% extends 'main/index.html' %}
+
+{% block styles %}
+{{ block.super }}
+{% endblock %}
+{% load static %}
+
+{% block content %}
+<section class="space container-fluid mt-4">
+    <h2 class="text-center">Precios de gorros</h2>
+
+    <h2></h2>
+
+    <div class="mb-3 text-center">
+        <a href="{% url 'gorros_crear' %}" class="btn btn-primary">Crear gorro nuevo</a>
+        <a href="{% url 'gorros_download_pdf' %}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+            Descargar lista de gorros
+        </a>
+    </div>
+
+
+
+
+    <!-- Tabla -->
+    <div class="center">
+        <table id="tablaClientes" class="table table-bordered text-light w-100">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th></th>
+                    <th>ID</th>
+                    <th>Imagen de referencia</th>
+                    <th>Línea</th>
+                    <th>Referencia</th>
+                    <th>Talla</th>
+                    <th id="costo-anterior">Costo (Año anterior)</th>
+                    <th id="costo-actual">Costo (Año actual)</th>
+                    <th>Incremento</th>
+                    <th id="precio-anterior">Precio (Año anterior)</th>
+                    <th id="precio-actual">Precio (Año actual)</th>
+                    <th>Precio Definitivo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyClientes" data-url="{% url 'actualizar_orden_gorros' %}">
+                {% for gorro in gorros %}
+                <tr data-id="{{ gorro.ID }}">
+                    <td class="handle" onmousedown="activarArrastre(this)" title="Arrastrar fila">
+                        <span class="handle-icon">⋮⋮⋮</span>
+                    </td>
+                    <td class="orden">{{ gorro.orden }}</td>
+                    <td data-label="Imagen de referencia:">
+                        {% if gorro.Imagen %}
+                        <img src="{{ gorro.Imagen.url }}" alt="Imagen de {{ gorro.Descripcion }}" class="table_image">
+                        {% else %}
+                        Sin imagen
+                        {% endif %}
+                    </td>
+                    <td>{{ gorro.Linea }}</td>
+                    <td>{{ gorro.Referencia }}</td>
+                    <td>{{ gorro.Talla }}</td>
+                    <td>${{ gorro.Costo_pasado }}</td>
+                    <td>${{ gorro.Costo_actual }}</td>
+                    <td>{{ gorro.Incremento_porcentual }}%</td>
+                    <td>${{ gorro.Precio_pasado }}</td>
+                    <td>${{ gorro.Precio_actual }}</td>
+                    <td>${{ gorro.Precio_definitivo }}</td>
+                    <td>
+                        <a href="{% url 'gorros_editar' gorro.ID %}">
+                            <button class="btn btn-download">Editar</button>
+                        </a>
+                        <button class="btn btn-primary" onclick="abrir_modal('{% url 'gorros_eliminar' gorro.ID %}')">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="12" class="text-center">No hay gorros registrados.</td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+        <div id="modal-container"></div>
+    </div>
+</section>
+{% endblock %}

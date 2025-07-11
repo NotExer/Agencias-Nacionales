@@ -1,0 +1,43 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block styles %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block content %}
+<section class="space ">
+   <h2>Opciones de remisiones</h2>
+
+   <div class="center-items">
+   <div class="option_item">
+      <img src="{% static 'imgs/plus-solid.svg' %}"  class="icon_main" alt="">
+      Crear remision
+      
+   </div>
+   <div class="option_item">
+      <img src="{% static 'imgs/forward-solid.svg' %}"  class="icon_main" alt="">
+      Continuar remisión</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/edit_icon.png' %}"  class="icon_main" alt="">
+      Editar remisión</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/print-solid.svg' %}"  class="icon_main" alt="">
+     Imprimir remisión</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/magnifying-glass-solid.svg' %}"  class="icon_main" alt="">
+      Consultas remisión</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/hand-solid.svg' %}"  class="icon_main" alt="">
+      Recibir remisiónes</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/list-solid.svg' %}"  class="icon_main" alt="">
+      Lista de empaque</div>
+
+   </div>
+</section>
+ 
+
+{% endblock %}
+

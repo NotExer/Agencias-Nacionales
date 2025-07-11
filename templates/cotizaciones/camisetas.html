@@ -1,0 +1,152 @@
+{% extends 'main/index.html' %}
+
+{% block styles %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<section class="space container-fluid mt-4">
+    <h2 class="text-center">Lista de precios de camisetas</h2>
+
+    <div class="mb-3 text-center">
+        <a href="{% url 'camisetas_crear' %}" class="btn btn-primary">Crear camiseta nueva</a>
+    </div>
+
+    {% for proveedor, camisetas in camisetas_por_proveedor.items %}
+    <div id="proveedor-{{ proveedor }}" class="mb-5">
+        <h3 class="mt-4">{{ proveedor|title }}</h3>
+        <a href="{% url 'camisetas_download' proveedor %}" class="btn btn-primary">Descargar {{ proveedor }}</a>
+
+
+        {% if camisetas %}
+        <table class="table table-bordered text-light w-100">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th></th>
+                    <th>ID</th>
+                    <th>Prenda</th>
+                    <th>Tallas</th>
+                    <th>Precios</th>
+                    <th>Costo + IVA</th>
+                    <th>Precio venta</th>
+                    <th>Precio especial</th>
+                    <th>Última actualización</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyClientes-{{ proveedor|slugify }}" data-url="{% url 'actualizar_orden_camisetas' %}">
+                {% for camiseta in camisetas %}
+                <tr data-id="{{ camiseta.ID }}">
+                    <td class="handle" onmousedown="activarArrastre(this)" title="Arrastrar fila">
+                        <span class="handle-icon">⋮⋮⋮</span>
+                    </td>
+                    <td class="orden">{{ forloop.counter }}</td>
+                    <td>{{ camiseta.Prenda }}</td>
+
+                    <td class="sub_tabla">
+                        {% if camiseta.precios_detallados %}
+                        <table class="subtabla">
+                            <tbody>
+                                {% for item in camiseta.precios_detallados %}
+                                <tr class="sub_container">
+                                    <td class="talla_td">{{ item.talla }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        No hay tallas registradas
+                        {% endif %}
+                    </td>
+
+                    <td class="sub_tabla">
+                        {% if camiseta.precios_detallados %}
+                        <table class="subtabla">
+                            <tbody>
+                                {% for item in camiseta.precios_detallados %}
+                                <tr class="sub_container">
+                                    <td class="precio_td">${{ item.precio }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+
+                    <td class="sub_tabla">
+                        {% if camiseta.precios_detallados %}
+                        <table class="subtabla">
+                            <tbody>
+                                {% for item in camiseta.precios_detallados %}
+                                <tr class="sub_container">
+                                    <td class="precio_td">${{ item.costo_con_iva }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td class="sub_tabla">
+                        {% if camiseta.precios_detallados %}
+                        <table class="subtabla">
+                            <tbody>
+                                {% for item in camiseta.precios_detallados %}
+                                <tr class="sub_container">
+                                    <td class="precio_td">${{ item.precio_especial }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td class="sub_tabla">
+                        {% if camiseta.precios_detallados %}
+                        <table class="subtabla">
+                            <tbody>
+                                {% for item in camiseta.precios_detallados %}
+                                <tr class="sub_container">
+                                    <td class="precio_td">${{ item.precio_venta }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+
+
+
+                    <!-- ÚLTIMA ACTUALIZACIÓN -->
+                    <td>{{ camiseta.Ultima_actualizacion }}</td>
+
+                    <!-- ACCIONES -->
+                    <td>
+                        <a href="{% url 'camisetas_editar' camiseta.ID %}">
+                            <button class="btn btn-download">Editar</button>
+                        </a>
+                        <button class="btn btn-primary  "
+                            onclick="abrir_modal('{% url 'camisetas_eliminar' camiseta.ID %}')">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+        {% else %}
+        <p>No hay camisetas registradas para {{ proveedor|title }}.</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    <div id="modal-container"></div>
+</section>
+{% endblock %}

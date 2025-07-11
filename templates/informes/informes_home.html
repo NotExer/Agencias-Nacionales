@@ -1,0 +1,67 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block styles %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block content %}
+<section class="space ">
+   <h2>Opciones de informes</h2>
+
+   <div class="center-items">
+   <div class="option_item">
+      <img src="{% static 'imgs/right-to-bracket-solid.svg' %}"  class="icon_main" alt="">
+      Informe de telas ingresadas
+      
+   </div>
+   <div class="option_item">
+      <img src="{% static 'imgs/chart-simple-solid.svg' %}"  class="icon_main" alt="">
+      Informe de estados de tela</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/money-bill-transfer-solid.svg' %}"  class="icon_main" alt="">
+      Informe de ingresos de producción</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/scissors-solid.svg' %}"  class="icon_main" alt="">
+     Informe de plantillas cortadas</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/truck-solid.svg' %}"  class="icon_main" alt="">
+      Informe de proveedor</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/file-invoice-dollar-solid.svg' %}"  class="icon_main" alt="">
+      Informe comercial</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/ban-solid.svg' %}"  class="icon_main" alt="">
+      Informe de liquidación</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/flag-solid.svg' %}"  class="icon_main" alt="">
+      Informe de novedades de empleados</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/file-lines-solid.svg' %}"  class="icon_main" alt="">
+      Remisiones entregadas</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/file-fragment-solid.svg' %}"  class="icon_main" alt="">
+      Remisiones recibidas</div>
+
+   <div class="option_item">
+      <img src="{% static 'imgs/bookmark-solid.svg' %}"  class="icon_main" alt="">
+      Recordatorios</div>
+
+   <div class="option_item">
+      <img src="{% static 'imgs/magnifying-glass-plus-solid.svg' %}"  class="icon_main" alt="">
+      Consultar comparativos</div>
+
+   <div class="option_item">
+      <img src="{% static 'imgs/boxes-packing-solid.svg' %}"  class="icon_main" alt="">
+      Estado de pedidos</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/box-open-solid.svg' %}"  class="icon_main" alt="">
+      Seguimiento de pedidos</div>
+
+   </div>
+</section>
+ 
+
+{% endblock %}
+

@@ -1,0 +1,23 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block styles %}
+  {{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="space">
+  <h2>Crear Pedido</h2>
+<form method="post">
+        {% csrf_token %}
+        <div class="form-group mb-3">
+            {{ form.cliente.label_tag }}
+            {{ form.cliente }}
+            {% if form.cliente.errors %}
+                <div class="text-danger">{{ form.cliente.errors }}</div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form></div>
+
+{% endblock %}

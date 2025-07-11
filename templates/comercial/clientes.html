@@ -1,0 +1,121 @@
+{% extends 'main/index.html' %}
+
+{% block styles %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<section class="space container-fluid mt-4">
+    <h2 class="text-center">Clientes</h2> 
+
+    <div class="mb-3 text-center">
+        <a href="{% url 'clientes_create' %}" class="btn btn-primary">Crear cliente nuevo</a>
+        <a href="{% url 'clientes_download' %}" class="btn btn-primary">Descargar Clientes</a>
+    </div>
+
+<form method="get" class="filter_form">
+    <input type="text" name="razon" placeholder="Buscar por razón social" class="form-control w-auto"
+        value="{{ filtros.razon }}">
+
+    <select name="ciudad" class="form-control w-auto">
+        <option value="">Filtrar por ciudad</option>
+        {% for c in ciudades %}
+            <option value="{{ c }}" {% if filtros.ciudad == c %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="estado" class="form-control w-auto">
+        <option value="">Todos los estados</option>
+        {% for e in estados %}
+            <option value="{{ e }}" {% if filtros.estado == e %}selected{% endif %}>{{ e }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="vendedor" class="form-control w-auto">
+        <option value="">Todos los vendedores</option>
+        {% for v in vendedores %}
+            <option value="{{ v }}" {% if filtros.vendedor == v %}selected{% endif %}>{{ v }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="orden" class="form-control w-auto">
+        <option value="">Ordenar por fecha</option>
+        <option value="asc" {% if filtros.orden == 'asc' %}selected{% endif %}>Más antiguos</option>
+        <option value="desc" {% if filtros.orden == 'desc' %}selected{% endif %}>Más recientes</option>
+    </select>
+
+    <button type="submit" class="btn btn-primary">Aplicar filtros</button>
+</form>
+
+
+    <!-- Tabla -->
+    <div class="center">
+        <table id="tablaClientes" class="table table-bordered text-light w-100">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>ID</th>
+                    <th>Nit</th>
+                    <th>Razón social</th>
+                    <th>Nombre comercial</th>
+                    <th>Sigla</th>
+                    <th>Ciudad</th>
+                    <th>Teléfono</th>
+                    <th>Contacto</th>
+                    <th hidden>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cliente in clientes %}
+                <tr>
+                    <td data-label="ID:">{{ cliente.ID }}</td>
+                    <td data-label="Nit:">{{ cliente.Nit }}</td>
+                    <td data-label="Razón social:" class="razon">{{ cliente.Razon }}</td>
+                    <td data-label="Nombre comercial:" class="nombre">{{ cliente.Nombre }}</td>
+                    <td data-label="Sigla:">{{ cliente.Sigla }}</td>
+                    <td data-label="Ciudad:" class="ciudad">{{ cliente.Ciudad }}</td>
+                    <td data-label="Teléfono:">{{ cliente.Telefono }}</td>
+                    <td data-label="Contacto:">{{ cliente.Contacto }}</td>
+                    <td hidden class="fecha">{{ cliente.FechaUltimoPedido|date:"Y-m-d" }}</td>
+
+                    <!-- Campos ocultos para filtrado -->
+                    <td class="estado" style="display: none;">{{ cliente.Estado }}</td>
+                    <td class="vendedor" style="display: none;">{{ cliente.Vendedor }}</td>
+                    <td class="direccion" style="display: none;">{{ cliente.Direccion }}</td>
+                    <td class="celular" style="display: none;">{{ cliente.Celular }}</td>
+                    <td class="cargo" style="display: none;">{{ cliente.Cargo }}</td>
+                    <td class="correo" style="display: none;">{{ cliente.Correo }}</td>
+                    <td class="correoextra" style="display: none;">{{ cliente.CorreoExtra }}</td>
+                    <td class="correofactura" style="display: none;">{{ cliente.CorreoFactura }}</td>
+                    <td class="sector" style="display: none;">{{ cliente.Sector }}</td>
+                    <td class="pagina" style="display: none;">{{ cliente.Pagina }}</td>
+                    <td class="codigoPedido" style="display: none;">{{ cliente.CodigoUltimoPedido }}</td>
+                    <td class="valorPedido" style="display: none;">{{ cliente.ValorUltimoPedido }}</td>
+                    <td class="comentario" style="display: none;">{{ cliente.Comentario }}</td>
+
+                    <td>
+                       <button class="btn btn-primary" onclick="abrir_modal('{% url 'detalle_cliente' cliente.ID %}')">
+                            Ver más
+                        </button>
+
+                        <a href="{% url 'clientes_editar' cliente.ID %}">
+                            <button class="btn btn-primary">Editar</button>
+                            </a>
+
+                    
+                           <button class="btn btn-download" onclick="abrir_modal('{% url 'clientes_eliminar' cliente.ID %}')">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center">No hay clientes registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div id="modal-container"></div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block styles %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block content %}
+<section class="space ">
+   <h2>Opciones de planchas</h2>
+
+   <div class="center-items">
+   <div class="option_item">
+      <img src="{% static 'imgs/plus-solid.svg' %}"  class="icon_main" alt="">
+      Crear plancha
+      
+   </div>
+   <div class="option_item">
+      <img src="{% static 'imgs/edit_icon.png' %}"  class="icon_main" alt="">
+      Editar plancha</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/compress-solid.svg' %}"  class="icon_main" alt="">
+      Planchas de estampación</div>
+  
+
+   </div>
+</section>
+ 
+
+{% endblock %}
+

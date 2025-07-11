@@ -1,0 +1,99 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block styles %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<section class="space container-fluid mt-4">
+    <h2 class="text-center">Precios de uniformes Textimedicos</h2>
+
+    <div class="mb-3 text-center">
+        <a href="{% url 'textimedicos_crear' %}" class="btn btn-primary">Crear uniforme nuevo</a>
+        <a href="{% url 'textimedicos_download_pdf' %}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+            Descargar lista de uniformes Textimedicos
+        </a>
+    </div>
+
+    <div class="center">
+        <table id="tablaClientes" class="table table-bordered text-light w-100">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th></th>
+                    <th>ID</th>
+                    <th>Referencia</th>
+                    <th>Imagen</th>
+                
+              
+                    <th>Tallas</th>
+                    <th>Precio</th>
+                    <th>Última actualización</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyClientes" data-url="{% url 'actualizar_orden_textimedicos' %}">
+                {% for textimedicos in textimedicos %}
+                <tr data-id="{{ textimedicos.ID }}">
+                    <td class="handle" onmousedown="activarArrastre(this)" title="Arrastrar fila">
+                        <span class="handle-icon">⋮⋮⋮</span>
+                    </td>
+
+                    <td class="orden">{{ forloop.counter }}</td>
+
+                    <td>{{ textimedicos.Referencia }}</td>
+
+                    <td>
+                        {% if textimedicos.Imagen %}
+                            <img src="{{ textimedicos.Imagen.url }}" alt="Imagen de {{ textimedicos.Referencia }}" class="table_image">
+                        {% else %}
+                            Sin imagen
+                        {% endif %}
+                    </td>
+
+
+
+      
+
+                    <td>
+                        {% if textimedicos.Talla_precio %}
+                        <table class="subtabla">
+                            {% for item in textimedicos.Talla_precio %}
+                            <tr><td>{{ item.talla }}</td></tr>
+                            {% endfor %}
+                        </table>
+                        {% else %}
+                            No hay tallas
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if textimedicos.Talla_precio %}
+                        <table class="subtabla">
+                            {% for item in textimedicos.Talla_precio %}
+                            <tr><td>${{ item.precio|floatformat:0 }}</td></tr>
+                            {% endfor %}
+                        </table>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+
+                    <td>{{ textimedicos.Ultima_actualizacion|date:"Y-m-d" }}</td>
+
+                    <td>
+                        <a href="{% url 'textimedicos_editar' textimedicos.ID %}" class="btn btn-download">Editar</a>
+                        <button class="btn btn-primary" onclick="abrir_modal('{% url 'textimedicos_eliminar' textimedicos.ID %}')">Eliminar</button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10" class="text-center">No hay jeans registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div id="modal-container"></div>
+    </div>
+</section>
+{% endblock %}

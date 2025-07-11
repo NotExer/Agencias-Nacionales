@@ -1,0 +1,57 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block styles %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block content %}
+<section class="space ">
+   <h2>Opciones de inventario</h2>
+
+   <div class="center-items">
+   <div class="option_item">
+      <img src="{% static 'imgs/box-solid.svg' %}"  class="icon_main" alt="">
+      Inventario en bodega
+      
+   </div>
+   <div class="option_item">
+      <img src="{% static 'imgs/truck-ramp-box-solid.svg' %}"  class="icon_main" alt="">
+      Inventario de insumos</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/plus-solid.svg' %}"  class="icon_main" alt="">
+      Crear orden de insumos</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/minus-solid.svg' %}"  class="icon_main" alt="">
+      Restar insumos</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/print-solid.svg' %}"  class="icon_main" alt="">
+      Imprimir orden de insumos</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/credit-card-solid.svg' %}"  class="icon_main" alt="">
+      Pagar orden de insumos</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/folder-plus-solid.svg' %}"  class="icon_main" alt="">
+      Agregar forro bolsillo</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/folder-minus-solid.svg' %}"  class="icon_main" alt="">
+      Restar forro bolsillo</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/square-plus-solid.svg' %}"  class="icon_main" alt="">
+      Agregar botones</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/vest-solid.svg' %}"  class="icon_main" alt="">
+      Agregar muestra</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/magnifying-glass-plus-solid.svg' %}"  class="icon_main" alt="">
+      Consultar muestras</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/hand-solid.svg' %}"  class="icon_main" alt="">
+      Recibir muestras</div>
+   </div>
+</section>
+ 
+
+{% endblock %}
+

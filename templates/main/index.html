@@ -1,0 +1,669 @@
+
+<!-- Mx3p!92&kLw# --> 
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Sistema de gestión de inventarios y cotizaciones para Agencias Nacionales.">
+
+    <title>Agencias Nacionales</title>
+
+    <!-- font icons -->
+    <link rel="icon" type="image/webp" href="{% static 'imgs/logo.webp' %}" sizes="64x64">
+
+
+
+    {% block styles %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% endblock %}
+
+
+</head>
+
+<body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
+
+    <!-- Page Navbar -->
+
+    {% load static %}
+    {% block navbar %}
+
+    <nav id="scrollspy" class="navbar page-navbar navbar-light navbar-expand-md fixed-top" data-spy="affix"
+         data-offset-top="20">
+        <div class="container ">
+    
+
+            <a href="{% url 'home' %}"><img src="{% static 'imgs/AgenciasNacionales.webp' %}" class="logo_agencias" alt="Logo Agencias Nacionales"></a>
+    
+
+            <button class="navbar-toggler" type="button" id="menu-button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                 <div class="menu-icon">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                 </div>
+            </button>
+    
+    
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+    
+
+                    {% if user.is_authenticated %}
+                       <li class="nav-item">
+
+                            <a class="nav-link" href="#">Ayuda</a>
+                        </li>
+                        <li class="nav-item">
+
+                            <a class="nav-link" href="#">Panel de control</a>
+                        </li>
+    
+                        <li class="nav-item">
+
+                            <a class="nav-link" href="#">Mi Perfil</a>
+                        </li>
+    
+                        <li class="nav-close">
+                            <a class="nav-link" href="{% url 'logout' %}">Cerrar sesión
+                            <img src="{% static 'imgs/right-to-bracket-solid.svg' %}" class="close" alt="exit_icon"></a>
+                        </li>
+    
+                    
+    
+                    {% else %}
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="http://127.0.0.1:8000/#">Ayuda</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://agenciasnacionales.com/nosotros">Sobre nosotros</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://agenciasnacionales.com/preguntas-frecuentes">Preguntas frecuentes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://agenciasnacionales.com/contacto">Contacto</a>
+                        </li>
+                    {% endif %}
+
+    
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% endblock %}
+
+  
+    {% block content %}
+   
+    {% if user.is_authenticated %}
+    <body>
+        <section class="space mt-4">
+          
+            <h2>Bienvenidos a Agencias Nacionales</h2>
+                <div class="menu_main">
+
+                <div data-menu="Inventarios" 
+                    data-urls='[{"nombre": "Inventarios en bodega", "url": "/inventario/"},
+                                {"nombre": "Inventario de insumos", "url": "/inventario/insumos"},
+                                {"nombre": "Crear orden de insumos", "url": "/inventario/"},
+                                {"nombre": "Restar insumos", "url": "/inventario/"},
+                                {"nombre": "Imprimir orden de insumos", "url": "/inventario/"},
+                                {"nombre": "Pagar orden de insumos", "url": "/inventario/"},
+                                {"nombre": "Agregar forro de bolsillo", "url": "/inventario/"},
+                                {"nombre": "Restar forro bolsillo", "url": "/inventario/"},
+                                {"nombre": "Agregar botones", "url": "/inventario/"},
+                                {"nombre": "Agregar muestra", "url": "/inventario/"},
+                                {"nombre": "Consultar muestra", "url": "/inventario/"},
+                                {"nombre": "Recibir muestra", "url": "/inventario/"}]'>
+                    <img src="{% static 'imgs/boxes-stacked-solid.svg' %}" class="icon_main" alt="">
+                    Inventarios
+                </div>
+
+
+            <div data-menu="Cotizaciones" 
+                                data-urls='[{"nombre": "Lista de precios", "url": "/cotizaciones/precios"},
+                                {"nombre": "Historial de precios de confección", "url": "/cotizaciones/"},
+                                {"nombre": "Calculadora de costos", "url": "/cotizaciones/calculadora/crear/"},
+                                {"nombre": "Editar calculadora", "url": "/cotizaciones/"},
+                                {"nombre": "Imprimir calculadora", "url": "/cotizaciones/"},
+                                {"nombre": "Historial de calculadora", "url": "/cotizaciones/"},
+                                {"nombre": "Recibir calculadora", "url": "/cotizaciones/"},
+                                {"nombre": "Calculadoras rechazadas", "url": "/cotizaciones/"},
+                                {"nombre": "Calcular costos por pedido", "url": "/cotizaciones/"},
+                                {"nombre": "Crear cotización", "url": "/cotizaciones/"},
+                                {"nombre": "Continuar cotización", "url": "/cotizaciones/"},
+                                {"nombre": "Editar cotización", "url": "/cotizaciones/"},
+                                {"nombre": "Historial de cotizaciones", "url": "/cotizaciones/"},
+                                {"nombre": "Descargar cotización", "url": "/cotizaciones/"}]'>
+                <img src="{% static 'imgs/file-invoice-dollar-solid.svg' %}"  class="icon_main" alt="">
+                Cotizaciones
+            </div>
+            <div data-menu="Proveedores" 
+            data-urls='[{"nombre": "Proveedores", "url": "/proveedor/proveedor/"}, 
+            {"nombre": "Crear orden de compra", "url": "/proveedor/"},
+            {"nombre": "Continuar orden", "url": "/proveedor/"},
+            {"nombre": "Editar orden", "url": "/proveedor/"},
+            {"nombre": "Imprimir orden de compra", "url": "/proveedor/"},
+            {"nombre": "Pendientes por pedir", "url": "/proveedor/"},
+            {"nombre": "Consultar ordenes de compra", "url": "/proveedor/"},
+            {"nombre": "Recibir ordenes", "url": "/proveedor/"},
+            {"nombre": "Pedidos de terceros", "url": "/proveedor/"},
+            {"nombre": "Precios por proveedor", "url": "/proveedor/"}]'>
+                <img src="{% static 'imgs/truck-solid.svg' %}"  class="icon_main" alt="">
+                Proveedores
+            </div>
+            <div data-menu="Pedidos"
+                                data-urls='[{"nombre": "Crear pedido", "url": "/pedidos/crear/"}, 
+            {"nombre": "Continuar pedido", "url": "/pedidos/"},
+            {"nombre": "Editar pedido", "url": "/pedidos/"},
+            {"nombre": "Imprimir pedido", "url": "/pedidos/"},
+            {"nombre": "Historial de pedido", "url": "/pedidos/"},
+            {"nombre": "Pedidos a facturar por vendedor", "url": "/pedidos/"},
+            {"nombre": "Pedidos por vendedor", "url": "/pedidos/"},
+            {"nombre": "Pedidos por fecha", "url": "/pedidos/"},
+            {"nombre": "Pedidos cancelados", "url": "/pedidos/"}]'>
+                <img src="{% static 'imgs/boxes-packing-solid.svg' %}"  class="icon_main" alt="">
+                Pedidos
+            </div>
+            <div data-menu="Telas"
+                                        data-urls='[{"nombre": "Consumo de telas", "url": "/telas/"}, 
+            {"nombre": "Crear requerimiento de telas", "url": "/telas/"},
+            {"nombre": "Editar requerimiento de telas", "url": "/telas/"},
+            {"nombre": "Ingresar orden de compra", "url": "/telas/"},
+            {"nombre": "Ingreso de telas", "url": "/telas/"},
+            {"nombre": "Editar ingreso de telas", "url": "/telas/"},
+            {"nombre": "Lista de pedidos menos telas", "url": "/telas/"},
+            {"nombre": "Inventario de telas", "url": "/telas/"},
+            {"nombre": "Cargar factura de telas", "url": "/telas/"},
+            {"nombre": "Consultar factura de telas", "url": "/telas/"}]'>
+                <img src="{% static 'imgs/shirt-solid.svg' %}"  class="icon_main" alt="">
+                Telas
+            </div>
+            <div data-menu="Trazos"
+                                                    data-urls='[{"nombre": "Crear plantilla", "url": "/trazos/"}, 
+            {"nombre": "Buscar plantilla", "url": "/trazos/"},
+            {"nombre": "Complementos de plantilla", "url": "/trazos/"},
+            {"nombre": "Editar plantilla", "url": "/trazos/"},
+            {"nombre": "Imprimir plantilla", "url": "/trazos/"},
+            {"nombre": "Informes de trazos", "url": "/trazos/"},
+            {"nombre": "Consultar modelos", "url": "/trazos/"},
+            {"nombre": "Verificación de modelos", "url": "/trazos/"}]'>
+                <img src="{% static 'imgs/pen-ruler-solid.svg' %}"  class="icon_main" alt="">
+                Trazos
+            </div>
+            <div data-menu="Cortes"
+             data-urls='[{"nombre": "Ingresar cortes", "url": "/cortes/"}, 
+            {"nombre": "Editar corte", "url": "/cortes/"},
+            {"nombre": "Informe de corte por fecha", "url": "/cortes/"},
+            {"nombre": "Consumo por pedido", "url": "/cortes/"},
+            {"nombre": "Ingresos consecutivos", "url": "/cortes/"},
+            {"nombre": "Descargar entretelas", "url": "/cortes/"},
+            {"nombre": "Inventario", "url": "/cortes/"},
+            {"nombre": "Metros en inventario", "url": "/cortes/"},
+            {"nombre": "Resumen de cortes", "url": "/cortes/"},
+            {"nombre": "Reposición de telas", "url": "/cortes/"},
+            {"nombre": "Faltantes de tela", "url": "/cortes/"},
+            {"nombre": "Consultar faltantes y reposiciones de telas", "url": "/cortes/"},
+            {"nombre": "Bonificaciones", "url": "/cortes/"}]'>
+                
+                <img src="{% static 'imgs/scissors-solid.svg' %}"  class="icon_main" alt="">
+                Cortes
+            </div>
+            <div data-menu="Producción"
+            data-urls='[{"nombre": "Resumen de pedidos", "url": "/produccion/"}, 
+            {"nombre": "Crear remision de confección", "url": "/produccion/"},
+            {"nombre": "Continuar remisión", "url": "/produccion/"},
+            {"nombre": "Registro de llamadas a confeccionistas", "url": "/produccion/"},
+            {"nombre": "Imprimir remisión", "url": "/produccion/"},
+            {"nombre": "Editar remisión", "url": "/produccion/"},
+            {"nombre": "Recibir remisión", "url": "/produccion/"},
+            {"nombre": "Orden de producción", "url": "/produccion/"},
+            {"nombre": "Pago de bonificaciones de prendas cortadas", "url": "/produccion/"},
+            {"nombre": "Pendientes en confección", "url": "/produccion/"},
+            {"nombre": "Parciales", "url": "/produccion/"},
+            {"nombre": "Crear confeccionista", "url": "/produccion/"},
+            {"nombre": "Editar confeccionista", "url": "/produccion/"},
+            {"nombre": "Pendientes por asignar a confeccionistas", "url": "/produccion/"},
+            {"nombre": "Manuales", "url": "/produccion/"},
+            {"nombre": "Presupuestos de producción", "url": "/Produccion/"},
+            {"nombre": "Gesionar PQRS", "url": "/produccion/"},
+            {"nombre": "Reposiciones", "url": "/produccion/"},
+            {"nombre": "Servicios", "url": "/produccion/"},
+            {"nombre": "Reporte de producción", "url": "/produccion/"}
+            ]'>
+            
+                <img src="{% static 'imgs/list-solid.svg' %}"  class="icon_main" alt="">
+                Producción
+            </div>
+            <div data-menu="Planchas"
+            data-urls='[{"nombre": "Crear plancha", "url": "/planchas/"}, 
+            {"nombre": "Editar plancha", "url": "/planchas/"},
+            {"nombre": "Planchas de estampación", "url": "/planchas/"}]'>
+                
+                <img src="{% static 'imgs/compress-solid.svg' %}"  class="icon_main" alt="">
+                Planchas
+            </div>
+            <div data-menu="Bordados"
+             data-urls='[{"nombre": "Registrar bordado", "url": "/bordados/"}, 
+            {"nombre": "Consultar bordados", "url": "/planchas/"}]'>
+                <img src="{% static 'imgs/image-solid.svg' %}"  class="icon_main" alt="">
+                Bordados
+            </div>
+            <div data-menu="Remisiones"
+           data-urls='[{"nombre": "Crear remisión", "url": "/remisiones/"}, 
+            {"nombre": "Continuar remisión", "url": "/remisiones/"},
+            {"nombre": "Editar remisión", "url": "/remisiones/"},
+            {"nombre": "Imprimir remisión", "url": "/remisiones/"},
+            {"nombre": "Consultar remisión", "url": "/remisiones/"},
+            {"nombre": "Recibir remisiones", "url": "/remisiones/"},
+            {"nombre": "Lista de empaque", "url": "/remisiones/"}]'>
+                
+                <img src="{% static 'imgs/money-bill-transfer-solid.svg' %}"  class="icon_main" alt="">                
+                Remisiones
+            </div>
+            <div data-menu="Facturacion"
+              data-urls='[{"nombre": "Prendas por ingresar", "url": "/facturacion/"}, 
+            {"nombre": "Pendiente por facturar", "url": "/facturacion/"},
+            {"nombre": "Pendiente por facturar a vendedores", "url": "/facturacion/"},
+            {"nombre": "Facturar pedidos completos", "url": "/facturacion/"},
+            {"nombre": "Facturación general", "url": "/facturacion/"},
+            {"nombre": "Reporte de facturación", "url": "/facturacion/"},
+            {"nombre": "Facturados en línea", "url": "/facturacion/"},
+            {"nombre": "Logistica de transporte", "url": "/facturacion/"},
+            {"nombre": "Crear remisión de factura", "url": "/facturacion/"},
+            {"nombre": "Editar remisión de factura", "url": "/facturacion/"},
+            {"nombre": "Imprimir remisión de factura", "url": "/facturacion/"},
+            {"nombre": "Continuar remisión", "url": "/facturacion/"},
+            {"nombre": "Consultar remisión de factura", "url": "/facturacion/"},
+            {"nombre": "Recibir remisión de factura", "url": "/facturacion/"},
+            {"nombre": "Prendas en línea", "url": "/facturacion/"},
+            {"nombre": "Pedidos de calzado", "url": "/facturacion/"},
+            {"nombre": "Pedidos en línea", "url": "/facturacion/"}]'>
+                <img src="{% static 'imgs/receipt-solid.svg' %}"  class="icon_main" alt="">
+                Facuracion
+            </div>
+            <div data-menu="Cuentas"
+             data-urls='[{"nombre": "Consultar facturas", "url": "/cuentas/"}, 
+            {"nombre": "Vencimientos y consultas", "url": "/cuentas/"},
+            {"nombre": "Pendientes por pagar", "url": "/cuentas/"},
+            {"nombre": "Ingreso de facuras", "url": "/cuentas/"},
+            {"nombre": "Recibir pedidos", "url": "/cuentas/"},
+            {"nombre": "Contactos de cobro", "url": "/cuentas/"},
+            {"nombre": "Registrar llamada", "url": "/cuentas/"},
+            {"nombre": "Pago a confeccionistas", "url": "/cuentas/"},
+            {"nombre": "Pago de bordados", "url": "/cuentas/"},
+            {"nombre": "Cuentas pagadas de confección", "url": "/cuentas/"}]'>
+                <img src="{% static 'imgs/file-invoice-solid.svg' %}"  class="icon_main" alt="">
+                CxC | CxP
+            </div>
+            <div data-menu="Informes"
+            data-urls='[{"nombre": "Informe de telas ingresadas", "url": "/informes/"}, 
+            {"nombre": "Informe de estados de telas", "url": "/informes/"},
+            {"nombre": "Informe de ingresos de producción", "url": "/informes/"},
+            {"nombre": "Informe de plantillas cortadas", "url": "/informes/"},
+            {"nombre": "Informe de proveedor", "url": "/informes/"},
+            {"nombre": "Informe comercial", "url": "/informes/"},
+            {"nombre": "Informe de liquidación", "url": "/informes/"},
+            {"nombre": "Informe de novedades de empleados", "url": "/informes/"},
+            {"nombre": "Remisiones entregadas", "url": "/informes/"},
+            {"nombre": "Remisiones recibidas", "url": "/informes/"},
+            {"nombre": "Recordatorios", "url": "/informes/"},
+            {"nombre": "Consultar comparativos", "url": "/informes/"},
+            {"nombre": "Estado de pedidos", "url": "/informes/"},
+            {"nombre": "Seguimiento de pedidos", "url": "/informes/"}]'>
+                <img src="{% static 'imgs/database-solid.svg' %}"  class="icon_main" alt="">
+                Informes
+            </div>
+            <div data-menu="Comercial"
+            data-urls='[{"nombre": "Consultar clientes", "url": "/comercial/clientes"},
+                         {"nombre": "Registrar presupuestos", "url": "/comercial/"},
+                         {"nombre": "Estado de pedidos", "url": "/comercial/"},
+                         {"nombre": "Consultar presupuestos", "url": "/comercial/"},
+                         {"nombre": "Crear prospecto", "url": "/comercial/"},
+                         {"nombre": "Consultar prospecto", "url": "/comercial/"},
+                         {"nombre": "Gesion de prospectos", "url": "/comercial/"},
+                         {"nombre": "Ventas por temporada", "url": "/comercial/"},
+                         {"nombre": "Facturación de temporada", "url": "/comercial/"},
+                         {"nombre": "Crear PQRS", "url": "/comercial/"}]'>
+                <img src="{% static 'imgs/chart-simple-solid.svg' %}"  class="icon_main" alt="">
+                Comercial
+            </div>
+            <div data-menu="Consultas"
+            data-urls='[{"nombre": "Buscar cliente", "url": "/consultas/"},
+                         {"nombre": "Consultar confeccionistas pendientes", "url": "/consultas/"},
+                         {"nombre": "Consultar remisiones de confección", "url": "/consultas/"},
+                         {"nombre": "Historial de confeccionistas", "url": "/consultas/"},
+                         {"nombre": "Referencias de prendas", "url": "/consultas/"},
+                         {"nombre": "Historial de prendas fabricadas", "url": "/consultas/"},
+                         {"nombre": "Historial de facturación por cliente", "url": "/consultas/"},
+                         {"nombre": "Proveedores pendientes", "url": "/consultas/"},
+                         {"nombre": "Consulta completa de clientes", "url": "/consultas/"},
+                         {"nombre": "Gesion de prospectos", "url": "/consultas/"},
+                         {"nombre": "Pedidos pendientes por recibir ", "url": "/consultas/"},
+                         {"nombre": "Facturación de temporada", "url": "/consultas/"},
+                         {"nombre": "Sistema de gestión y salud en el trabajo", "url": "/consultas/"}]'>
+                <img src="{% static 'imgs/magnifying-glass-solid.svg' %}"  class="icon_main" alt="">
+                Consultas
+            </div>
+
+            <span class="menu_desplegado">
+
+            </span>
+            </div>
+        </section>
+        
+ 
+        <section class="mt-4">
+            <div class="searcher_container">
+                <input type="text" id="buscarUsuario" placeholder="Buscar por usuario">
+                <input type="text" id="buscarUbicacion" placeholder="Buscar por ubicación">
+              </div>
+            <div class="table-container">
+               
+                  
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Extensión</th>
+                            <th>Usuario</th>
+                            <th>Correo</th>
+                            <th>Ubicación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Extensión">F 101</td>
+                            <td data-label="Usuario">María Parra Restrepo</td>
+                            <td data-label="Correo">mparra@agenciasnacionales.com</td>
+                            <td data-label="Ubicación">Recepción</td>
+                        </tr>
+                         <tr>
+                            <td data-label="Extensión">F 102</td>
+                            <td data-label="Usuario">Bodega calzado y despachos</td>
+                            <td data-label="Correo">despachos@agenciasnacionales.com</td>
+                            <td data-label="Ubicación">Bodega calzado y despacho</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Extensión">F 103</td>
+                            <td data-label="Usuario">Atención al cliente</td>
+                            <td data-label="Correo">No aplica</td>
+                            <td data-label="Ubicación">Sala de espera 1er piso</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Extensión">IN 104</td>
+                            <td data-label="Usuario">María Eugenia Restrepo</td>
+                            <td data-label="Correo">mares@agenciasnacionales.com</td>
+                            <td data-label="Ubicación">Area administración comercial</td>
+                        </tr>
+                         <tr>
+                            <td data-label="Extensión">F 105</td>
+                            <td data-label="Usuario">Yazminy Faizuly Cardona Ruiz <br> Yesid <br> Daniel Alberto Alvarez Quintero </td>
+                            <td data-label="Correo">No aplica</td>
+                            <td data-label="Ubicación">Estampación y Cocina</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">F 106</td>
+                            <td data-label="Usuario">Insumos</td>
+                            <td data-label="Correo">No aplica</td>
+                            <td data-label="Ubicación">logística de producción</td>
+                        </tr>
+                
+                        <tr>
+                            <td data-label="Extensión">F 107</td>
+                            <td data-label="Usuario">Elsy García Atehortúa</td>
+                            <td data-label="Correo">contabilidad@agenciasnacionales.com <br> facturacion@agenciasnacionales.com</td>
+                            <td data-label="Ubicación">Contabilidad <br> Tesorería</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">IN 108</td>
+                            <td data-label="Usuario">María Zulima Alvaran</td>
+                            <td data-label="Correo">zalvaran@agenciasnacionales.com <br> cartera@agenciasnacionales.com <br> compras3calzado@agenciasnacionales.com </td>
+                            <td data-label="Ubicación">Comercial <br> Catera</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">F 109</td>
+                            <td data-label="Usuario">Selena López Jimenez</td>
+                            <td data-label="Correo">contabilidad3@agenciasnacionales.com <br> facturacion@agenciasnacionales.com <br> cartera@agenciasnacionales.com </td>
+                            <td data-label="Ubicación">Auxiliar contable</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">F 110</td>
+                            <td data-label="Usuario">Isabela Quiceno Quiros <br> Carmen Jiménez </td>
+                            <td data-label="Correo">contabilidad4@agenciasnacionales.com <br> facturacion@agenciasnacionales.com <br> contabilidad2@agenciasnacionales.com </td>
+                            <td data-label="Ubicación">Auxiliar contable</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">IN 111</td>
+                            <td data-label="Usuario">Elizabeth Quintero Ramírez</td>
+                            <td data-label="Correo">ssquintero@agenciasnacionales.com <br> pflorez@agenciasnacionales.com</td>
+                            <td data-label="Ubicación">Comercial</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">IN 112</td>
+                            <td data-label="Usuario">Luz Extela Berrio Pino</td>
+                            <td data-label="Correo">luzberrio@agenciasnacionales.com</td>
+                            <td data-label="Ubicación">Comercial</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Extensión">F 113</td>
+                            <td data-label="Usuario">Libre</td>
+                            <td data-label="Correo">Libre</td>
+                            <td data-label="Ubicación">Comercial</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">F 114</td>
+                            <td data-label="Usuario">Jemina Esther Chirinos Rojas</td>
+                            <td data-label="Correo">jemina@agenciasnacionales.com</td>
+                            <td data-label="Ubicación">Marketing digital</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Extensión">F 115</td>
+                            <td data-label="Usuario">Gladys Patricia Montoya Rúa</td>
+                            <td data-label="Correo">gmontoya@agenciasnacionales.com</td>
+                            <td data-label="Ubicación">Comercial <br> Catera</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">IN 116</td>
+                            <td data-label="Usuario">Luz Daniela Orozco Mesa</td>
+                            <td data-label="Correo">dorozco@agenciasnacionales.com</td>
+                            <td data-label="Ubicación">Comercial <br> Recursos humanos</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">117</td>
+                            <td data-label="Usuario">Libre</td>
+                            <td data-label="Correo">Libre</td>
+                            <td data-label="Ubicación">Comercial</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Extensión">IN 118</td>
+                            <td data-label="Usuario">Libre</td>
+                            <td data-label="Correo">Libre</td>
+                            <td data-label="Ubicación">Comercial</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">F 119</td>
+                            <td data-label="Usuario">Hugo Hernando García Cano</td>
+                            <td data-label="Correo">notificacionesfe@agenciasnacionales.com</td>
+                            <td data-label="Ubicación">facturacion</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Extensión">F 120</td>
+                            <td data-label="Usuario">María Parra Restrepo</td>
+                            <td data-label="Correo">mparra@agenciasnacionales.com</td>
+                            <td data-label="Ubicación">Pivote recepción</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">IN 121</td>
+                            <td data-label="Usuario">Luz Elena Londoño Roldan</td>
+                            <td data-label="Correo">No aplica</td>
+                            <td data-label="Ubicación">Recepción de producto</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">IN 122</td>
+                            <td data-label="Usuario">Alberto Cossio Quintero</td>
+                            <td data-label="Correo">alcossio@agenciasnacionales.com <br> comercial@agenciasnacionales.com </td>
+                            <td data-label="Ubicación">Comercial</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">F 123</td>
+                            <td data-label="Usuario">Andres Felipe Alvarez</td>
+                            <td data-label="Correo">disenografico@agenciasnacionales.com <br> afalvarez@agenciasnacionales.com </td>
+                            <td data-label="Ubicación">Diseño grafico</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">IN 124</td>
+                            <td data-label="Usuario">Libre</td>
+                            <td data-label="Correo">Libre</td>
+                            <td data-label="Ubicación">Comercial</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Extensión">IN 125</td>
+                            <td data-label="Usuario">Libre</td>
+                            <td data-label="Correo">Libre</td>
+                            <td data-label="Ubicación">Comercial</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Extensión">IN 126</td>
+                            <td data-label="Usuario">Libre</td>
+                            <td data-label="Correo">Libre</td>
+                            <td data-label="Ubicación">Sala de reuniones</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Extensión">F 127</td>
+                            <td data-label="Usuario">Libre</td>
+                            <td data-label="Correo">Libre</td>
+                            <td data-label="Ubicación">Comercial</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Extensión">IN 128</td>
+                            <td data-label="Usuario">Libre</td>
+                            <td data-label="Correo">Libre</td>
+                            <td data-label="Ubicación">Comercial</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">F 129</td>
+                            <td data-label="Usuario">Felipe Muñoz</td>
+                            <td data-label="Correo">sistemas@agenciasnacionales.com</td>
+                            <td data-label="Ubicación">Sistemas <br>Programación</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">F 129</td>
+                            <td data-label="Usuario">Felipe Muñoz</td>
+                            <td data-label="Correo">sistemas@agenciasnacionales.com</td>
+                            <td data-label="Ubicación">Sistemas <br>Programación</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">IN 130</td>
+                            <td data-label="Usuario">Sandra Milena Ospina</td>
+                            <td data-label="Correo">sospina@agenciasnacionales.com <br> dgaviria@agenciasnacionales.com</td>
+                            <td data-label="Ubicación">Coordinadora de producción</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Extensión">IN 131</td>
+                            <td data-label="Usuario">Libre</td>
+                            <td data-label="Correo">Libre</td>
+                            <td data-label="Ubicación">Compras de producción</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Extensión">IN 132</td>
+                            <td data-label="Usuario">Viviana Andrea Murillo</td>
+                            <td data-label="Correo">produccion@agenciasnacionales.com</td>
+                            <td data-label="Ubicación">Auxiliar de producción</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Extensión">IN 133</td>
+                            <td data-label="Usuario">Milena Villarreal R.</td>
+                            <td data-label="Correo">trazo@agenciasnacionales.com <br>corte@agenciasnacionales.com </td>
+                            <td data-label="Ubicación">Auxiliar de producción</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión">F 134</td>
+                            <td data-label="Usuario">Blanca Henao</td>
+                            <td data-label="Correo">No aplica</td>
+                            <td data-label="Ubicación">Trazos</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Extensión">F 135</td>
+                            <td data-label="Usuario">Area de Corte</td>
+                            <td data-label="Correo">No aplica</td>
+                            <td data-label="Ubicación">Auxiliar de corte y producción</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Extensión">F 136</td>
+                            <td data-label="Usuario">Leon Darío</td>
+                            <td data-label="Correo">No aplica</td>
+                            <td data-label="Ubicación">Coordinador de corte</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Extensión">IN 137</td>
+                            <td data-label="Usuario">Leidy Jhoana</td>
+                            <td data-label="Correo">No aplica</td>
+                            <td data-label="Ubicación">Servicios generales</td>
+                        </tr>
+
+                        <tr>
+                            <td data-label="Extensión"></td>
+                            <td data-label="Usuario">Aura Vanessa López García</td>
+                            <td data-label="Correo">innovacion@agenciasnacionales.com</td>
+                            <td data-label="Ubicación">Innovacion</td>
+                        </tr>
+                    </tbody>
+                    
+                </table>
+            </div>
+        </section>
+
+        <section class="space center mt-4">
+            <div class="map_container">
+                <div id="image-gallery">
+        
+                    <img src="{% static 'imgs/MapaPrimerPiso.webp' %}" class="mapa gallery-image" alt="Mapa Primer Piso">
+                    <img src="{% static 'imgs/MapaSegundoPiso.webp' %}" class="mapa gallery-image" alt="Mapa Segundo Piso">
+                  
+                </div>
+            </div>
+        
+     
+            <div class="pagination-controls">
+                <button id="prevBtn" class="btn btn-primary">Anterior</button>
+                <button id="nextBtn" class="btn btn-primary">Siguiente</button>
+            </div>
+        </section>
+        
+        {# --- Elemento de Overlay para el Zoom --- #}
+        <div id="zoom-overlay" class="overlay">
+            <span id="close-btn"></span>  
+            <img id="zoomed-image" src="" alt="Imagen con Zoom">
+        </div>
+    </body>
+    
+    {% endif %}
+    {% endblock %}
+    
+<script src="{% static 'js/scripts.js' %}"></script>
+
+</body>
+</html>

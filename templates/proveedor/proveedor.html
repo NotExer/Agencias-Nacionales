@@ -1,0 +1,98 @@
+{% extends 'main/index.html' %}
+
+{% block styles %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<section class="space container-fluid mt-4">
+    <h2 class="text-center">Proveedores</h2>
+
+    <div class="mb-3 text-center">
+        <a href="{% url 'proveedores_create' %}" class="btn btn-primary">Crear proveedor nuevo</a>
+        <a href="{% url 'exportar_preveedor_excel' %}" class="btn btn-primary">Descargar Proveedores</a>
+    </div>
+
+    <form method="get" class="filter_form">
+        <input type="text" name="nombre" placeholder="Buscar por nombre" class="form-control w-auto"
+            value="{{ filtros.nombre }}">
+
+        <select name="ciudad" class="form-control w-auto">
+            <option value="">Filtrar por ciudad</option>
+            {% for c in ciudades %}
+            <option value="{{ c }}" {% if filtros.ciudad == c %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="categoria" class="form-control w-auto">
+            <option value="">Filtrar por categoría</option>
+            {% for cat in categorias %}
+            <option value="{{ cat }}" {% if filtros.categoria|default:'' == cat %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+
+        </select>
+
+        <button type="submit" class="btn btn-primary">Aplicar filtros</button>
+    </form>
+
+    <div class="center">
+        <table id="tablaProveedores" class="table table-bordered text-light w-100">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>ID</th>
+                    <th>Nit</th>
+                    <th>Nombre</th>
+                    <th>Ciudad</th>
+                    <th>Teléfono</th>
+                    <th>Contacto</th>
+                    <th>Correo</th>
+                    <th>Categorías</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for proveedor in proveedores %}
+                <tr>
+                    <td data-label="ID:">{{ proveedor.ID }}</td>
+                    <td data-label="Nit:">{{ proveedor.Nit }}</td>
+                    <td data-label="Nombre:">{{ proveedor.Nombre }}</td>
+                    <td data-label="Cuidad:">{{ proveedor.Ciudad }}</td>
+                    <td data-label="Telefono:">{{ proveedor.Telefono }}</td>
+                    <td data-label="Correo:">{{ proveedor.Correo }}</td>
+                    <td data-label="Contacto:">{{ proveedor.Contacto }}</td>
+                    <td data-label="Categorias:">
+                        <div class="categoria-custom-selector cate_space"
+                            data-categorias="{{ proveedor.Categorias|escapejs }}">
+
+                        </div>
+                    </td>
+
+                    <td>
+                        <button class="btn btn-download"
+                            onclick="abrir_modal('{% url 'detalle_proveedor' proveedor.ID %}')">
+                            Ver más
+                        </button>
+
+                        <a href="{% url 'proveedores_editar' proveedor.ID %}">
+                            <button class="btn btn-download">Editar</button>
+                        </a>
+                        <a href="{% url 'prenda_crear' proveedor.ID %}">
+                            <button class="btn btn-download">Añadir prenda</button>
+                        </a>
+                        <button class="btn btn-primary"
+                            onclick="abrir_modal('{% url 'proveedores_eliminar' proveedor.ID %}')">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center">No hay proveedores registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div id="modal-container"></div>
+    </div>
+</section>
+{% endblock %}

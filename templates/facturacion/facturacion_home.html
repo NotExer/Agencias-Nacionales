@@ -1,0 +1,78 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block styles %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block content %}
+<section class="space ">
+   <h2>Opciones de facturación</h2>
+
+   <div class="center-items">
+   <div class="option_item">
+      <img src="{% static 'imgs/right-to-bracket-solid.svg' %}"  class="icon_main" alt="">
+      Prendas por ingresar
+      
+   </div>
+   <div class="option_item">
+      <img src="{% static 'imgs/spinner-solid.svg' %}"  class="icon_main" alt="">
+      Pendientes por facturar</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/hourglass-half-solid.svg' %}"  class="icon_main" alt="">
+      Pendientes por facturar a vendedores</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/file-invoice-solid.svg' %}"  class="icon_main" alt="">
+     Facturar pedidos completos</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/file-invoice-dollar-solid.svg' %}"  class="icon_main" alt="">
+      Facuración general</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/database-solid.svg' %}"  class="icon_main" alt="">
+      Reporte de facturación</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/file-pen-solid.svg' %}"  class="icon_main" alt="">
+      Facturados en linea</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/truck-solid.svg' %}"  class="icon_main" alt="">
+      Logistica de transporte</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/plus-solid.svg' %}"  class="icon_main" alt="">
+      Crear remisión de factura</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/edit_icon.png' %}"  class="icon_main" alt="">
+      Editar remisión de factura</div>
+
+
+    <div class="option_item">
+      <img src="{% static 'imgs/print-solid.svg' %}"  class="icon_main" alt="">
+      Imprimir remisión de factura</div>
+
+         <div class="option_item">
+      <img src="{% static 'imgs/forward-solid.svg' %}"  class="icon_main" alt="">
+      Continuar remisión</div>
+
+   <div class="option_item">
+      <img src="{% static 'imgs/magnifying-glass-solid.svg' %}"  class="icon_main" alt="">
+      Consultar remisión de factura</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/hand-solid.svg' %}"  class="icon_main" alt="">
+      Recibir remisión de factura</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/shirt-solid.svg' %}"  class="icon_main" alt="">
+      Prendas en línea</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/shoe-prints-solid.svg' %}"  class="icon_main" alt="">
+      Pedidos de calzado</div>
+
+         <div class="option_item">
+      <img src="{% static 'imgs/file-solid.svg' %}"  class="icon_main" alt="">
+      Pedidos en linea</div>
+
+   </div>
+</section>
+ 
+
+{% endblock %}
+

@@ -1,0 +1,105 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block styles %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<section class="space container-fluid mt-4">
+    <h2 class="text-center">Precios de Uniformes Crocker</h2>
+
+    <div class="mb-3 text-center">
+        <a href="{% url 'crocker_crear' %}" class="btn btn-primary">Crear Uniforme Nuevo</a>
+        <a href="{% url 'crocker_download_pdf' %}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+            Descargar Lista de Uniformes Crocker
+        </a>
+    </div>
+
+    <div class="center">
+        <table id="tablaClientes" class="table table-bordered text-light w-100">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th></th>
+                    <th>#</th>
+                    <th>Imagen de Referencia</th>
+                    <th>Descripción</th>
+                    <th>Talla</th>
+                    <th>Referencias</th>
+                    <th>Colores</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody id="tbodyClientes" data-url="{% url 'actualizar_orden_crocker' %}">
+                {% for crocker_item in crocker %}
+                <tr data-id="{{ crocker_item.ID }}">
+                    <td class="handle" onmousedown="activarArrastre(this)" title="Arrastrar fila">
+                        <span class="handle-icon">⋮⋮⋮</span>
+                    </td>
+                    <td class="orden">{{ forloop.counter }}</td>
+
+                    <td>
+                        {% if crocker_item.Imagen %}
+                        <img src="{{ crocker_item.Imagen.url }}" alt="Imagen de {{ crocker_item.Descripcion }}"
+                            class="table_image">
+                        {% else %}
+                        Sin imagen
+                        {% endif %}
+                    </td>
+
+                    <td>{{ crocker_item.Descripcion }}</td>
+                    <td>{{ crocker_item.Talla }}</td>
+
+                    <!-- REFERENCIAS -->
+                    <td class="sub_tabla">
+                        {% if crocker_item.Referencia_color %}
+                        <table class="subtabla">
+                            <tbody>
+                                {% for item in crocker_item.Referencia_color %}
+                                    <tr><td>{{ item.referencia }}</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        No hay referencias registradas
+                        {% endif %}
+                    </td>
+
+                    <!-- COLORES -->
+                    <td class="sub_tabla">
+                        {% if crocker_item.Referencia_color %}
+                        <table class="subtabla">
+                            <tbody>
+                                {% for item in crocker_item.Referencia_color %}
+                                    <tr><td>{{ item.color }}</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        No hay colores registrados
+                        {% endif %}
+                    </td>
+
+                    <td>${{ crocker_item.Precio|floatformat:0 }}</td>
+
+                    <td>
+                        <a href="{% url 'crocker_editar' crocker_item.ID %}">
+                            <button class="btn btn-download">Editar</button>
+                        </a>
+                        <button class="btn btn-primary"
+                            onclick="abrir_modal('{% url 'crocker_eliminar' crocker_item.ID %}')">Eliminar</button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center">No hay uniformes registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div id="modal-container"></div>
+    </div>
+</section>
+{% endblock %}

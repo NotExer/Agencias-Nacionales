@@ -1,0 +1,44 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block styles %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block content %}
+<section class="space ">
+   <h2>Opciones de trazos</h2>
+
+   <div class="center-items">
+   <div class="option_item">
+      <img src="{% static 'imgs/plus-solid.svg' %}"  class="icon_main" alt="">
+      Crear plantilla
+   </div>
+   <div class="option_item">
+      <img src="{% static 'imgs/magnifying-glass-solid.svg' %}"  class="icon_main" alt="">
+      Buscar planilla</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/puzzle-piece-solid.svg' %}"  class="icon_main" alt="">
+      Complementos de plantilla</div>
+   <div class="option_item">
+      <img src="{% static '/imgs/edit_icon.png' %}"  class="icon_main" alt="">
+      Editar plantilla</div>
+   <div class="option_item">
+      <img src="{% static '/imgs/print-solid.svg' %}"  class="icon_main" alt="">
+     Imprimir plantilla</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/database-solid.svg' %}"  class="icon_main" alt="">
+      Informes de trazos</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/magnifying-glass-plus-solid.svg' %}"  class="icon_main" alt="">
+      Consultar modelos</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/square-check-solid.svg' %}"  class="icon_main" alt="">
+      Verificación de modelos</div>
+
+</section>
+ 
+
+{% endblock %}
+

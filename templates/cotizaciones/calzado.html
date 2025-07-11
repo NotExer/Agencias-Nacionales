@@ -1,0 +1,148 @@
+{% extends 'main/index.html' %}
+
+{% block styles %}
+{{ block.super }}
+{% endblock %}
+{% load static %}
+
+{% block content %}
+<section class="space container-fluid mt-4">
+    <h2 class="text-center">Precios de calzado</h2>
+
+    <div class="mb-3 text-center">
+        <a href="{% url 'calzado_crear' %}" class="btn btn-primary">Crear calzado nuevo</a>
+        <a href="{% url 'calzado_download_pdf' %}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+            Descargar lista de calzado
+        </a>
+
+    </div>
+
+
+
+    <!-- Tabla -->
+    <div class="center">
+        <table id="tablaClientes" class="table table-bordered text-light w-100">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th></th>
+                    <th>ID</th>
+                    <th>Imagen de Referencia</th>
+                    <th>Descripción</th>
+                    <th>Color</th>
+                    <th>Tallas</th>
+                    <th>Precio</th>
+                    <th>Ficha técnica</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyClientes" data-url="{% url 'actualizar_orden_calzado' %}">
+                {% for calzado in calzados %}
+
+
+                <tr data-id="{{ calzado.ID }}">
+
+                    <td class="handle" onmousedown="activarArrastre(this)" title="Arrastrar fila">
+                        <span class="handle-icon">⋮⋮⋮</span>
+                    </td>
+
+                    <td data-label="Orden:" class="orden">{{ forloop.counter }}</td>
+
+
+
+                    <td data-label="Imagen de referencia:">
+                        {% if calzado.Imagen %}
+                        <img src="{{ calzado.Imagen.url }}" alt="Imagen de {{ calzado.Descripcion }}"
+                            class="table_image">
+                        {% else %}
+                        Sin imagen
+                        {% endif %}
+                    </td>
+                    <td data-label="Descripción:">{{ calzado.Descripcion }}</td>
+
+
+                    <!-- Colores -->
+                    <td data-label="Color:" class="sub_tabla">
+                        {% if calzado.Color_talla_precio %}
+                        <table class="subtabla">
+                            <tbody>
+                                {% for item in calzado.Color_talla_precio %}
+                                <tr class="sub_container">
+                                    <td class="color_td">{{ item.color }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        No hay colores registrados
+                        {% endif %}
+                    </td>
+
+                    <!-- Tallas -->
+                    <td data-label="Talla:" class="sub_tabla">
+                        {% if calzado.Color_talla_precio %}
+                        <table class="subtabla">
+                            <tbody>
+                                {% for item in calzado.Color_talla_precio %}
+                                <tr class="sub_container">
+                                    <td class="talla_td">{{ item.talla }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        No hay tallas registradas
+                        {% endif %}
+                    </td>
+
+                    <!-- Precios -->
+                    <td data-label="Precio:" class="sub_tabla">
+                        {% if calzado.Color_talla_precio %}
+                        <table class="subtabla">
+                            <tbody>
+                                {% for item in calzado.Color_talla_precio %}
+                                <tr class="sub_container">
+                                    <td class="precio_td">${{ item.precio|floatformat:0 }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+
+
+
+                    <td data-label="Ficha técnica:">
+                        {% if calzado.Ficha %}
+                        <a href="{{ calzado.Ficha.url }}" download class="btn btn-download" target="_blank">Descargar
+                            PDF</a>
+                        {% else %}
+                        No disponible
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'calzado_editar' calzado.ID %}">
+                            <button class="btn btn-download">Editar</button>
+                        </a>
+
+                        <button class="btn btn-primary"
+                            onclick="abrir_modal('{% url 'calzado_eliminar' calzado.ID %}')">Eliminar</button>
+                    </td>
+                </tr>
+
+
+
+                {% empty %}
+                <tr>
+                    <td colspan="10" class="text-center">No hay calzados registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+
+        </table>
+        <div id="modal-container"></div>
+    </div>
+</section>
+{% endblock %}

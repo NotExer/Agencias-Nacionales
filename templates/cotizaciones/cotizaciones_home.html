@@ -1,0 +1,64 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block styles %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block content %}
+<section class="space ">
+   <h2>Opciones de cotizaciones</h2>
+
+   <div class="center-items">
+   <div class="option_item">
+      <img src="{% static 'imgs/tags-solid.svg' %}"  class="icon_main" alt="">
+      Lista de precios
+   </div>
+   <div class="option_item">
+      <img src="{% static 'imgs/clock-rotate-left-solid.svg' %}"  class="icon_main" alt="">
+      Historial de precios de confeccion</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/calculator-solid.svg' %}"  class="icon_main" alt="">
+      Calculadora de costos</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/pen-to-square-solid.svg' %}"  class="icon_main" alt="">
+      Editar calculadora</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/print-solid.svg' %}"  class="icon_main" alt="">
+      Imprimir calculadora</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/backward-step-solid.svg' %}"  class="icon_main" alt="">
+      Historial de calculadoras</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/hands-solid.svg' %}"  class="icon_main" alt="">
+      Recibir calculadora</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/xmark-solid.svg' %}"  class="icon_main" alt="">
+      Calculadoras rechazadas</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/dollar-sign-solid.svg' %}"  class="icon_main" alt="">
+      Consultar costos por pedido</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/plus-solid.svg' %}"  class="icon_main" alt="">
+      Crear cotización</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/forward-solid.svg' %}"  class="icon_main" alt="">
+      Continuar cotización</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/file-pen-solid.svg' %}"  class="icon_main" alt="">
+      Editar cotización</div>
+
+   <div class="option_item">
+      <img src="{% static 'imgs/rotate-left-solid.svg' %}"  class="icon_main" alt="">
+      Historial de cotizaciónes</div>
+  <div class="option_item">
+      <img src="{% static 'imgs/download-solid.svg' %}"  class="icon_main" alt="">
+      Descargar cotizaciones</div>
+   </div>
+
+</section>
+ 
+
+{% endblock %}
+

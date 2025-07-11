@@ -1,0 +1,197 @@
+<div class="modal" id="modal">
+  <div class="modal-content-detalle">
+    <div class="modal_header">
+      <h2>Detalles de {{ object.Nombre }}</h2>
+    </div>
+
+    <!-- 🟦 Información general -->
+    <p class="detalle_title">Información general</p>
+    <div class="detalle_grid">
+      <p><strong>ID:</strong><br> {{ object.ID }}</p>
+      <p><strong>NIT:</strong><br> {{ object.Nit }}</p>
+      <p><strong>Ciudad:</strong><br> {{ object.Ciudad }}</p>
+      <p><strong>Dirección:</strong><br> {{ object.Direccion }}</p>
+      <p><strong>Plazo:</strong><br> {{ object.Plazo }} días</p>
+      <p><strong>Descuento:</strong><br> {{ object.Descuento|default:"—" }}</p>
+      <p><strong>Tipo de pago:</strong><br> {{ object.get_Contado_display }}</p>
+      <p><strong>Categorías:</strong><br> {{ object.Categorias|linebreaksbr|default:"—" }}</p>
+    </div>
+
+    <!-- 🟦 Contacto -->
+    <hr class="divider">
+    <p class="detalle_title">Contacto</p>
+    <div class="detalle_grid">
+      <p><strong>Nombre de contacto:</strong><br> {{ object.Contacto }}</p>
+      <p><strong>Teléfono:</strong><br> {{ object.Telefono }}</p>
+      <p><strong>Celular:</strong><br> {{ object.Movil }}</p>
+      <p><strong>Correo:</strong><br> {{ object.Correo }}</p>
+    </div>
+
+    <!-- 🟦 Prendas asociadas -->
+    <hr class="divider">
+    <p class="detalle_title">Prendas asociadas</p>
+
+    {% if object.prendas.exists %}
+    <div class="text-center mb-2">
+      <button id="mostrarPrendasBtn" type="button" class="btn btn-primary btn-sm">
+        Mostrar prendas asociadas
+      </button>
+    </div>
+
+    <div id="tablaPrendasWrapper" style="display: none;">
+      <div class="center">
+        <table class="table table-bordered text-light w-100">
+          <thead class="table-dark text-center">
+            <tr>
+              <th>#</th>
+              <th>Imagen</th>
+              <th>Descripción</th>
+              <th>Referencia</th>
+              <th>Color</th>
+              <th>Talla</th>
+              <th>Costo</th>
+              <th>Precio</th>
+              <th>Última actualización</th>
+              <th>Categorias</th>
+              <th>Ficha técnica</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for prenda in object.prendas.all %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>
+                {% if prenda.Imagen %}
+                <img src="{{ prenda.Imagen.url }}" style="max-width: 80px;">
+                {% else %}
+                —
+                {% endif %}
+              </td>
+              <td>{{ prenda.descripcion|default:"—" }}</td>
+
+              <!-- Subtabla para Referencias -->
+              <td class="sub_tabla">
+                {% if prenda.Referencia_color_talla_Costo_precio %}
+                <table class="subtabla">
+                  <tbody>
+                    {% for item in prenda.Referencia_color_talla_Costo_precio %}
+                    <tr>
+                      <td>{{ item.referencia|default:"—" }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                {% else %}
+                —
+                {% endif %}
+              </td>
+
+              <!-- Subtabla para Colores -->
+              <td class="sub_tabla">
+                {% if prenda.Referencia_color_talla_Costo_precio %}
+                <table class="subtabla">
+                  <tbody>
+                    {% for item in prenda.Referencia_color_talla_Costo_precio %}
+                    <tr>
+                      <td>{{ item.color|default:"—" }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                {% else %}
+                —
+                {% endif %}
+              </td>
+
+              <!-- Subtabla para Tallas -->
+              <td class="sub_tabla">
+                {% if prenda.Referencia_color_talla_Costo_precio %}
+                <table class="subtabla">
+                  <tbody>
+                    {% for item in prenda.Referencia_color_talla_Costo_precio %}
+                    <tr>
+                      <td>{{ item.talla|default:"—" }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                {% else %}
+                —
+                {% endif %}
+              </td>
+
+              <!-- Subtabla para Costo -->
+              <td class="sub_tabla">
+                {% if prenda.Referencia_color_talla_Costo_precio %}
+                <table class="subtabla">
+                  <tbody>
+                    {% for item in prenda.Referencia_color_talla_Costo_precio %}
+                    <tr>
+                      <td>${{ item.costo|floatformat:0 }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                {% else %}
+                —
+                {% endif %}
+              </td>
+
+              <!-- Subtabla para Precio -->
+              <td class="sub_tabla">
+                {% if prenda.Referencia_color_talla_Costo_precio %}
+                <table class="subtabla">
+                  <tbody>
+                    {% for item in prenda.Referencia_color_talla_Costo_precio %}
+                    <tr>
+                      <td>${{ item.precio|floatformat:0 }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                {% else %}
+                —
+                {% endif %}
+              </td>
+
+              <td>{{ prenda.Ultima_actualizacion }}</td>
+              <td>
+  {% for categoria in prenda.get_categorias_list %}
+    <span class="badge bg-primary me-1">{{ categoria }}</span>
+  {% empty %}
+    —
+  {% endfor %}
+</td>
+
+             
+              <td>
+                {% if prenda.Ficha %}
+                <a href="{{ prenda.Ficha.url }}" target="_blank" class="btn btn-download btn-sm">Descargar ficha</a>
+                {% else %}
+                —
+                {% endif %}
+              </td>
+              <td>
+                <a href="{% url 'prenda_editar' prenda.ID %}" class="btn btn-sm btn-download">Editar</a>
+                <button class="btn btn-primary" onclick="abrir_modal('{% url 'prenda_eliminar' prenda.ID %}')">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+
+        </table>
+
+      </div>
+    </div>
+    {% else %}
+    <p class="text-center">No hay prendas asociadas a este proveedor.</p>
+    {% endif %}
+
+    <div style="margin-top: 20px; text-align: center;">
+      <button type="button" class="crear_button" onclick="cerrar_modal()">Cerrar</button>
+    </div>
+  </div>
+</div>

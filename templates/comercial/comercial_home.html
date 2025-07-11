@@ -1,0 +1,64 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block styles %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block content %}
+<section class="space ">
+   <h2>Opciones de comercial</h2>
+
+   <div class="center-items">
+   <div class="option_item">
+      <img src="{% static 'imgs/plus-solid.svg' %}"  class="icon_main" alt="">
+      Crear cliente
+      
+   </div>
+   <div class="option_item">
+      <img src="{% static 'imgs/magnifying-glass-solid.svg' %}"  class="icon_main" alt="">
+      Consultar cliente</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/chart-simple-solid.svg' %}"  class="icon_main" alt="">
+      Clientes por estado</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/person-solid.svg' %}"  class="icon_main" alt="">
+     Clientes por vendedor</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/person-circle-plus-solid.svg' %}"  class="icon_main" alt="">
+      Registrar presupuestos</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/boxes-stacked-solid.svg' %}"  class="icon_main" alt="">
+      Estado de pedidos</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/magnifying-glass-solid.svg' %}"  class="icon_main" alt="">
+      Consultar presupuestos</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/square-plus-solid.svg' %}"  class="icon_main" alt="">
+      Crear prospecto</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/magnifying-glass-plus-solid.svg' %}"  class="icon_main" alt="">
+      Consultar prospecto</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/chart-bar-solid.svg' %}"  class="icon_main" alt="">
+      Gestión de prospectos</div>
+
+   <div class="option_item">
+      <img src="{% static 'imgs/money-bill-trend-up-solid.svg' %}"  class="icon_main" alt="">
+      Ventas por temporada</div>
+
+   <div class="option_item">
+      <img src="{% static 'imgs/receipt-solid.svg' %}"  class="icon_main" alt="">
+      Facturación de temporada</div>
+
+   <div class="option_item">
+      <img src="{% static 'imgs/circle-exclamation-solid.svg' %}"  class="icon_main" alt="">
+      Crear PQRS</div>
+
+   </div>
+</section>
+ 
+
+{% endblock %}
+

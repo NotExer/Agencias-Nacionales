@@ -1,0 +1,239 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block styles %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="space">
+  <h2>Crear calculadora</h2>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <!-- Cliente -->
+    <div class="form-group mb-3">
+      <label for="{{ form.cliente.id_for_label }}">Cliente:</label>
+      {{ form.cliente }}
+      {% if form.cliente.errors %}
+      <div class="text-danger">{{ form.cliente.errors }}</div>
+      {% endif %}
+    </div>
+    {% if calculadora_form %}
+    <hr>
+    <h4 class="sub-title">Asignar calculadora a: {{ cliente_seleccionado }}</h4>
+
+    <div class="form-group mb-3">
+      {% with calculadora_form.Proveedor_select as checkbox %}
+      <input type="checkbox" id="{{ checkbox.id_for_label }}" name="{{ checkbox.html_name }}" class="input-user" />
+      <label for="{{ checkbox.id_for_label }}">Usar prenda de proveedor</label>
+      {% endwith %}
+    </div>
+    <hr>
+
+    <div class="form-group mb-3">
+      {{ calculadora_form.Proveedor.label_tag }}
+      {{ calculadora_form.Proveedor }}
+    </div>
+
+    <hr>
+
+
+
+    <div class="inline-container mb-3">
+      <div class="form-group">
+        {{ calculadora_form.prenda.label_tag }}
+        {{ calculadora_form.prenda }}
+      </div>
+
+      <div class="form-group">
+        <label for="precio-prenda" class="form-label">Precio de corte:</label>
+        <input type="text" id="precio-prenda" class="input-user" value="No definido" readonly>
+      </div>
+    </div>
+    <hr>
+    <div class="inline-container mb-3">
+      <div class="form-group">
+        {{ calculadora_form.Forro.label_tag }}
+        {{ calculadora_form.Forro }}
+      </div>
+
+      <div class="form-group">
+        <label for="precio-forro" class="form-label">Precio del forro:</label>
+        <input type="text" id="precio-forro" class="input-user" value="No definido" readonly>
+      </div>
+    </div>
+    <hr>
+    <div class="inline-container mb-3">
+      <div class="form-group">
+        {{ calculadora_form.Lavado.label_tag }}
+        {{ calculadora_form.Lavado }}
+      </div>
+
+      <div class="form-group">
+        <label for="precio-lavado" class="form-label">Precio del lavado:</label>
+        <input type="text" id="precio-lavado" class="input-user" value="No definido" readonly>
+      </div>
+    </div>
+    <hr>
+    <div class="inline-container mb-3">
+      <div class="form-group">
+        {{ calculadora_form.Estampado.label_tag }}
+        {{ calculadora_form.Estampado }}
+      </div>
+      <div class="form-group mb-3">
+        <label for="precio-estampado" class="form-label">Precio del estampado:</label>
+        <input type="text" id="precio-estampado" class="input-user" value="No definido" readonly>
+      </div>
+    </div>
+
+
+    <hr>
+
+    <div class="bordado-wrapper">
+      <div id="bordados-container"></div>
+      <button type="button" class="btn btn-secondary btn-sm mb-3" id="agregar-bordado">
+        Agregar bordado adicional
+      </button>
+
+      <!-- Campo oculto donde se guarda el JSON -->
+      <input type="hidden" name="Bordado" id="id_Bordado">
+    </div>
+
+    <hr>
+
+
+    <div class="cinta-wrapper">
+      <div id="cinta-container"></div>
+      <button type="button" class="btn btn-secondary btn-sm mb-3" id="agregar-cinta">
+        Agregar cinta adicional
+      </button>
+      <input type="hidden" name="Cinta" id="id_Cinta">
+    </div>
+
+    <hr>
+
+    <div class="pegado-wrapper">
+      <div id="pegados-container"></div>
+      <button type="button" class="btn btn-secondary btn-sm mb-3" id="agregar-pegado">
+        Agregar pegado adicional
+      </button>
+
+      <!-- Campo oculto donde se guarda el JSON -->
+      <input type="hidden" name="Pegado" id="id_Pegado">
+    </div>
+    <hr>
+
+    <div class="cierre-wrapper">
+      <div id="cierre-container"></div>
+      <button type="button" class="btn btn-secondary btn-sm mb-3" id="agregar-cierre">
+        Agregar cierre adicional
+      </button>
+      <input type="hidden" name="Cierre" id="id_Cierre">
+    </div>
+
+
+    <hr>
+    {% if form.instance.Bordado %}
+    <script id="bordado-json" type="application/json">
+    {{ form.instance.Bordado|safe }}
+  </script>
+    {% endif %}
+
+
+
+
+
+    <div class="broche-wrapper">
+      <div id="broches-container"></div>
+      <button type="button" class="btn btn-secondary btn-sm mb-3" id="agregar-broche">
+        Agregar broche adicional
+      </button>
+
+      <!-- Campo oculto donde se guarda el JSON -->
+      <input type="hidden" name="Broche" id="id_Broche">
+    </div>
+
+    <hr>
+
+
+    <div class="elastico-wrapper">
+      <div id="elastico-container"></div>
+      <button type="button" class="btn btn-secondary btn-sm mb-3" id="agregar-elastico">
+        Agregar elastico adicional
+      </button>
+      <input type="hidden" name="Elastico" id="id_Elastico">
+    </div>
+
+
+    <hr>
+
+
+    <div class="boton-wrapper">
+      <div id="boton-container"></div>
+      <button type="button" class="btn btn-secondary btn-sm mb-3" id="agregar-boton">
+        Agregar boton adicional
+      </button>
+      <input type="hidden" name="Boton" id="id_Boton">
+
+    </div>
+
+
+<hr>
+
+  <div class="inline-container mb-3">
+      <div class="form-group">
+        {{ calculadora_form.Fusionado.label_tag }}
+        {{ calculadora_form.Fusionado }}
+      </div>
+
+      <div class="form-group">
+        <label for="precio-fusionado" class="form-label">Precio del fusionado:</label>
+        <input type="text" id="precio-fusionado" class="input-user" value="No definido" readonly>
+      </div>
+    </div>
+
+
+
+
+    <button type="submit" class="btn btn-download">Guardar</button>
+    {% else %}
+    <button type="submit" class="btn btn-primary">Buscar</button>
+    {% endif %}
+
+  </form> <!-- 🧱 Este es el final del formulario -->
+</div>
+
+<!-- ✅ Fuera del form -->
+
+{% if cintas %}
+{{ cintas|json_script:"cintas-data" }}
+{% endif %}
+
+{% if cierres %}
+{{ cierres|json_script:"cierres-data" }}
+{% endif %}
+
+
+
+{% if elasticos %}
+{{ elasticos|json_script:"elasticos-data" }}
+{% endif %}
+
+
+
+
+{% if botones %}
+{{ botones|json_script:"botones-data" }}
+{% endif %}
+
+
+
+{% if form.instance.Bordado %}
+<script id="bordado-json" type="application/json">
+    {{ form.instance.Bordado|safe }}
+  </script>
+{% endif %}
+
+{% endblock %}

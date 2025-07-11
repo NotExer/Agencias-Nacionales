@@ -1,0 +1,59 @@
+{% extends 'main/index.html' %}
+
+{% block styles %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<section class="space container-fluid mt-4">
+    <h2 class="text-center">Inventario de insumos</h2> 
+
+    <div class="mb-3 text-center">
+        <a href="{% url 'insumos_create' %}" class="btn btn-primary">Crear insumo nuevo</a>
+    </div>
+
+    {% for categoria, insumos_categoria in insumos_por_categoria.items %}
+        <div id="categoria-{{ categoria }}" class="mb-5">
+            <h3 class="mt-4">{{ categoria|title }}</h3>
+            
+            {% if insumos_categoria %}
+                <table class="table table-bordered text-light w-100">
+                    <thead class="table-dark text-center">
+                        <tr>
+                            <th>Descripción</th>
+                            <th>Inventario</th>
+                            <th>Precio</th>
+                            <th>Fecha de edición</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for insumo in insumos_categoria %}
+                            <tr>
+                                <td data-label="Descripción:">{{ insumo.descripcion }}</td>
+                                <td data-label="Inventario:">{{ insumo.inventario }}</td>
+                                <td data-label="Precio:"> ${{ insumo.precio }}</td>
+                                <td data-label="fecha de ultima edición:">{{ insumo.fecha_edicion }}</td>
+   
+                                <td>
+                                    <a href="{% url 'insumos_editar' insumo.ID %}">
+                                        <button class="editar_button">Editar</button>
+                                    </a>
+                                    <button class="eliminar_button" onclick="abrir_modal('{% url 'insumos_eliminar' insumo.ID %}')">
+                                        Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                  <div id="modal-container"></div>
+            {% else %}
+                <p>No hay insumos en la categoría {{ categoria|title }}.</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+</section>
+
+
+{% endblock %}

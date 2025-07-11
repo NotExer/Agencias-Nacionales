@@ -1,0 +1,15 @@
+<div class="modal" id="modal">
+  <div class="modal-content-eliminar">
+    <div class="modal_header">
+      <h2>¿Eliminar {{ object.descripcion }} del inventario?</h2>
+      <form method="post" action="{% url 'insumos_eliminar' object.ID %}">
+        {% csrf_token %}
+        <p>Esta acción no se puede deshacer. ¿Estás seguro de que deseas eliminar este insumo?</p>
+        <div class="confirmation_container">
+          <button type="submit" class="eliminar_button">Sí, eliminar</button>
+          <button type="button" class="crear_button" onclick="cerrar_modal()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

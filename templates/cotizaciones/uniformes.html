@@ -1,0 +1,93 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block styles %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<section class="space container-fluid mt-4">
+  <h2 class="text-center">Prendas del proveedor: {{ proveedor.Nombre }}</h2>
+
+  <div class="mb-3 text-center">
+    <a href="{% url 'prenda_crear' proveedor.ID %}" class="btn btn-primary">Crear prenda nueva</a>
+  </div>
+
+  <!-- Tabla -->
+  <div class="center">
+    <table id="tablaPrendas" class="table table-bordered text-light w-100">
+      <thead class="table-dark text-center">
+        <tr>
+          <th>ID</th>
+          <th>Imagen de Referencia</th>
+          <th>Descripción</th>
+          <th>Referencia</th>
+          <th>Color</th>
+          <th>Talla</th>
+          <th>Costo</th>
+          <th>Precio</th>
+          <th>Ficha técnica</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for prenda in prendas %}
+        {% if prenda.Referencia_color_talla_Costo_precio %}
+        {% for item in prenda.Referencia_color_talla_Costo_precio %}
+        <tr>
+          <td>{{ prenda.ID }}</td>
+
+          <td>
+            {% if prenda.Imagen %}
+            <img src="{{ prenda.Imagen.url }}" alt="Imagen de {{ prenda.descripcion }}" class="table_image">
+            {% else %}
+            Sin imagen
+            {% endif %}
+          </td>
+
+          <td>{{ prenda.descripcion }}</td>
+          <td>{{ item.referencia }}</td>
+          <td>{{ item.color }}</td>
+          <td>{{ item.talla }}</td>
+          <td>${{ item.costo }}</td>
+          <td>${{ item.precio }}</td>
+
+          <td>
+            {% if prenda.Ficha %}
+            <a href="{{ prenda.Ficha.url }}" download class="btn btn-download" target="_blank">Descargar PDF</a>
+            {% else %}
+            No disponible
+            {% endif %}
+          </td>
+
+          <td>
+            <a href="{% url 'editar_prenda' prenda.ID %}">
+              <button class="btn btn-download">Editar</button>
+            </a>
+            <button class="btn btn-primary" onclick="abrir_modal('{% url 'eliminar_prenda' prenda.ID %}')">Eliminar</button>
+          </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+          <td>{{ prenda.ID }}</td>
+          <td colspan="8" class="text-center">No hay datos de tallas ni precios para esta prenda.</td>
+          <td>
+            <a href="{% url 'editar_prenda' prenda.ID %}">
+              <button class="btn btn-download">Editar</button>
+            </a>
+            <button class="btn btn-primary" onclick="abrir_modal('{% url 'eliminar_prenda' prenda.ID %}')">Eliminar</button>
+          </td>
+        </tr>
+        {% endif %}
+        {% empty %}
+        <tr>
+          <td colspan="10" class="text-center">No hay prendas registradas para este proveedor.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div id="modal-container"></div>
+  </div>
+</section>
+{% endblock %}

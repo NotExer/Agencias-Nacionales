@@ -1,0 +1,72 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block styles %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="space">
+  <div class="header-bar">
+    <button type="button" class="btn-back" onclick="history.back()">
+      <img src="{% static 'imgs/left-long-solid.svg' %}" class="icon_main" alt="">
+      <span>Volver</span>
+    </button>
+    <h2>Registrar Proveedor</h2>
+    <div class="spacer"></div>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+    {% if form.non_field_errors %}
+  <div class="alert alert-danger" role="alert">
+    {{ form.non_field_errors }}
+  </div>
+{% endif %}
+
+
+      {% for field in form %}
+        {% if field.name == 'Contado' %}
+          <div class="mb-3">
+            <label class="form-label">{{ field.label }}</label>
+            <div class="radio-inline-group">
+              {{ field }}
+            </div>
+            {% if field.errors %}
+              <div class="text-danger">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+        {% elif field.name != 'categorias' %}
+          <div class="mb-3">
+            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+              <div class="text-danger">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      <!-- Campo personalizado para Categorías -->
+      <div class="mb-3">
+        <label for="id_categorias_original" class="form-label">{{ form.categorias.label }}</label>
+        {{ form.categorias }} 
+        <div id="categoria-selector" class="categoria-custom-selector"></div>
+      </div>
+
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+  </form>
+{% if form.instance.Referencia_color_talla_Costo_precio %}
+  <label class="form-label mt-3">Datos guardados:</label>
+  <pre>{{ form.instance.Referencia_color_talla_Costo_precio|safe }}</pre>
+{% endif %}
+
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+{% endblock %}

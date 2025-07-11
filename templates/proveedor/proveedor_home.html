@@ -1,0 +1,54 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block styles %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block content %}
+<section class="space ">
+   <h2>Opciones de proveedores</h2>
+
+   <div class="center-items">
+   <div class="option_item">
+      <img src="{% static 'imgs/plus-solid.svg' %}"  class="icon_main" alt="">
+      Crear proveedor 
+   </div>
+
+   <div class="option_item">
+      <img src="{% static 'imgs/circle-plus-solid.svg' %}"  class="icon_main" alt="">
+      Crear orden de insumos</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/square-plus-solid.svg' %}"  class="icon_main" alt="">
+      Crear orden de compra</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/forward-solid.svg' %}"  class="icon_main" alt="">
+      Continuar orden de compra</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/file-pen-solid.svg' %}"  class="icon_main" alt="">
+      Editar orden de compra</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/print-solid.svg' %}"  class="icon_main" alt="">
+      Imprimir orden de compra</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/spinner-solid.svg' %}"  class="icon_main" alt="">
+      Pendientes por pedir</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/magnifying-glass-arrow-right-solid.svg' %}"  class="icon_main" alt="">
+      Consultar ordenes de compra</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/paper-plane-solid.svg' %}"  class="icon_main" alt="">
+      Recibir ordenes de compra</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/handshake-solid.svg' %}"  class="icon_main" alt="">
+      Pedidos de terceros</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/tag-solid.svg' %}"  class="icon_main" alt="">
+      Pecios por proveedor</div>
+   </div>
+</section>
+ 
+
+{% endblock %}
+

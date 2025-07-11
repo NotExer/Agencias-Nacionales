@@ -1,0 +1,93 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block styles %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block content %}
+
+
+<section class="precios_container space mt-4">
+    <div>
+        <h2>Lista de precios</h2>
+        <a class="btn btn-primary" href="">Uniformes de linea</a>
+        <a class="btn btn-primary" href="">Camisetas T - Polo <br> T - shirt</a>
+        <a class="btn btn-primary" href="">Gorros</a>
+        <a class="btn btn-primary" href="">Calzado agencias</a>
+        <a class="btn btn-primary" href="">Calzado kondor</a>
+        <a class="btn btn-primary" href="">Uniformes Crocker</a>
+        <a class="btn btn-primary" href="">Uniformes reyco</a>
+        <a class="btn btn-primary" href="">Uniformes textimedicos</a>
+        <button class="btn btn-primary"
+            onclick="mostrar_modal_pdf('{% static 'pdfs/OTRAS LISTAS DE PRECIOS.pdf'|urlencode %}', 'Otras listas')">
+            Otras listas
+        </button>
+    </div>
+    <div>
+        <h2>Portafolios</h2>
+
+        <button class="btn btn-primary"
+            onclick="mostrar_modal_pdf('{% static 'pdfs/CATALOGO UNIFORMES DE LINEA.pdf'|urlencode %}', 'Portafolio de línea')">
+            Portafolio de línea
+        </button>
+
+
+        <button class="btn btn-primary"
+            onclick="mostrar_modal_pdf('{% static 'pdfs/CATALOGO CAMISA DE TERCEROS.pdf'|urlencode %}', 'Portafolio de camisetas')">
+            Portafolio de camisetas
+        </button>
+
+        <button class="btn btn-primary"
+            onclick="mostrar_modal_pdf('{% static 'pdfs/CATALOGO DE GORROS.pdf'|urlencode %}', 'Portafolio de gorros')">
+            Portafolio de gorros
+        </button>
+        <button class="btn btn-primary"
+            onclick="mostrar_modal_pdf('{% static 'pdfs/CATALOGO DE CALZADO AGENCIALES.pdf'|urlencode %}', 'Portafolio de calzado de agencias')">
+            Portafolio de calzado de agencias
+        </button>
+
+
+        <button class="btn btn-primary"
+            onclick="mostrar_modal_pdf('{% static 'pdfs/CATALOGO DE KONDOR.pdf'|urlencode %}', 'Portafolio de calzado kondor')">
+            Portafolio de calzado kondor
+        </button>
+
+
+
+
+        <button class="btn btn-primary"
+            onclick="mostrar_modal_pdf('{% static 'pdfs/CATALOGO DE EPP.pdf'|urlencode %}', 'Portafolio EPP Kastako')">
+            Portafolio EPP Kastako
+        </button>
+
+        <button class="btn btn-primary"
+            onclick="mostrar_modal_pdf('{% static 'pdfs/CATALOGO DE SOSEGA.pdf'|urlencode %}', 'Portafolio EPP Sosega')">
+            Portafolio EPP Sosega
+        </button>
+
+        <button class="btn btn-primary"
+            onclick="mostrar_modal_pdf('{% static 'pdfs/OTROS CATALOGOS.pdf'|urlencode %}', 'Otros portafolios')">
+            Otros portafolios
+        </button>
+    </div>
+</section>
+
+
+<!-- Modal -->
+<div id="modal-pdf" class="modal">
+    <div class="modal-content">
+
+        <div class="modal_nav">
+            <h2 id="modal-title">Título del PDF</h2>
+            <span class="close-btn" onclick="cerrar_modal_pdf()">&times;</span>
+        </div>
+        <iframe id="visor-pdf" src=""></iframe>
+        <a id="descargar-pdf" href="#" download class="btn btn-primary">Descargar PDF</a>
+    </div>
+</div>
+
+
+
+{% endblock %}

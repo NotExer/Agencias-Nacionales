@@ -1,0 +1,49 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block styles %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block content %}
+<section class="space ">
+   <h2>Opciones de pedidos</h2>
+
+   <div class="center-items">
+   <div class="option_item">
+      <img src="{% static 'imgs/plus-solid.svg' %}"  class="icon_main" alt="">
+      Crear pedido
+      
+   </div>
+   <div class="option_item">
+      <img src="{% static 'imgs/forward-solid.svg' %}"  class="icon_main" alt="">
+      Continuar pedido</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/edit_icon.png' %}"  class="icon_main" alt="">
+      Editar pedido</div>
+   <div class="option_item">
+      <img src="{% static '/imgs/print-solid.svg' %}"  class="icon_main" alt="">
+      Imprimir pedido</div>
+   <div class="option_item">
+      <img src="{% static '/imgs/clock-rotate-left-solid.svg' %}"  class="icon_main" alt="">
+     Historial de pedidos</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/file-invoice-dollar-solid.svg' %}"  class="icon_main" alt="">
+      Pedidos a facturar por vendedor</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/person-circle-question-solid.svg' %}"  class="icon_main" alt="">
+      Pedidos por vendedor</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/calendar-solid.svg' %}"  class="icon_main" alt="">
+      Pedidos por fecha</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/ban-solid.svg' %}"  class="icon_main" alt="">
+      Pedidos cancelados</div>
+
+   </div>
+</section>
+ 
+
+{% endblock %}
+

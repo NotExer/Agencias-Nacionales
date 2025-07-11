@@ -1,0 +1,53 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block styles %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block content %}
+<section class="space ">
+   <h2>Opciones de cuentas</h2>
+
+   <div class="center-items">
+   <div class="option_item">
+      <img src="{% static 'imgs/magnifying-glass-solid.svg' %}"  class="icon_main" alt="">
+      Consultar facuras
+      
+   </div>
+   <div class="option_item">
+      <img src="{% static 'imgs/ban-solid.svg' %}"  class="icon_main" alt="">
+      Vencimientos y consultas</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/hourglass-half-solid.svg' %}"  class="icon_main" alt="">
+      Pendientes por pagar</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/file-invoice-solid.svg' %}"  class="icon_main" alt="">
+     Ingreso de facturas</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/hand-solid.svg' %}"  class="icon_main" alt="">
+      Recibir pedidos</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/file-invoice-dollar-solid.svg' %}"  class="icon_main" alt="">
+      Contactos de cobro</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/phone-solid.svg' %}"  class="icon_main" alt="">
+      Registrar llamada</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/money-bill-transfer-solid.svg' %}"  class="icon_main" alt="">
+      Pago a confeccionistas</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/file-invoice-dollar-solid.svg' %}"  class="icon_main" alt="">
+      Pago de bordados</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/wallet-solid.svg' %}"  class="icon_main" alt="">
+      Cuentas pagadas de confección</div>
+
+
+   </div>
+</section>
+ 
+
+{% endblock %}
+

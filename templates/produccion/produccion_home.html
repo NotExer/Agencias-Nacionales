@@ -1,0 +1,92 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block styles %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block content %}
+<section class="space ">
+   <h2>Opciones de producción</h2>
+
+   <div class="center-items">
+   <div class="option_item">
+      <img src="{% static 'imgs/file-solid.svg' %}"  class="icon_main" alt="">
+      Resumen de pedidos
+   </div>
+   <div class="option_item">
+      <img src="{% static 'imgs/plus-solid.svg' %}"  class="icon_main" alt="">
+      Crear remision de confección</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/forward-solid.svg' %}"  class="icon_main" alt="">
+      Continuar remisión</div>
+   <div class="option_item">
+      <img src="{% static '/imgs/clock-rotate-left-solid.svg' %}"  class="icon_main" alt="">
+      Registro de llamadas a confeccionistas</div>
+   <div class="option_item">
+      <img src="{% static '/imgs/print-solid.svg' %}"  class="icon_main" alt="">
+     Imprimir remisión</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/edit_icon.png' %}"  class="icon_main" alt="">
+      Editar remisión</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/hand-solid.svg' %}"  class="icon_main" alt="">
+      Recibir remisión</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/file-invoice-solid.svg' %}"  class="icon_main" alt="">
+      Orden de producción</div>
+<div class="option_item">
+      <img src="{% static 'imgs/hand-holding-dollar-solid.svg' %}"  class="icon_main" alt="">
+      Pago de Bonificaciones de prendas cortadas</div>
+
+      <div class="option_item">
+      <img src="{% static 'imgs/spinner-solid.svg' %}"  class="icon_main" alt="">
+      Pendientes en confección</div>
+
+    <div class="option_item">
+      <img src="{% static 'imgs/file-half-dashed-solid.svg' %}"  class="icon_main" alt="">
+      Parciales</div>
+
+    <div class="option_item">
+      <img src="{% static 'imgs/square-plus-solid.svg' %}"  class="icon_main" alt="">
+     Crear confeccionista</div>
+     
+    <div class="option_item">
+      <img src="{% static 'imgs/pen-to-square-solid.svg' %}"  class="icon_main" alt="">
+     Editar confeccionista</div>
+
+         <div class="option_item">
+      <img src="{% static 'imgs/list-check-solid.svg' %}"  class="icon_main" alt="">
+     Pendientes por asignar a confeccionists</div>
+
+         <div class="option_item">
+      <img src="{% static 'imgs/book-open-solid.svg' %}"  class="icon_main" alt="">
+     Manuales</div>
+
+      <div class="option_item">
+      <img src="{% static 'imgs/file-invoice-dollar-solid.svg' %}"  class="icon_main" alt="">
+     Presupuestos de producción</div>
+
+      <div class="option_item">
+      <img src="{% static 'imgs/clipboard-question-solid.svg' %}"  class="icon_main" alt="">
+     Gestionar PQRS</div>
+
+     
+      <div class="option_item">
+      <img src="{% static 'imgs/filter-circle-dollar-solid.svg' %}"  class="icon_main" alt="">
+     Reposiciones</div>
+
+      
+      <div class="option_item">
+      <img src="{% static 'imgs/toolbox-solid.svg' %}"  class="icon_main" alt="">
+     Servicios</div>
+
+     <div class="option_item">
+      <img src="{% static 'imgs/database-solid.svg' %}"  class="icon_main" alt="">
+     Reportes de producción</div>
+</section>
+ 
+
+{% endblock %}
+

@@ -1,0 +1,74 @@
+{% extends 'main/index.html' %}
+
+{% block styles %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="space">
+  <h2>Registrar prenda para {{ proveedor.Nombre }}</h2>
+  <form method="post" enctype="multipart/form-data" id="kondorForm">
+    {% csrf_token %}
+    <div class="form-group">
+
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger" role="alert">
+        {{ form.non_field_errors }}
+      </div>
+      {% endif %}
+
+      {% for field in form %}
+      {% if field.name != 'Referencia_color_talla_Costo_precio' and field.name != 'categorias' %}
+      <div class="mb-3">
+        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+        {{ field }}
+
+        {% if field.name == 'Imagen' %}
+        <div class="preview-container mt-2">
+          <img id="preview-imagen" src="#" alt="Vista previa" style="display: none; max-height: 200px;">
+        </div>
+        {% endif %}
+
+        {% if field.errors %}
+        <div class="text-danger">{{ field.errors }}</div>
+        {% endif %}
+      </div>
+      {% endif %}
+      {% endfor %}
+
+      <div class="mb-3">
+        <label for="{{ form.categorias.id_for_label }}" class="form-label">{{ form.categorias.label }}</label>
+
+        <!-- Campo SELECT oculto -->
+        {{ form.categorias }}
+
+        <!-- Contenedor donde el JS mostrará los chips y dropdown -->
+        <div id="categoria-selector" class="categoria-custom-selector"></div>
+
+        {% if form.categorias.errors %}
+        <div class="text-danger">{{ form.categorias.errors }}</div>
+        {% endif %}
+      </div>
+      <!-- 🟩 Sección dinámica: referencia / color / talla / costo / precio -->
+      <label class="form-label">Referencia / Color / Talla / Costo / Precio</label>
+      <div id="tallas-precios-container"></div>
+
+
+      <button type="button" class="btn btn-secondary btn-sm mb-3" id="agregar-talla-precio">Agregar referencia</button>
+
+      <!-- 🟩 Campo oculto donde el JS inyecta el JSON -->
+      <input type="hidden" name="Referencia_color_talla_Costo_precio" id="id_Referencia_color_talla_Costo_precio">
+      {% if form.instance.Referencia_color_talla_Costo_precio %}
+      <script id="referencia-color-talla-costo-precio-json" type="application/json">
+    {{ form.instance.Referencia_color_talla_Costo_precio|safe }}
+  </script>
+      {% else %}
+      <script id="referencia-color-talla-costo-precio-json" type="application/json">[]</script>
+      {% endif %}
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block styles %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block content %}
+<section class="space ">
+   <h2>Opciones de corte</h2>
+
+   <div class="center-items">
+   <div class="option_item">
+      <img src="{% static 'imgs/right-to-bracket-solid.svg' %}"  class="icon_main" alt="">
+      Ingresar cortes
+   </div>
+   <div class="option_item">
+      <img src="{% static 'imgs/edit_icon.png' %}"  class="icon_main" alt="">
+      Editar corte</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/database-solid.svg' %}"  class="icon_main" alt="">
+      Informe de corte por fecha</div>
+   <div class="option_item">
+      <img src="{% static '/imgs/file-invoice-solid.svg' %}"  class="icon_main" alt="">
+      Consumo por pedido</div>
+   <div class="option_item">
+      <img src="{% static '/imgs/money-bill-transfer-solid.svg' %}"  class="icon_main" alt="">
+     Ingresos consecutivos</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/download-solid.svg' %}"  class="icon_main" alt="">
+      Descargar entretelas</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/list-solid.svg' %}"  class="icon_main" alt="">
+      Inventario</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/ruler-solid.svg' %}"  class="icon_main" alt="">
+      Metros en inventario</div>
+<div class="option_item">
+      <img src="{% static 'imgs/file-solid.svg' %}"  class="icon_main" alt="">
+      Resumen de cortes</div>
+
+      <div class="option_item">
+      <img src="{% static 'imgs/window-restore-solid.svg' %}"  class="icon_main" alt="">
+      Reposición de telas</div>
+
+    <div class="option_item">
+      <img src="{% static 'imgs/box-open-solid.svg' %}"  class="icon_main" alt="">
+      faltantes de tela</div>
+
+    <div class="option_item">
+      <img src="{% static 'imgs/magnifying-glass-arrow-right-solid.svg' %}"  class="icon_main" alt="">
+     Consultar faltantes y reposiciones de telas</div>
+     
+    <div class="option_item">
+      <img src="{% static 'imgs/award-solid.svg' %}"  class="icon_main" alt="">
+     Bonificaciones</div>
+</section>
+ 
+
+{% endblock %}
+

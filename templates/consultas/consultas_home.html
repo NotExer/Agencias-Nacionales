@@ -1,0 +1,64 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block styles %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block content %}
+<section class="space ">
+   <h2>Opciones de consultas</h2>
+
+   <div class="center-items">
+   <div class="option_item">
+      <img src="{% static 'imgs/magnifying-glass-solid.svg' %}"  class="icon_main" alt="">
+      Buscar cliente
+      
+   </div>
+   <div class="option_item">
+      <img src="{% static 'imgs/magnifying-glass-plus-solid.svg' %}"  class="icon_main" alt="">
+      Consultar confeccionistas pendientes</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/magnifying-glass-dollar-solid.svg' %}"  class="icon_main" alt="">
+      Consultar remisiones de confeccón</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/clock-rotate-left-solid.svg' %}"  class="icon_main" alt="">
+     Historial de confeccionistas</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/bookmark-solid.svg' %}"  class="icon_main" alt="">
+      Referencias de prendas</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/shirt-solid.svg' %}"  class="icon_main" alt="">
+      Historial de prendas fabricadas</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/file-invoice-dollar-solid.svg' %}"  class="icon_main" alt="">
+      Historial de facturación por cliente</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/hourglass-half-solid.svg' %}"  class="icon_main" alt="">
+      Proveedores pendientes</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/magnifying-glass-chart-solid.svg' %}"  class="icon_main" alt="">
+      Consulta completa de clientes</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/chart-bar-solid.svg' %}"  class="icon_main" alt="">
+      gestión de proyectos</div>
+
+   <div class="option_item">
+      <img src="{% static 'imgs/money-bill-trend-up-solid.svg' %}"  class="icon_main" alt="">
+      Pedidos pendientes por recibir</div>
+
+   <div class="option_item">
+      <img src="{% static 'imgs/receipt-solid.svg' %}"  class="icon_main" alt="">
+      Facturación de temporada</div>
+
+   <div class="option_item">
+      <img src="{% static 'imgs/circle-exclamation-solid.svg' %}"  class="icon_main" alt="">
+      Sistema de gestión y salud en el trabajo</div>
+
+   </div>
+</section>
+ 
+
+{% endblock %}
+

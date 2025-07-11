@@ -1,0 +1,64 @@
+<div class="modal" id="modal">
+  <div class="modal-content-detalle">
+    <div class="modal_header">
+      <h2>Detalles de {{ object.Nombre }}</h2>
+    </div>
+
+    <!-- Información general -->
+    <p class="detalle_title">Información general</p>
+    <div class="detalle_grid">
+      <p><strong>ID:</strong><br> {{ object.ID }}</p>
+      <p><strong>NIT:</strong><br> {{ object.Nit }}</p>
+      <p><strong>Razón social:</strong><br> {{ object.Razon }}</p>
+      <p><strong>Nombre comercial:</strong><br> {{ object.Nombre }}</p>
+      <p><strong>Sigla:</strong><br> {{ object.Sigla }}</p>
+      <p><strong>Ciudad:</strong><br> {{ object.Ciudad }}</p>
+      <p><strong>Dirección:</strong><br> {{ object.Direccion }}</p>
+      <p><strong>Teléfono:</strong><br> {{ object.Telefono }}</p>
+      <p><strong>Celular:</strong><br> {{ object.Celular }}</p>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Contacto -->
+    <p class="detalle_title">Contacto</p>
+    <div class="detalle_grid">
+      <p><strong>Contacto:</strong><br> {{ object.Contacto }}</p>
+      <p><strong>Cargo:</strong><br> {{ object.Cargo }}</p>
+      <p><strong>Correo:</strong><br> {{ object.Correo }}</p>
+      <p><strong>Correo extra:</strong><br> {{ object.CorreoExtra }}</p>
+      <p><strong>Correo facturación:</strong><br> {{ object.CorreoFactura }}</p>
+      <p><strong>Tipo de contacto:</strong><br> {{ object.TipoContacto }}</p>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Información comercial -->
+    <p class="detalle_title">Información comercial</p>
+    <div class="detalle_grid">
+      <p><strong>Sector:</strong><br> {{ object.Sector }}</p>
+      <p><strong>Producto:</strong><br> {{ object.Productos }}</p>
+      <p><strong>Estado:</strong><br> {{ object.Estado }}</p>
+      <p><strong>Vendedor:</strong><br> {{ object.Vendedor }}</p>
+      <p><strong>Página web:</strong><br> 
+        {% if object.Pagina %}
+          <a href="{{ object.Pagina }}" target="_blank">{{ object.Pagina }}</a>
+        {% else %}
+          No especificada
+        {% endif %}
+      </p>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Observaciones -->
+    <p class="detalle_title">Observaciones</p>
+    <div class="detalle_grid">
+      <p><strong>Comentario:</strong><br> {{ object.Comentario|default:"Sin observaciones" }}</p>
+    </div>
+
+    <div style="margin-top: 20px; text-align: center;">
+      <button type="button" class="crear_button" onclick="cerrar_modal()">Cerrar</button>
+    </div>
+  </div>
+</div>

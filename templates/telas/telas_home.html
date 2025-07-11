@@ -1,0 +1,50 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block styles %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block content %}
+<section class="space ">
+   <h2>Opciones de telas</h2>
+
+   <div class="center-items">
+   <div class="option_item">
+      <img src="{% static 'imgs/scissors-solid.svg' %}"  class="icon_main" alt="">
+      Consumo de telas
+   </div>
+   <div class="option_item">
+      <img src="{% static 'imgs/bell-solid.svg' %}"  class="icon_main" alt="">
+      Crear requerimiento de telas</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/edit_icon.png' %}"  class="icon_main" alt="">
+      Editar requerimiento de telas</div>
+   <div class="option_item">
+      <img src="{% static '/imgs/file-lines-solid.svg' %}"  class="icon_main" alt="">
+      Ingresar orden de compra</div>
+   <div class="option_item">
+      <img src="{% static '/imgs/right-to-bracket-solid.svg' %}"  class="icon_main" alt="">
+     Ingreso de telas</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/pen-to-square-solid.svg' %}"  class="icon_main" alt="">
+      Editar ingreso de telas</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/list-solid.svg' %}"  class="icon_main" alt="">
+      Lista de pedidos menos telas</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/shirt-solid.svg' %}"  class="icon_main" alt="">
+      Inventario de telas</div>
+   <div class="option_item">
+      <img src="{% static 'imgs/file-invoice-dollar-solid.svg' %}"  class="icon_main" alt="">
+      Cargar factura de telas</div>
+ <div class="option_item">
+      <img src="{% static 'imgs/file-invoice-solid.svg' %}"  class="icon_main" alt="">
+      Consultar facura de telas</div>
+   </div>
+</section>
+ 
+
+{% endblock %}
+
