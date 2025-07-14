@@ -20,16 +20,19 @@ class CalculadoraAsignarForm(forms.ModelForm):
 
     class Meta:
         model = Calculadora
-        fields = ['cliente', 'Proveedor_select', 'Proveedor', 'prenda', 'Forro', 'Lavado', 'Estampado', 'Cinta', 'Pegado', 'Cierre', 'Broche', 'Elastico', 'Boton', 'Fusionado']
+        fields = ['cliente', 'Proveedor_select', 'Proveedor', 'prenda', 'Forro', 'Lavado', 'Estampado', 'Cinta', 'Pegado', 'Cierre', 'Broche', 'Elastico', 'Boton', 'Fusionado', 'Confeccion', 'Plantrel', 'Velcro', 'Sesgo', 'Extra', 'Cantidad']
         labels = {
             'Forro': 'Forro de bolsillo',
-            'Estampado' : 'Colores de estampado'
+            'Estampado' : 'Colores de estampado',
+            'Confeccion': 'Costo de confección',
+            'Cantidad': 'Cantidad de prendas',
         }
         widgets = {
             'cliente': forms.HiddenInput(),
             'Proveedor_select': forms.CheckboxInput(attrs={'class': 'input-user'}),
             'Proveedor': forms.Select(attrs={'class': 'input-user'}),
             'prenda': forms.Select(attrs={'class': 'input-user'}),
+            'Cantidad': forms.NumberInput(attrs={'class': 'input-user', 'step': '0.01', 'min': '0'}),
             'Forro': forms.Select(attrs={'class': 'input-user'}),
             'Lavado': forms.Select(attrs={'class': 'input-user'}),
             'Estampado': forms.NumberInput(attrs={'class': 'input-user', 'step': '0.01', 'min': '0'}),
@@ -39,4 +42,9 @@ class CalculadoraAsignarForm(forms.ModelForm):
             'Elastico': forms.Select(attrs={'class': 'input-user'}),
             'Boton': forms.Select(attrs={'class': 'input-user'}),
             'Fusionado': forms.Select(attrs={'class': 'input-user'}),
+            'Confeccion': forms.NumberInput(attrs={'class': 'input-user', 'step': '0.01', 'min': '0'}),
+            'Plantrel': forms.NumberInput(attrs={'class': 'input-user'}),
+            'Velcro': forms.Select(attrs={'class': 'input-user'}),
+            'Sesgo': forms.Select(attrs={'class': 'input-user'}),
+            'Extra': forms.Textarea(attrs={'class': 'input-user', 'rows': 3, 'placeholder': 'Detalles adicionales'}),
         }

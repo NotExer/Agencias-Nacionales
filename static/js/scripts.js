@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function () {
           modal.style.display = "flex";
           document.body.style.overflow = "hidden";
 
-          // ✅ Activa el botón de mostrar prendas
+  
           activarTogglePrendas();
 
           // Cierra al hacer clic fuera del modal
@@ -847,14 +847,19 @@ document.addEventListener("DOMContentLoaded", function () {
           const option = document.createElement('option');
           option.value = prenda.id;
           option.text = prenda.descripcion;
+          option.dataset.precio = prenda.precio;
           prendaSelect.appendChild(option);
         });
+
+        // ✅ Volver a calcular el total (para que bordados, botones, etc. se mantengan actualizados)
+        window.actualizarTotalCostos?.();
       })
       .catch(error => {
         console.error("❌ Error al obtener prendas:", error);
       });
   });
 });
+
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -865,21 +870,33 @@ document.addEventListener('DOMContentLoaded', function () {
   const estampadoInput = document.getElementById('id_Estampado'); 
   const fusionadoSelect = document.getElementById('id_Fusionado');
 
-
   const precioPrendaInput = document.getElementById('precio-prenda');
   const precioForroInput = document.getElementById('precio-forro');
   const precioLavadoInput = document.getElementById('precio-lavado');
   const precioEstampadoInput = document.getElementById('precio-estampado');
   const precioFusionadoInput = document.getElementById('precio-fusionado');
+  const totalCostosInput = document.getElementById('total-costos');
 
   let prendasData = [];
   let preciosForro = {};
   let preciosLavado = {};
   let preciosFusionado = {};
 
+  function actualizarTotalCostos() {
+    const limpiar = (valor) => parseFloat((valor || '').replace('$', '').trim()) || 0;
+
+    const total = 
+      limpiar(precioPrendaInput.value) +
+      limpiar(precioForroInput.value) +
+      limpiar(precioLavadoInput.value) +
+      limpiar(precioEstampadoInput.value) +
+      limpiar(precioFusionadoInput.value);
+
+    totalCostosInput.value = `$${total}`;
+  }
+
   proveedorSelect.addEventListener('change', function () {
     const proveedorId = this.value;
-
     if (!proveedorId) return;
 
     fetch(`/ajax/obtener-prendas/?proveedor_id=${proveedorId}`)
@@ -904,6 +921,7 @@ document.addEventListener('DOMContentLoaded', function () {
         precioLavadoInput.value = 'No definido';
         precioEstampadoInput.value = 'No definido';
         precioFusionadoInput.value = 'No definido';
+        totalCostosInput.value = '$0';
       });
   });
 
@@ -911,18 +929,21 @@ document.addEventListener('DOMContentLoaded', function () {
     const selectedOption = this.options[this.selectedIndex];
     const precio = selectedOption?.dataset?.precio;
     precioPrendaInput.value = precio ? `$${precio}` : 'No definido';
+    actualizarTotalCostos();
   });
 
   forroSelect?.addEventListener('change', function () {
     const selected = this.value;
     const precio = preciosForro[selected];
     precioForroInput.value = precio !== undefined ? `$${precio}` : 'No definido';
+    actualizarTotalCostos();
   });
 
   lavadoSelect?.addEventListener('change', function () {
     const selected = this.value;
     const precio = preciosLavado[selected];
     precioLavadoInput.value = precio !== undefined ? `$${precio}` : 'No definido';
+    actualizarTotalCostos();
   });
 
   estampadoInput?.addEventListener('input', function () {
@@ -932,16 +953,17 @@ document.addEventListener('DOMContentLoaded', function () {
       precio = cantidad * 1000;
     }
     precioEstampadoInput.value = `$${precio}`;
+    actualizarTotalCostos();
   });
 
   fusionadoSelect?.addEventListener('change', function () {
     const selected = this.value;
     const precio = preciosFusionado[selected];
     precioFusionadoInput.value = precio !== undefined ? `$${precio}` : 'No definido';
+    actualizarTotalCostos();
   });
-
-
 });
+
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -970,7 +992,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
 
       ${mostrarEliminar ? '<button type="button" class="btn btn-danger btn-sm eliminar-bordado" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
-      `;
+    `;
 
     container.appendChild(div);
     actualizarEventos();
@@ -990,17 +1012,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const total = precio * cantidad;
         costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
         guardarJSON();
+        window.actualizarTotalCostos?.(); // ✅ Se actualiza el total general
       };
 
       precioInput.addEventListener('input', calcular);
       cantidadInput.addEventListener('input', calcular);
-    });
 
-    container.querySelectorAll('.eliminar-bordado').forEach(btn => {
-      btn.onclick = () => {
-        btn.closest('.bordado-fila').remove();
-        guardarJSON();
-      };
+      const btnEliminar = fila.querySelector('.eliminar-bordado');
+      if (btnEliminar) {
+        btnEliminar.onclick = () => {
+          fila.remove(); // ✅ Elimina la fila
+          guardarJSON(); // 🔁 Guarda nuevo JSON sin esa fila
+          window.actualizarTotalCostos?.(); // ✅ Actualiza el total general
+        };
+      }
     });
   }
 
@@ -1027,7 +1052,7 @@ document.addEventListener('DOMContentLoaded', () => {
   crearFilaBordado('', '', false);
 
   btnAgregar.addEventListener('click', () => {
-    crearFilaBordado('', '', true); // Nuevas filas con botón de eliminar
+    crearFilaBordado('', '', true);
   });
 });
 
@@ -1109,6 +1134,7 @@ container.appendChild(div);
         const total = precio * cantidad;
         costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
         guardarJSON();
+                window.actualizarTotalCostos?.();
       };
 
       select.addEventListener('change', () => {
@@ -1217,6 +1243,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const total = precio * cantidad;
         costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
         guardarJSON();
+                window.actualizarTotalCostos?.();
       };
 
       precioInput.addEventListener('input', calcular);
@@ -1338,6 +1365,7 @@ container.appendChild(div);
         const total = precio * cantidad;
         costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
         guardarJSON();
+                window.actualizarTotalCostos?.();
       };
 
       select.addEventListener('change', () => {
@@ -1398,12 +1426,6 @@ container.appendChild(div);
   });
 });
 
-
-
-
-
-
-
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('broches-container');
   const btnAgregar = document.getElementById('agregar-broche');
@@ -1450,6 +1472,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const total = precio * cantidad;
         costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
         guardarJSON();
+                window.actualizarTotalCostos?.();
       };
 
       precioInput.addEventListener('input', calcular);
@@ -1571,6 +1594,7 @@ container.appendChild(div);
         const total = precio * cantidad;
         costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
         guardarJSON();
+                window.actualizarTotalCostos?.();
       };
 
       select.addEventListener('change', () => {
@@ -1630,7 +1654,6 @@ container.appendChild(div);
     crearFilaElastico('', '', true);
   });
 });
-
 
 
 
@@ -1711,6 +1734,7 @@ container.appendChild(div);
         const total = precio * cantidad;
         costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
         guardarJSON();
+                window.actualizarTotalCostos?.();
       };
 
       select.addEventListener('change', () => {
@@ -1724,6 +1748,7 @@ container.appendChild(div);
       fila.querySelector('.eliminar-boton')?.addEventListener('click', () => {
         fila.remove();
         guardarJSON();
+        window.actualizarTotalCostos?.();
       });
     });
   }
@@ -1769,4 +1794,554 @@ container.appendChild(div);
   btnAgregar.addEventListener('click', () => {
     crearFilaBoton('', '', true);
   });
+});
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('plantreles-container');
+  const btnAgregar = document.getElementById('agregar-plantrel');
+  const inputHidden = document.getElementById('id_plantrel');
+
+  function crearFilaPlantrel(precio = '', cantidad = '', mostrarEliminar = true) {
+    const div = document.createElement('div');
+    div.className = 'form-row-50 mb-2 plantrel-fila';
+
+    div.innerHTML = `
+      <div class="form-group half-width">
+        <label>Precio del plantrel</label>
+        <input type="number" class="input-user precio-plantrel" min="0" step="1" value="${precio}">
+      </div>
+
+      <div class="form-group half-width">
+        <label>Cantidad de plantrel</label>
+        <input type="number" class="input-user cantidad-plantrel" min="0" step="1" value="${cantidad}">
+      </div>
+
+      <div class="form-group half-width">
+        <label>Costo total del plantrel</label>
+        <input type="text" class="input-user costo-plantrel" readonly value="No definido">
+      </div>
+
+      ${mostrarEliminar ? '<button type="button" class="btn btn-danger btn-sm eliminar-plantrel" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+    `;
+
+    container.appendChild(div);
+    actualizarEventos();
+  }
+
+  function actualizarEventos() {
+    const filas = container.querySelectorAll('.plantrel-fila');
+
+    filas.forEach(fila => {
+      const precioInput = fila.querySelector('.precio-plantrel');
+      const cantidadInput = fila.querySelector('.cantidad-plantrel');
+      const costoOutput = fila.querySelector('.costo-plantrel');
+
+      const calcular = () => {
+        const precio = parseFloat(precioInput.value) || 0;
+        const cantidad = parseInt(cantidadInput.value) || 0;
+        const total = precio * cantidad;
+        costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
+        guardarJSON();
+                window.actualizarTotalCostos?.();
+      };
+
+      precioInput.addEventListener('input', calcular);
+      cantidadInput.addEventListener('input', calcular);
+    });
+
+    container.querySelectorAll('.eliminar-plantrel').forEach(btn => {
+      btn.onclick = () => {
+        btn.closest('.plantrel-fila').remove();
+        guardarJSON();
+      };
+    });
+  }
+
+  function guardarJSON() {
+    const datos = [];
+
+    container.querySelectorAll('.plantrel-fila').forEach(fila => {
+      const precio = parseFloat(fila.querySelector('.precio-plantrel')?.value || 0);
+      const cantidad = parseInt(fila.querySelector('.cantidad-plantrel')?.value || 0);
+      const total = precio * cantidad;
+
+      datos.push({
+        precio_unitario: precio,
+        cantidad: cantidad,
+        costo_total: total
+      });
+    });
+
+    inputHidden.value = JSON.stringify(datos);
+    console.log('📤 Plantrel guardado:', inputHidden.value);
+  }
+
+  // Crear primera fila sin botón de eliminar
+  crearFilaPlantrel('', '', false);
+
+  btnAgregar.addEventListener('click', () => {
+    crearFilaPlantrel('', '', true); // Nuevas filas con botón de eliminar
+  });
+});
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('✅ Script de velcros cargado');
+
+  const velcroDataElement = document.getElementById('velcros-data');
+  if (!velcroDataElement) {
+    console.error('❌ No se encontró el script con id="velcros-data"');
+    return;
+  }
+
+  const velcrosDisponibles = JSON.parse(velcroDataElement.textContent || '[]');
+  console.log('🎀 Velcros cargadas:', velcrosDisponibles);
+
+  const container = document.getElementById('velcro-container');
+  const btnAgregar = document.getElementById('agregar-velcro');
+  const inputHidden = document.getElementById('id_Velcro');
+
+  function crearFilaVelcro(velcroId = '', cantidad = '', mostrarEliminar = true) {
+    const velcro = velcrosDisponibles.find(c => c.ID == velcroId);
+    const precio = velcro ? velcro.precio : '';
+
+    const opciones = (velcroId === '' ? '<option disabled selected>Seleccione una velcro</option>' : '') +
+      velcrosDisponibles.map(c =>
+        `<option value="${c.ID}" ${c.ID == velcroId ? 'selected' : ''}>${c.descripcion}</option>`
+      ).join('');
+
+    const costoTotal = (precio > 0 && cantidad > 0) ? `$${precio * cantidad}` : 'No definido';
+
+const div = document.createElement('div');
+div.className = 'form-row-50 mb-2 velcro-fila';
+
+div.innerHTML = `
+  <div class="form-group">
+    <label>Tipo de velcro</label>
+    <select class="form-select velcro-select">
+      ${opciones}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Precio de velcro</label>
+    <input type="number" class="input-user velcro-precio" readonly value="${precio}">
+  </div>
+
+  <div class="form-group">
+    <label>Cantidad</label>
+    <input type="number" class="input-user velcro-cantidad" min="0" step="1" value="${cantidad}">
+  </div>
+
+  <div class="form-group">
+    <label>Costo total</label>
+    <input type="text" class="input-user velcro-costo" readonly value="${costoTotal}">
+  </div>
+
+  ${mostrarEliminar ? '<button type="button" class="btn btn-danger btn-sm eliminar-velcro" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+`;
+
+container.appendChild(div);
+
+
+    actualizarEventos();
+  }
+
+  function actualizarEventos() {
+    const filas = container.querySelectorAll('.velcro-fila');
+
+    filas.forEach(fila => {
+      const select = fila.querySelector('.velcro-select');
+      const precioInput = fila.querySelector('.velcro-precio');
+      const cantidadInput = fila.querySelector('.velcro-cantidad');
+      const costoOutput = fila.querySelector('.velcro-costo');
+
+      const calcular = () => {
+        const precio = parseFloat(precioInput.value) || 0;
+        const cantidad = parseInt(cantidadInput.value) || 0;
+        const total = precio * cantidad;
+        costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
+        guardarJSON();
+                window.actualizarTotalCostos?.();
+      };
+
+      select.addEventListener('change', () => {
+        const velcroSeleccionada = velcrosDisponibles.find(c => c.ID == select.value);
+        precioInput.value = velcroSeleccionada ? velcroSeleccionada.precio : '';
+        calcular();
+      });
+
+      cantidadInput.addEventListener('input', calcular);
+
+      fila.querySelector('.eliminar-velcro')?.addEventListener('click', () => {
+        fila.remove();
+        guardarJSON();
+      });
+    });
+  }
+
+  function guardarJSON() {
+    const datos = [];
+
+    container.querySelectorAll('.velcro-fila').forEach(fila => {
+      const tipo = parseInt(fila.querySelector('.velcro-select')?.value || 0);
+      const velcro = velcrosDisponibles.find(c => c.ID == tipo);
+      const precio = parseFloat(fila.querySelector('.velcro-precio')?.value || 0);
+      const cantidad = parseInt(fila.querySelector('.velcro-cantidad')?.value || 0);
+      const total = precio * cantidad;
+
+      if (velcro && precio > 0 && cantidad > 0) {
+        datos.push({
+          id: tipo,
+          descripcion: velcro.descripcion,
+          precio_unitario: precio,
+          cantidad: cantidad,
+          costo_total: total
+        });
+      }
+    });
+
+    inputHidden.value = JSON.stringify(datos);
+    console.log('📤 Velcros guardadas:', inputHidden.value);
+  }
+
+  // Cargar datos iniciales si existen
+  const datosIniciales = JSON.parse(inputHidden.value || '[]');
+  console.log('📦 Datos iniciales:', datosIniciales);
+  if (datosIniciales.length > 0) {
+      console.log('📥 Cargando filas desde datos iniciales...');
+    datosIniciales.forEach(velcro => {
+      crearFilaVelcro(velcro.id, velcro.cantidad, true);
+    });
+  } else {
+      console.log('🆕 Cargando primera fila vacía');
+    crearFilaVelcro('', '', false);
+  }
+
+  btnAgregar.addEventListener('click', () => {
+    crearFilaVelcro('', '', true);
+  });
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('✅ Script de sesgos cargado');
+
+  const sesgoDataElement = document.getElementById('sesgos-data');
+  if (!sesgoDataElement) {
+    console.error('❌ No se encontró el script con id="sesgos-data"');
+    return;
+  }
+
+  const sesgosDisponibles = JSON.parse(sesgoDataElement.textContent || '[]');
+  console.log('🎀 Sesgos cargados:', sesgosDisponibles);
+
+  const container = document.getElementById('sesgo-container');
+  const btnAgregar = document.getElementById('agregar-sesgo');
+  const inputHidden = document.getElementById('id_Sesgo');
+
+  function crearFilaSesgo(sesgoId = '', cantidad = '', mostrarEliminar = true) {
+    const sesgo = sesgosDisponibles.find(c => c.ID == sesgoId);
+    const precio = sesgo ? sesgo.precio : '';
+
+    const opciones = (sesgoId === '' ? '<option disabled selected>Seleccione un sesgo</option>' : '') +
+      sesgosDisponibles.map(c =>
+        `<option value="${c.ID}" ${c.ID == sesgoId ? 'selected' : ''}>${c.descripcion}</option>`
+      ).join('');
+
+    const costoTotal = (precio > 0 && cantidad > 0) ? `$${precio * cantidad}` : 'No definido';
+
+    const div = document.createElement('div');
+    div.className = 'form-row-50 mb-2 sesgo-fila';
+
+    div.innerHTML = `
+      <div class="form-group">
+        <label>Tipo de sesgo</label>
+        <select class="form-select sesgo-select">
+          ${opciones}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Precio del sesgo</label>
+        <input type="number" class="input-user sesgo-precio" readonly value="${precio}">
+      </div>
+
+      <div class="form-group">
+        <label>Cantidad</label>
+        <input type="number" class="input-user sesgo-cantidad" min="0" step="1" value="${cantidad}">
+      </div>
+
+      <div class="form-group">
+        <label>Costo total</label>
+        <input type="text" class="input-user sesgo-costo" readonly value="${costoTotal}">
+      </div>
+
+      ${mostrarEliminar ? '<button type="button" class="btn btn-danger btn-sm eliminar-sesgo" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+    `;
+
+    container.appendChild(div);
+    actualizarEventos();
+  }
+
+  function actualizarEventos() {
+    const filas = container.querySelectorAll('.sesgo-fila');
+
+    filas.forEach(fila => {
+      const select = fila.querySelector('.sesgo-select');
+      const precioInput = fila.querySelector('.sesgo-precio');
+      const cantidadInput = fila.querySelector('.sesgo-cantidad');
+      const costoOutput = fila.querySelector('.sesgo-costo');
+
+      const calcular = () => {
+        const precio = parseFloat(precioInput.value) || 0;
+        const cantidad = parseInt(cantidadInput.value) || 0;
+        const total = precio * cantidad;
+        costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
+        guardarJSON();
+                window.actualizarTotalCostos?.();
+      };
+
+      select.addEventListener('change', () => {
+        const sesgoSeleccionado = sesgosDisponibles.find(c => c.ID == select.value);
+        precioInput.value = sesgoSeleccionado ? sesgoSeleccionado.precio : '';
+        calcular();
+      });
+
+      cantidadInput.addEventListener('input', calcular);
+
+      fila.querySelector('.eliminar-sesgo')?.addEventListener('click', () => {
+        fila.remove();
+        guardarJSON();
+      });
+    });
+  }
+
+  function guardarJSON() {
+    const datos = [];
+
+    container.querySelectorAll('.sesgo-fila').forEach(fila => {
+      const tipo = parseInt(fila.querySelector('.sesgo-select')?.value || 0);
+      const sesgo = sesgosDisponibles.find(c => c.ID == tipo);
+      const precio = parseFloat(fila.querySelector('.sesgo-precio')?.value || 0);
+      const cantidad = parseInt(fila.querySelector('.sesgo-cantidad')?.value || 0);
+      const total = precio * cantidad;
+
+      if (sesgo && precio > 0 && cantidad > 0) {
+        datos.push({
+          id: tipo,
+          descripcion: sesgo.descripcion,
+          precio_unitario: precio,
+          cantidad: cantidad,
+          costo_total: total
+        });
+      }
+    });
+
+    inputHidden.value = JSON.stringify(datos);
+    console.log('📤 Sesgos guardados:', inputHidden.value);
+  }
+
+  // Cargar datos iniciales si existen
+  const datosIniciales = JSON.parse(inputHidden.value || '[]');
+  console.log('📦 Datos iniciales:', datosIniciales);
+  if (datosIniciales.length > 0) {
+    console.log('📥 Cargando filas desde datos iniciales...');
+    datosIniciales.forEach(sesgo => {
+      crearFilaSesgo(sesgo.id, sesgo.cantidad, true);
+    });
+  } else {
+    console.log('🆕 Cargando primera fila vacía');
+    crearFilaSesgo('', '', false);
+  }
+
+  btnAgregar.addEventListener('click', () => {
+    crearFilaSesgo('', '', true);
+  });
+});
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('✅ Script de Extras cargado');
+
+  const container = document.getElementById('extra-container');
+  const btnAgregar = document.getElementById('agregar-extra');
+  const inputHidden = document.getElementById('id_Extra');
+
+  function crearFilaExtra(descripcion = '', precio = '', cantidad = '', mostrarEliminar = true) {
+    const total = (precio > 0 && cantidad > 0) ? `$${precio * cantidad}` : 'No definido';
+
+    const div = document.createElement('div');
+    div.className = 'form-row-50 mb-2 extra-fila';
+
+    div.innerHTML = `
+      <div class="form-group">
+        <label>Descripción de costo extra</label>
+        <input type="text" class="input-user extra-descripcion" value="${descripcion}">
+      </div>
+
+      <div class="form-group">
+        <label>Precio unitario de costo extra</label>
+        <input type="number" class="input-user extra-precio" min="0" step="0.01" value="${precio}">
+      </div>
+
+      <div class="form-group">
+        <label>Cantidad de costo extra</label>
+        <input type="number" class="input-user extra-cantidad" min="0" step="1" value="${cantidad}">
+      </div>
+
+      <div class="form-group">
+        <label>Costo total de costo extra</label>
+        <input type="text" class="input-user extra-total" readonly value="${total}">
+      </div>
+
+      ${mostrarEliminar ? '<button type="button" class="btn btn-danger btn-sm eliminar-extra" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+    `;
+
+    container.appendChild(div);
+    actualizarEventos();
+  }
+
+  function actualizarEventos() {
+    const filas = container.querySelectorAll('.extra-fila');
+
+    filas.forEach(fila => {
+      const descripcionInput = fila.querySelector('.extra-descripcion');
+      const precioInput = fila.querySelector('.extra-precio');
+      const cantidadInput = fila.querySelector('.extra-cantidad');
+      const totalOutput = fila.querySelector('.extra-total');
+
+      const calcular = () => {
+        const precio = parseFloat(precioInput.value) || 0;
+        const cantidad = parseInt(cantidadInput.value) || 0;
+        const total = precio * cantidad;
+        totalOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
+        guardarJSON();
+                window.actualizarTotalCostos?.();
+      };
+
+      precioInput.addEventListener('input', calcular);
+      cantidadInput.addEventListener('input', calcular);
+      descripcionInput.addEventListener('input', guardarJSON);
+
+      fila.querySelector('.eliminar-extra')?.addEventListener('click', () => {
+        fila.remove();
+        guardarJSON();
+      });
+    });
+  }
+
+  function guardarJSON() {
+    const datos = [];
+
+    container.querySelectorAll('.extra-fila').forEach(fila => {
+      const descripcion = fila.querySelector('.extra-descripcion')?.value || '';
+      const precio = parseFloat(fila.querySelector('.extra-precio')?.value || 0);
+      const cantidad = parseInt(fila.querySelector('.extra-cantidad')?.value || 0);
+      const total = precio * cantidad;
+
+      if (descripcion && precio > 0 && cantidad > 0) {
+        datos.push({
+          descripcion: descripcion,
+          precio_unitario: precio,
+          cantidad: cantidad,
+          costo_total: total
+        });
+      }
+    });
+
+    inputHidden.value = JSON.stringify(datos);
+    console.log('📤 Extras guardados:', inputHidden.value);
+  }
+
+  // Cargar datos iniciales si existen
+  const datosIniciales = JSON.parse(inputHidden.value || '[]');
+  console.log('📦 Datos iniciales (Extra):', datosIniciales);
+  if (datosIniciales.length > 0) {
+    console.log('📥 Cargando filas desde datos iniciales...');
+    datosIniciales.forEach(extra => {
+      crearFilaExtra(extra.descripcion, extra.precio_unitario, extra.cantidad, true);
+    });
+  } else {
+    console.log('🆕 Cargando primera fila vacía');
+    crearFilaExtra('', '', '', false);
+  }
+
+  btnAgregar.addEventListener('click', () => {
+    crearFilaExtra('', '', '', true);
+  });
+});
+
+
+window.actualizarTotalCostos = function () {
+  const limpiar = (valor) => parseFloat((valor || '').replace('$', '').trim()) || 0;
+
+  const precioPrenda = limpiar(document.getElementById('precio-prenda')?.value);
+  const precioForro = limpiar(document.getElementById('precio-forro')?.value);
+  const precioLavado = limpiar(document.getElementById('precio-lavado')?.value);
+  const precioEstampado = limpiar(document.getElementById('precio-estampado')?.value);
+  const precioFusionado = limpiar(document.getElementById('precio-fusionado')?.value);
+
+  const cantidadInput = document.querySelector('input[name="Cantidad"]');
+  const cantidad = cantidadInput ? parseFloat(cantidadInput.value) || 1 : 1;
+
+  // Sumar todos los costos por clase
+  const sumarCostosPorClase = (clase) => {
+    let total = 0;
+    document.querySelectorAll(`.${clase}`).forEach(input => {
+      total += limpiar(input.value);
+    });
+    return total;
+  };
+
+  const totalBordado = sumarCostosPorClase('costo-bordado');
+  const totalBotones = sumarCostosPorClase('boton-costo');
+  const totalVelcro = sumarCostosPorClase('velcro-costo');
+  const totalSesgos = sumarCostosPorClase('sesgo-costo');
+  const totalElasticos = sumarCostosPorClase('elastico-costo');
+  const totalCierres = sumarCostosPorClase('cierre-costo');
+  const totalCintas = sumarCostosPorClase('cinta-costo');
+  const totalExtras = sumarCostosPorClase('extra-costo');
+
+  const totalUnitario =
+    precioPrenda +
+    precioForro +
+    precioLavado +
+    precioEstampado +
+    precioFusionado +
+    totalBordado +
+    totalBotones +
+    totalVelcro +
+    totalSesgos +
+    totalElasticos +
+    totalCierres +
+    totalCintas +
+    totalExtras;
+
+  const totalFinal = totalUnitario * cantidad;
+
+  const totalCostosInput = document.getElementById('total-costos');
+  if (totalCostosInput) {
+    totalCostosInput.value = `$${totalFinal}`;
+  }
+};
+
+// 👇 Ejecutar al cambiar la cantidad (aparte del cálculo automático)
+document.addEventListener('DOMContentLoaded', () => {
+  const cantidadInput = document.querySelector('input[name="Cantidad"]');
+  if (cantidadInput) {
+    cantidadInput.addEventListener('input', () => {
+      window.actualizarTotalCostos();
+    });
+  }
 });

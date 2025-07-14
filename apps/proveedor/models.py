@@ -40,6 +40,7 @@ CATEGORIA_PRENDA = [
     ('Blue jean', 'Blue jean'),
     ('Tapabocas', 'Tapabocas'),
     ('Cachucha', 'Cachucha'),
+    ('Calzado', 'Calzado'),
     ('Bombacho', 'Bombacho'),
     ('Mangas', 'Mangas'),
     ('Sudadera', 'Sudadera'),

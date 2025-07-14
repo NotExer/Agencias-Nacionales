@@ -9,6 +9,50 @@
 <div class="space">
   <h2>Crear calculadora</h2>
 
+  <div class="costos_totales-container">
+    <div class="form-group">
+      <label>Total de costos</label>
+      <input type="text" id="total-costos" class="input-user" readonly value="$0">
+    </div>
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" id="aplicar-ajuste" checked>
+        Aplicar ajuste 10% (x1.1)
+      </label>
+      <input type="text" id="total-ajustado" class="input-user" readonly value="$0">
+    </div>
+
+    <div class="form-group">
+      <label>M.C.B.</label>
+      <select id="mcb-select" class="input-user" >
+        <option value="0.50">0.50</option>
+        <option value="0.55">0.55</option>
+        <option value="0.60">0.60</option>
+        <option value="0.65">0.65</option>
+        <option value="0.70">0.70</option>
+        <option value="0.75">0.75</option>
+        <option value="0.80">0.80</option>
+        <option value="0.85">0.85</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>M.C.B.</label>
+      <select id="mcb-select" class="input-user" >
+        <option value="0.50">0.50</option>
+        <option value="0.55">0.55</option>
+        <option value="0.60">0.60</option>
+        <option value="0.65">0.65</option>
+        <option value="0.70">0.70</option>
+        <option value="0.75">0.75</option>
+        <option value="0.80">0.80</option>
+        <option value="0.85">0.85</option>
+      </select>
+    </div>
+  </div>
+
+
   <form method="post">
     {% csrf_token %}
 
@@ -32,11 +76,18 @@
     </div>
     <hr>
 
-    <div class="form-group mb-3">
-      {{ calculadora_form.Proveedor.label_tag }}
-      {{ calculadora_form.Proveedor }}
-    </div>
 
+    <div class="inline-container mb-3">
+      <div class="form-group">
+        {{ calculadora_form.Proveedor.label_tag }}
+        {{ calculadora_form.Proveedor }}
+      </div>
+
+      <div class="form-group">
+        {{ calculadora_form.Cantidad.label_tag }}
+        {{ calculadora_form.Cantidad }}
+      </div>
+    </div>
     <hr>
 
 
@@ -46,6 +97,10 @@
         {{ calculadora_form.prenda.label_tag }}
         {{ calculadora_form.prenda }}
       </div>
+
+
+
+
 
       <div class="form-group">
         <label for="precio-prenda" class="form-label">Precio de corte:</label>
@@ -180,9 +235,9 @@
     </div>
 
 
-<hr>
+    <hr>
 
-  <div class="inline-container mb-3">
+    <div class="inline-container mb-3">
       <div class="form-group">
         {{ calculadora_form.Fusionado.label_tag }}
         {{ calculadora_form.Fusionado }}
@@ -193,6 +248,67 @@
         <input type="text" id="precio-fusionado" class="input-user" value="No definido" readonly>
       </div>
     </div>
+
+<hr>
+    <div class="form-group">
+      {{ calculadora_form.Confeccion.label_tag }}
+      {{ calculadora_form.Confeccion }}
+    </div>
+
+
+
+
+
+
+    <div class="plantrel-wrapper">
+      <div id="plantreles-container"></div>
+      <button type="button" class="btn btn-secondary btn-sm mb-3" id="agregar-plantrel">
+        Agregar plantrel adicional
+      </button>
+
+      <!-- Campo oculto donde se guarda el JSON -->
+      <input type="hidden" name="Plantrel" id="id_plantrel">
+    </div>
+
+
+    <hr>
+
+
+    <div class="velcro-wrapper">
+      <div id="velcro-container"></div>
+      <button type="button" class="btn btn-secondary btn-sm mb-3" id="agregar-velcro">
+        Agregar velcro adicional
+      </button>
+      <input type="hidden" name="Velcro" id="id_Velcro">
+
+    </div>
+
+    <hr>
+
+
+
+    <div class="sesgo-wrapper">
+      <div id="sesgo-container"></div>
+      <button type="button" class="btn btn-secondary btn-sm mb-3" id="agregar-sesgo">
+        Agregar sesgo adicional
+      </button>
+      <input type="hidden" name="Sesgo" id="id_Sesgo">
+
+    </div>
+
+    <hr>
+
+
+
+    <div class="extra-wrapper">
+      <div id="extra-container"></div>
+      <button type="button" class="btn btn-secondary btn-sm mb-3" id="agregar-extra">
+        Agregar costo extra
+      </button>
+      <input type="hidden" name="Extra" id="id_Extra" value="[]">
+    </div>
+
+
 
 
 
@@ -228,6 +344,15 @@
 {{ botones|json_script:"botones-data" }}
 {% endif %}
 
+
+{% if velcros %}
+{{ velcros|json_script:"velcros-data" }}
+{% endif %}
+
+
+{% if sesgos %}
+{{ sesgos|json_script:"sesgos-data" }}
+{% endif %}
 
 
 {% if form.instance.Bordado %}

@@ -33,6 +33,8 @@ def crear_calculadora(request):
     cierres = list(Insumos.objects.filter(categoria='cierres').values('ID', 'descripcion', 'precio'))
     elasticos = list(Insumos.objects.filter(categoria='elasticos').values('ID', 'descripcion', 'precio'))
     botones = list(Insumos.objects.filter(categoria='botones').values('ID', 'descripcion', 'precio'))
+    velcros = list(Insumos.objects.filter(categoria='velcros').values('ID', 'descripcion', 'precio'))
+    sesgos = list(Insumos.objects.filter(categoria='sesgos').values('ID', 'descripcion', 'precio'))
 
     if request.method == 'POST' and cliente_form.is_valid():
         cliente_seleccionado = cliente_form.cleaned_data['cliente']
@@ -54,10 +56,12 @@ def crear_calculadora(request):
         'form': cliente_form,
         'calculadora_form': calculadora_form,
         'cliente_seleccionado': cliente_seleccionado,
-        'cintas': cintas,  # <--- Aquí se lo pasas al template
-        'cierres': cierres,  # <--- Aquí se lo pasas al template
+        'cintas': cintas, 
+        'cierres': cierres,  
         'elasticos': elasticos,
         'botones': botones,
+        'velcros': velcros,
+        'sesgos': sesgos,
     })
 
 
