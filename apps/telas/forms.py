@@ -1,13 +1,21 @@
 from django import forms
-from proveedor.models import Proveedor
-from apps.proveedor.models import Tela  # O el modelo donde defines las telas
+from apps.proveedor.models import Proveedor
+
 
 class TelaForm(forms.ModelForm):
     class Meta:
-        model = Tela
-        fields = '__all__'  # o los campos específicos
+        model = Proveedor
+        fields = '__all__'
+        widgets = {
+            'Codigo': forms.TextInput(attrs={'class': 'input-user'}),
+            'Tela': forms.TextInput(attrs={'class': 'input-user'}),
+            'Precio': forms.NumberInput(attrs={'class': 'input-user'}),
+            'Ancho': forms.NumberInput(attrs={'class': 'input-user'}),
+            'Inventario': forms.NumberInput(attrs={'class': 'input-user'}),
+            'Disponible': forms.NumberInput(attrs={'class': 'input-user'}),
+        }
 
     def __init__(self, *args, **kwargs):
         super(TelaForm, self).__init__(*args, **kwargs)
-        # Filtra solo proveedores con Textilera=True
+
         self.fields['proveedor'].queryset = Proveedor.objects.filter(Textilera=True)

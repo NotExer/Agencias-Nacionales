@@ -21,7 +21,7 @@ from apps.produccion.views import ProduccionHome
 from apps.proveedor.views import proveedores_download, ProveedorListView, ProveedorCreateView, ProveedorDeleteView, ProveedorDetailView, ProveedorUpdateView, ProveedorHome, PrendaCreateView, PrendaUpdateView, PrendaDeleteView, guardar_orden_prendas
 
 from apps.remisiones.views import RemisionesHome
-from apps.telas.views import TelasHome
+from apps.telas.views import TelasHome, TelaListView, TelaCreateView, TelaUpdateView, TelaDeleteView
 from apps.trazos.views import TrazosHome
 from django.conf import settings
 from django.conf.urls.static import static
@@ -71,6 +71,10 @@ urlpatterns = [
     path('proveedores/prenda/<int:PrendaID>/eliminar/', PrendaDeleteView.as_view(), name='prenda_eliminar'),
     path('remisiones/', RemisionesHome, name='remisiones_home'),
     path('telas/', TelasHome, name='telas_home'),
+    path('telas/inventario/', TelaListView.as_view(), name='listar_telas'),
+    path('telas/inventario/crear', TelaCreateView.as_view(), name='telas_crear'),
+    path('telas/inventario/editar/<int:pk>/', TelaUpdateView.as_view(), name='telas_editar'),
+    path('telas/inventario/eliminar/<int:pk>/', TelaDeleteView.as_view(), name='telas_eliminar'),
     path('trazos/', TrazosHome, name='trazos_home'),
 
 

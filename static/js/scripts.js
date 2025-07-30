@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function () {
           modal.style.display = "flex";
           document.body.style.overflow = "hidden";
 
-  
+
           activarTogglePrendas();
 
           // Cierra al hacer clic fuera del modal
@@ -867,7 +867,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const prendaSelect = document.getElementById('id_prenda');
   const forroSelect = document.getElementById('id_Forro');
   const lavadoSelect = document.getElementById('id_Lavado');
-  const estampadoInput = document.getElementById('id_Estampado'); 
+  const estampadoInput = document.getElementById('id_Estampado');
   const fusionadoSelect = document.getElementById('id_Fusionado');
 
   const precioPrendaInput = document.getElementById('precio-prenda');
@@ -882,18 +882,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let preciosLavado = {};
   let preciosFusionado = {};
 
-  function actualizarTotalCostos() {
-    const limpiar = (valor) => parseFloat((valor || '').replace('$', '').trim()) || 0;
 
-    const total = 
-      limpiar(precioPrendaInput.value) +
-      limpiar(precioForroInput.value) +
-      limpiar(precioLavadoInput.value) +
-      limpiar(precioEstampadoInput.value) +
-      limpiar(precioFusionadoInput.value);
-
-    totalCostosInput.value = `$${total}`;
-  }
 
   proveedorSelect.addEventListener('change', function () {
     const proveedorId = this.value;
@@ -976,23 +965,29 @@ document.addEventListener('DOMContentLoaded', () => {
     div.className = 'form-row-50 mb-2 bordado-fila';
 
     div.innerHTML = `
-      <div class="form-group half-width">
-        <label>Precio de bordado</label>
-        <input type="number" class="input-user precio-bordado" min="0" step="1" value="${precio}">
-      </div>
+  <div class="form-group half-width">
+    <label>Precio de bordado</label>
+    <input type="number" class="input-user precio-bordado" min="0" step="1" value="${precio}">
+  </div>
 
-      <div class="form-group half-width">
-        <label>Cantidad de bordado</label>
-        <input type="number" class="input-user cantidad-bordado" min="0" step="1" value="${cantidad}">
-      </div>
+  <div class="form-group half-width">
+    <label>Cantidad de bordado</label>
+    <input type="number" class="input-user cantidad-bordado" min="0" step="1" value="${cantidad}">
+  </div>
 
-      <div class="form-group half-width">
-        <label>Costo total de bordado</label>
-        <input type="text" class="input-user costo-bordado" readonly value="No definido">
-      </div>
+  <div class="form-group half-width">
+    <label>Costo total de bordado</label>
+    <input type="text" class="input-user costo-bordado" readonly value="No definido">
+  </div>
 
-      ${mostrarEliminar ? '<button type="button" class="btn btn-danger btn-sm eliminar-bordado" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
-    `;
+  ${mostrarEliminar
+        ? `<div style="width: 100%; display: flex; justify-content: center; margin-top: 1.8rem;">
+           <button type="button" class="btn btn-download btn-sm eliminar-bordado">Eliminar</button>
+         </div>`
+        : ''
+      }
+`;
+
 
     container.appendChild(div);
     actualizarEventos();
@@ -1084,10 +1079,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const costoTotal = (precio > 0 && cantidad > 0) ? `$${precio * cantidad}` : 'No definido';
 
-const div = document.createElement('div');
-div.className = 'form-row-50 mb-2 cinta-fila';
+    const div = document.createElement('div');
+    div.className = 'form-row-50 mb-2 cinta-fila';
 
-div.innerHTML = `
+    div.innerHTML = `
   <div class="form-group">
     <label>Tipo de cinta</label>
     <select class="form-select cinta-select">
@@ -1110,10 +1105,20 @@ div.innerHTML = `
     <input type="text" class="input-user cinta-costo" readonly value="${costoTotal}">
   </div>
 
-  ${mostrarEliminar ? '<button type="button" class="btn btn-danger btn-sm eliminar-cinta" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+  ${mostrarEliminar
+        ? `
+        <div style="width: 100%; display: flex; justify-content: center; margin-top: 1.8rem;">
+          <button type="button" class="btn btn-download btn-sm eliminar-cinta">
+            Eliminar
+          </button>
+        </div>
+      `
+        : ''
+      }
 `;
 
-container.appendChild(div);
+
+    container.appendChild(div);
 
 
     actualizarEventos();
@@ -1134,7 +1139,7 @@ container.appendChild(div);
         const total = precio * cantidad;
         costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
         guardarJSON();
-                window.actualizarTotalCostos?.();
+        window.actualizarTotalCostos?.();
       };
 
       select.addEventListener('change', () => {
@@ -1148,6 +1153,7 @@ container.appendChild(div);
       fila.querySelector('.eliminar-cinta')?.addEventListener('click', () => {
         fila.remove();
         guardarJSON();
+        window.actualizarTotalCostos?.();
       });
     });
   }
@@ -1181,12 +1187,12 @@ container.appendChild(div);
   const datosIniciales = JSON.parse(inputHidden.value || '[]');
   console.log('📦 Datos iniciales:', datosIniciales);
   if (datosIniciales.length > 0) {
-      console.log('📥 Cargando filas desde datos iniciales...');
+    console.log('📥 Cargando filas desde datos iniciales...');
     datosIniciales.forEach(cinta => {
       crearFilaCinta(cinta.id, cinta.cantidad, true);
     });
   } else {
-      console.log('🆕 Cargando primera fila vacía');
+    console.log('🆕 Cargando primera fila vacía');
     crearFilaCinta('', '', false);
   }
 
@@ -1222,7 +1228,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <input type="text" class="input-user costo-pegado" readonly value="No definido">
       </div>
 
-      ${mostrarEliminar ? '<button type="button" class="btn btn-danger btn-sm eliminar-pegado" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+      ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-pegado" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
       `;
 
     container.appendChild(div);
@@ -1243,7 +1249,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const total = precio * cantidad;
         costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
         guardarJSON();
-                window.actualizarTotalCostos?.();
+        window.actualizarTotalCostos?.();
       };
 
       precioInput.addEventListener('input', calcular);
@@ -1254,6 +1260,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.onclick = () => {
         btn.closest('.pegado-fila').remove();
         guardarJSON();
+        window.actualizarTotalCostos?.();
       };
     });
   }
@@ -1315,10 +1322,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const costoTotal = (precio > 0 && cantidad > 0) ? `$${precio * cantidad}` : 'No definido';
 
-const div = document.createElement('div');
-div.className = 'form-row-50 mb-2 cierre-fila';
+    const div = document.createElement('div');
+    div.className = 'form-row-50 mb-2 cierre-fila';
 
-div.innerHTML = `
+    div.innerHTML = `
   <div class="form-group">
     <label>Tipo de cierre</label>
     <select class="form-select cierre-select">
@@ -1341,10 +1348,10 @@ div.innerHTML = `
     <input type="text" class="input-user cierre-costo" readonly value="${costoTotal}">
   </div>
 
-  ${mostrarEliminar ? '<button type="button" class="btn btn-danger btn-sm eliminar-cierre" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+  ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-cierre" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
 `;
 
-container.appendChild(div);
+    container.appendChild(div);
 
 
     actualizarEventos();
@@ -1365,7 +1372,7 @@ container.appendChild(div);
         const total = precio * cantidad;
         costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
         guardarJSON();
-                window.actualizarTotalCostos?.();
+        window.actualizarTotalCostos?.();
       };
 
       select.addEventListener('change', () => {
@@ -1379,6 +1386,7 @@ container.appendChild(div);
       fila.querySelector('.eliminar-cierre')?.addEventListener('click', () => {
         fila.remove();
         guardarJSON();
+        window.actualizarTotalCostos?.();
       });
     });
   }
@@ -1412,12 +1420,12 @@ container.appendChild(div);
   const datosIniciales = JSON.parse(inputHidden.value || '[]');
   console.log('📦 Datos iniciales:', datosIniciales);
   if (datosIniciales.length > 0) {
-      console.log('📥 Cargando filas desde datos iniciales...');
+    console.log('📥 Cargando filas desde datos iniciales...');
     datosIniciales.forEach(cierre => {
       crearFilaCierre(cierre.id, cierre.cantidad, true);
     });
   } else {
-      console.log('🆕 Cargando primera fila vacía');
+    console.log('🆕 Cargando primera fila vacía');
     crearFilaCierre('', '', false);
   }
 
@@ -1451,7 +1459,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <input type="text" class="input-user costo-broche" readonly value="No definido">
       </div>
 
-      ${mostrarEliminar ? '<button type="button" class="btn btn-danger btn-sm eliminar-broche" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+      ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-broche" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
       `;
 
     container.appendChild(div);
@@ -1472,7 +1480,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const total = precio * cantidad;
         costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
         guardarJSON();
-                window.actualizarTotalCostos?.();
+        window.actualizarTotalCostos?.();
       };
 
       precioInput.addEventListener('input', calcular);
@@ -1483,6 +1491,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.onclick = () => {
         btn.closest('.broche-fila').remove();
         guardarJSON();
+        window.actualizarTotalCostos?.();
       };
     });
   }
@@ -1544,10 +1553,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const costoTotal = (precio > 0 && cantidad > 0) ? `$${precio * cantidad}` : 'No definido';
 
-const div = document.createElement('div');
-div.className = 'form-row-50 mb-2 elastico-fila';
+    const div = document.createElement('div');
+    div.className = 'form-row-50 mb-2 elastico-fila';
 
-div.innerHTML = `
+    div.innerHTML = `
   <div class="form-group">
     <label>Tipo de elastico</label>
     <select class="form-select elastico-select">
@@ -1570,10 +1579,10 @@ div.innerHTML = `
     <input type="text" class="input-user elastico-costo" readonly value="${costoTotal}">
   </div>
 
-  ${mostrarEliminar ? '<button type="button" class="btn btn-danger btn-sm eliminar-elastico" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+  ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-elastico" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
 `;
 
-container.appendChild(div);
+    container.appendChild(div);
 
 
     actualizarEventos();
@@ -1594,7 +1603,7 @@ container.appendChild(div);
         const total = precio * cantidad;
         costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
         guardarJSON();
-                window.actualizarTotalCostos?.();
+        window.actualizarTotalCostos?.();
       };
 
       select.addEventListener('change', () => {
@@ -1608,6 +1617,7 @@ container.appendChild(div);
       fila.querySelector('.eliminar-elastico')?.addEventListener('click', () => {
         fila.remove();
         guardarJSON();
+        window.actualizarTotalCostos?.();
       });
     });
   }
@@ -1641,12 +1651,12 @@ container.appendChild(div);
   const datosIniciales = JSON.parse(inputHidden.value || '[]');
   console.log('📦 Datos iniciales:', datosIniciales);
   if (datosIniciales.length > 0) {
-      console.log('📥 Cargando filas desde datos iniciales...');
+    console.log('📥 Cargando filas desde datos iniciales...');
     datosIniciales.forEach(elastico => {
       crearFilaElastico(elastico.id, elastico.cantidad, true);
     });
   } else {
-      console.log('🆕 Cargando primera fila vacía');
+    console.log('🆕 Cargando primera fila vacía');
     crearFilaElastico('', '', false);
   }
 
@@ -1684,10 +1694,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const costoTotal = (precio > 0 && cantidad > 0) ? `$${precio * cantidad}` : 'No definido';
 
-const div = document.createElement('div');
-div.className = 'form-row-50 mb-2 boton-fila';
+    const div = document.createElement('div');
+    div.className = 'form-row-50 mb-2 boton-fila';
 
-div.innerHTML = `
+    div.innerHTML = `
   <div class="form-group">
     <label>Tipo de boton</label>
     <select class="form-select boton-select">
@@ -1710,10 +1720,10 @@ div.innerHTML = `
     <input type="text" class="input-user boton-costo" readonly value="${costoTotal}">
   </div>
 
-  ${mostrarEliminar ? '<button type="button" class="btn btn-danger btn-sm eliminar-boton" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+  ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-boton" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
 `;
 
-container.appendChild(div);
+    container.appendChild(div);
 
 
     actualizarEventos();
@@ -1734,7 +1744,7 @@ container.appendChild(div);
         const total = precio * cantidad;
         costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
         guardarJSON();
-                window.actualizarTotalCostos?.();
+        window.actualizarTotalCostos?.();
       };
 
       select.addEventListener('change', () => {
@@ -1782,12 +1792,12 @@ container.appendChild(div);
   const datosIniciales = JSON.parse(inputHidden.value || '[]');
   console.log('📦 Datos iniciales:', datosIniciales);
   if (datosIniciales.length > 0) {
-      console.log('📥 Cargando filas desde datos iniciales...');
+    console.log('📥 Cargando filas desde datos iniciales...');
     datosIniciales.forEach(boton => {
       crearFilaBoton(boton.id, boton.cantidad, true);
     });
   } else {
-      console.log('🆕 Cargando primera fila vacía');
+    console.log('🆕 Cargando primera fila vacía');
     crearFilaBoton('', '', false);
   }
 
@@ -1825,7 +1835,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <input type="text" class="input-user costo-plantrel" readonly value="No definido">
       </div>
 
-      ${mostrarEliminar ? '<button type="button" class="btn btn-danger btn-sm eliminar-plantrel" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+      ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-plantrel" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
     `;
 
     container.appendChild(div);
@@ -1846,7 +1856,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const total = precio * cantidad;
         costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
         guardarJSON();
-                window.actualizarTotalCostos?.();
+        window.actualizarTotalCostos?.();
       };
 
       precioInput.addEventListener('input', calcular);
@@ -1857,6 +1867,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.onclick = () => {
         btn.closest('.plantrel-fila').remove();
         guardarJSON();
+        window.actualizarTotalCostos?.();
       };
     });
   }
@@ -1921,10 +1932,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const costoTotal = (precio > 0 && cantidad > 0) ? `$${precio * cantidad}` : 'No definido';
 
-const div = document.createElement('div');
-div.className = 'form-row-50 mb-2 velcro-fila';
+    const div = document.createElement('div');
+    div.className = 'form-row-50 mb-2 velcro-fila';
 
-div.innerHTML = `
+    div.innerHTML = `
   <div class="form-group">
     <label>Tipo de velcro</label>
     <select class="form-select velcro-select">
@@ -1947,10 +1958,10 @@ div.innerHTML = `
     <input type="text" class="input-user velcro-costo" readonly value="${costoTotal}">
   </div>
 
-  ${mostrarEliminar ? '<button type="button" class="btn btn-danger btn-sm eliminar-velcro" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+  ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-velcro" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
 `;
 
-container.appendChild(div);
+    container.appendChild(div);
 
 
     actualizarEventos();
@@ -1971,7 +1982,7 @@ container.appendChild(div);
         const total = precio * cantidad;
         costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
         guardarJSON();
-                window.actualizarTotalCostos?.();
+        window.actualizarTotalCostos?.();
       };
 
       select.addEventListener('change', () => {
@@ -1985,6 +1996,7 @@ container.appendChild(div);
       fila.querySelector('.eliminar-velcro')?.addEventListener('click', () => {
         fila.remove();
         guardarJSON();
+        window.actualizarTotalCostos?.();
       });
     });
   }
@@ -2018,12 +2030,12 @@ container.appendChild(div);
   const datosIniciales = JSON.parse(inputHidden.value || '[]');
   console.log('📦 Datos iniciales:', datosIniciales);
   if (datosIniciales.length > 0) {
-      console.log('📥 Cargando filas desde datos iniciales...');
+    console.log('📥 Cargando filas desde datos iniciales...');
     datosIniciales.forEach(velcro => {
       crearFilaVelcro(velcro.id, velcro.cantidad, true);
     });
   } else {
-      console.log('🆕 Cargando primera fila vacía');
+    console.log('🆕 Cargando primera fila vacía');
     crearFilaVelcro('', '', false);
   }
 
@@ -2086,7 +2098,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <input type="text" class="input-user sesgo-costo" readonly value="${costoTotal}">
       </div>
 
-      ${mostrarEliminar ? '<button type="button" class="btn btn-danger btn-sm eliminar-sesgo" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+      ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-sesgo" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
     `;
 
     container.appendChild(div);
@@ -2108,7 +2120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const total = precio * cantidad;
         costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
         guardarJSON();
-                window.actualizarTotalCostos?.();
+        window.actualizarTotalCostos?.();
       };
 
       select.addEventListener('change', () => {
@@ -2122,6 +2134,7 @@ document.addEventListener('DOMContentLoaded', () => {
       fila.querySelector('.eliminar-sesgo')?.addEventListener('click', () => {
         fila.remove();
         guardarJSON();
+        window.actualizarTotalCostos?.();
       });
     });
   }
@@ -2205,7 +2218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <input type="text" class="input-user extra-total" readonly value="${total}">
       </div>
 
-      ${mostrarEliminar ? '<button type="button" class="btn btn-danger btn-sm eliminar-extra" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+      ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-extra" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
     `;
 
     container.appendChild(div);
@@ -2221,13 +2234,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const cantidadInput = fila.querySelector('.extra-cantidad');
       const totalOutput = fila.querySelector('.extra-total');
 
+
       const calcular = () => {
         const precio = parseFloat(precioInput.value) || 0;
         const cantidad = parseInt(cantidadInput.value) || 0;
         const total = precio * cantidad;
         totalOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
         guardarJSON();
-                window.actualizarTotalCostos?.();
+        window.actualizarTotalCostos?.();
       };
 
       precioInput.addEventListener('input', calcular);
@@ -2237,6 +2251,7 @@ document.addEventListener('DOMContentLoaded', () => {
       fila.querySelector('.eliminar-extra')?.addEventListener('click', () => {
         fila.remove();
         guardarJSON();
+        window.actualizarTotalCostos?.();
       });
     });
   }
@@ -2284,6 +2299,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 window.actualizarTotalCostos = function () {
+  // Asignar evento al campo de confección si no está asignado ya
+  const inputConfeccion = document.getElementById('id_Confeccion');
+  if (inputConfeccion && !inputConfeccion.dataset.listenerAdded) {
+    inputConfeccion.addEventListener('input', window.actualizarTotalCostos);
+    inputConfeccion.dataset.listenerAdded = "true";
+  }
+
   const limpiar = (valor) => parseFloat((valor || '').replace('$', '').trim()) || 0;
 
   const precioPrenda = limpiar(document.getElementById('precio-prenda')?.value);
@@ -2291,11 +2313,11 @@ window.actualizarTotalCostos = function () {
   const precioLavado = limpiar(document.getElementById('precio-lavado')?.value);
   const precioEstampado = limpiar(document.getElementById('precio-estampado')?.value);
   const precioFusionado = limpiar(document.getElementById('precio-fusionado')?.value);
+  const precioConfeccion = limpiar(document.getElementById('id_Confeccion')?.value);
 
   const cantidadInput = document.querySelector('input[name="Cantidad"]');
   const cantidad = cantidadInput ? parseFloat(cantidadInput.value) || 1 : 1;
 
-  // Sumar todos los costos por clase
   const sumarCostosPorClase = (clase) => {
     let total = 0;
     document.querySelectorAll(`.${clase}`).forEach(input => {
@@ -2305,13 +2327,22 @@ window.actualizarTotalCostos = function () {
   };
 
   const totalBordado = sumarCostosPorClase('costo-bordado');
+  const totalPegado = sumarCostosPorClase('costo-pegado');
+  const totalPlantrel = sumarCostosPorClase('costo-plantrel');
   const totalBotones = sumarCostosPorClase('boton-costo');
   const totalVelcro = sumarCostosPorClase('velcro-costo');
   const totalSesgos = sumarCostosPorClase('sesgo-costo');
   const totalElasticos = sumarCostosPorClase('elastico-costo');
   const totalCierres = sumarCostosPorClase('cierre-costo');
   const totalCintas = sumarCostosPorClase('cinta-costo');
-  const totalExtras = sumarCostosPorClase('extra-costo');
+  const totalExtras = sumarCostosPorClase('extra-total');
+
+  let totalBroches = 0;
+  document.querySelectorAll('.broche-fila').forEach(fila => {
+    const precio = limpiar(fila.querySelector('.precio-broche')?.value);
+    const cantidad = parseFloat(fila.querySelector('.cantidad-broche')?.value) || 0;
+    totalBroches += precio * cantidad;
+  });
 
   const totalUnitario =
     precioPrenda +
@@ -2320,13 +2351,17 @@ window.actualizarTotalCostos = function () {
     precioEstampado +
     precioFusionado +
     totalBordado +
+    totalPegado +
+    totalPlantrel +
     totalBotones +
     totalVelcro +
     totalSesgos +
     totalElasticos +
     totalCierres +
     totalCintas +
-    totalExtras;
+    totalExtras +
+    totalBroches +
+    precioConfeccion;
 
   const totalFinal = totalUnitario * cantidad;
 
@@ -2335,6 +2370,8 @@ window.actualizarTotalCostos = function () {
     totalCostosInput.value = `$${totalFinal}`;
   }
 };
+
+
 
 // 👇 Ejecutar al cambiar la cantidad (aparte del cálculo automático)
 document.addEventListener('DOMContentLoaded', () => {
@@ -2345,3 +2382,102 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+
+
+
+// Obtener el input
+const totalCostosInput = document.getElementById("total-costos");
+
+// Guardar la referencia original de value
+let valorInterno = totalCostosInput.value;
+
+Object.defineProperty(totalCostosInput, "value", {
+  get() {
+    return valorInterno;
+  },
+  set(nuevoValor) {
+    valorInterno = nuevoValor;
+    totalCostosInput.setAttribute("value", nuevoValor); // útil si necesitas visibilidad en el DOM
+    aplicarAjuste(); // actualiza el total ajustado
+  }
+});
+
+// También por si cambia el checkbox
+document.getElementById("aplicar-ajuste").addEventListener("change", aplicarAjuste);
+
+// Función de ajuste
+function aplicarAjuste() {
+  const aplicar = document.getElementById("aplicar-ajuste").checked;
+  let raw = totalCostosInput.value.replace(/\$/g, "").replace(/,/g, "");
+  let numero = parseFloat(raw);
+  if (isNaN(numero)) numero = 0;
+
+  const ajustado = aplicar ? numero * 1.1 : numero;
+  document.getElementById("total-ajustado").value = `$${ajustado.toFixed(0)}`;
+}
+
+// Llamar al cargar por primera vez
+window.addEventListener("DOMContentLoaded", aplicarAjuste);
+
+
+
+
+
+
+
+function parseMoney(value) {
+  return parseFloat(value.replace(/[^\d.-]/g, '')) || 0;
+}
+
+function formatMoney(value) {
+  return `$${value.toLocaleString('es-CO', { minimumFractionDigits: 2,maximumFractionDigits: 2})}`;
+}
+
+function updateMCBResults() {
+  const totalAjustado = parseMoney(document.getElementById('total-ajustado').value);
+
+  const mcb1 = parseFloat(document.getElementById('mcb-select-1').value);
+  const mcb2 = parseFloat(document.getElementById('mcb-select-2').value);
+
+  document.getElementById('resultado-mcb-1').value = mcb1 ? formatMoney(totalAjustado / mcb1) : "$0";
+  document.getElementById('resultado-mcb-2').value = mcb2 ? formatMoney(totalAjustado / mcb2) : "$0";
+}
+
+// Disparar cuando cambia el MCB
+document.getElementById('mcb-select-1').addEventListener('change', updateMCBResults);
+document.getElementById('mcb-select-2').addEventListener('change', updateMCBResults);
+
+// Detectar cambios programáticos en total-ajustado
+const observer = new MutationObserver(updateMCBResults);
+
+observer.observe(document.getElementById('total-ajustado'), {
+  attributes: true,
+  childList: true,
+  subtree: false,
+});
+
+// También puedes usar un polling si el valor se actualiza sin modificar el DOM
+let lastAjuste = "";
+setInterval(() => {
+  const current = document.getElementById('total-ajustado').value;
+  if (current !== lastAjuste) {
+    lastAjuste = current;
+    updateMCBResults();
+  }
+}, 200);
+
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const clienteSelect = document.getElementById('cliente-select');
+    const clienteNombreSpan = document.getElementById('cliente-seleccionado');
+
+    clienteSelect.addEventListener('change', function () {
+      // Obtener el texto del cliente seleccionado
+      const selectedOption = this.options[this.selectedIndex];
+      const nombreCliente = selectedOption.textContent;
+
+      // Cambiar el h4 con el nuevo nombre
+      clienteNombreSpan.textContent = nombreCliente;
+    });
+  });

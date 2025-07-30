@@ -70,6 +70,12 @@ class Calculadora(models.Model):
     Proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     prenda = models.ForeignKey(Prenda, on_delete=models.CASCADE, null=True,  blank=True)
     Cantidad = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    Descripcion = models.CharField(max_length=100, blank=True)
+    
+    PrecioTela = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    PromedioTela = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    AjusteTela = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    CostoTela = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     Forro = models.CharField(choices=Forros, max_length=100, blank=True)
     Lavado = models.CharField(choices=Lavado, max_length=100, blank=True)
     Bordado = models.JSONField(blank=True, null=True)
@@ -86,3 +92,4 @@ class Calculadora(models.Model):
     Velcro = models.JSONField(blank=True, null=True)
     Sesgo = models.JSONField(blank=True, null=True)
     Extra = models.JSONField(blank=True, null=True)
+    Precio_total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)

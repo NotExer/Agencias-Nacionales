@@ -1,0 +1,46 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block styles %}
+{{ block.super }}
+
+
+{% endblock %}
+
+{% block content %}
+<div class="space">
+<h2>Listado de Telas</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Código</th>
+      <th>Tela</th>
+      <th>Precio</th>
+      <th>Ancho</th>
+      <th>Inventario</th>
+      <th>Disponible</th>
+      <th>Proveedor</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for tela in telas %}
+    <tr>
+      <td>{{ tela.Codigo }}</td>
+      <td>{{ tela.Tela }}</td>
+      <td>{{ tela.Precio }}</td>
+      <td>{{ tela.Ancho }}</td>
+      <td>{{ tela.Inventario }}</td>
+      <td>{{ tela.Disponible }}</td>
+      <td>{{ tela.proveedor }}</td>
+      <td>
+
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="8">No hay telas disponibles.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

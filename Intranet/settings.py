@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'apps.comercial',
     'apps.cotizaciones',
     'apps.proveedor',
+    'apps.telas',
     ]
 
 MIDDLEWARE = [

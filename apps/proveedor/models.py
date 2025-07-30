@@ -17,7 +17,7 @@ OPCIONES_CATEGORIA = [
     ('Planta', 'Planta'),
     ('Seguridad', 'Seguridad'),
     ('Servicios', 'Servicios de confeccion'),
-    ('Telas', 'Telas'),
+
 ]
 
 

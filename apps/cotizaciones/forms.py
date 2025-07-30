@@ -10,22 +10,40 @@ class PedidoCalculadoraForm(forms.Form):
         widget=forms.Select(attrs={'class': 'input-user'})
     )
 
+
 class CalculadoraAsignarForm(forms.ModelForm):
     def __init__(self, *args, proveedor=None, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # Para el campo prenda ya existente
         if proveedor:
             self.fields['prenda'].queryset = proveedor.prendas.all()
         else:
-            self.fields['prenda'].queryset = Prenda.objects.none()  
+            self.fields['prenda'].queryset = Prenda.objects.none()
+
+        # Generar opciones para el campo Tela con prendas de proveedores textiles
+        prendas_textiles = Prenda.objects.filter(proveedor__Textilera=True)
+        opciones_tela = [('', '---------')] + [(p.descripcion, p.descripcion) for p in prendas_textiles]
+        self.fields['Tela'] = forms.ChoiceField(
+            choices=opciones_tela,
+            required=False,
+            widget=forms.Select(attrs={'class': 'input-user'})
+        )
 
     class Meta:
         model = Calculadora
-        fields = ['cliente', 'Proveedor_select', 'Proveedor', 'prenda', 'Forro', 'Lavado', 'Estampado', 'Cinta', 'Pegado', 'Cierre', 'Broche', 'Elastico', 'Boton', 'Fusionado', 'Confeccion', 'Plantrel', 'Velcro', 'Sesgo', 'Extra', 'Cantidad']
+        fields = [
+            'cliente', 'Proveedor_select', 'Proveedor', 'prenda',
+         'Forro', 'Lavado', 'Estampado', 'Cinta', 'Pegado', 'Cierre', 'Broche',
+            'Elastico', 'Boton', 'Fusionado', 'Confeccion', 'Plantrel', 'Velcro',
+            'Sesgo', 'Extra', 'Cantidad', 'Precio_total'
+        ]
         labels = {
             'Forro': 'Forro de bolsillo',
             'Estampado' : 'Colores de estampado',
             'Confeccion': 'Costo de confección',
             'Cantidad': 'Cantidad de prendas',
+            'Precio_total': 'Precio total',
         }
         widgets = {
             'cliente': forms.HiddenInput(),
@@ -47,4 +65,5 @@ class CalculadoraAsignarForm(forms.ModelForm):
             'Velcro': forms.Select(attrs={'class': 'input-user'}),
             'Sesgo': forms.Select(attrs={'class': 'input-user'}),
             'Extra': forms.Textarea(attrs={'class': 'input-user', 'rows': 3, 'placeholder': 'Detalles adicionales'}),
+            'Precio_total': forms.NumberInput(attrs={'class': 'input-user', 'readonly': 'readonly'}),
         }
