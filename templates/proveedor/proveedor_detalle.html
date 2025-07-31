@@ -157,14 +157,14 @@
 
               <td>{{ prenda.Ultima_actualizacion }}</td>
               <td>
-  {% for categoria in prenda.get_categorias_list %}
-    <span class="badge bg-primary me-1">{{ categoria }}</span>
-  {% empty %}
-    —
-  {% endfor %}
-</td>
+                {% for categoria in prenda.get_categorias_list %}
+                <span class="badge bg-primary me-1">{{ categoria }}</span>
+                {% empty %}
+                —
+                {% endfor %}
+              </td>
 
-             
+
               <td>
                 {% if prenda.Ficha %}
                 <a href="{{ prenda.Ficha.url }}" target="_blank" class="btn btn-download btn-sm">Descargar ficha</a>

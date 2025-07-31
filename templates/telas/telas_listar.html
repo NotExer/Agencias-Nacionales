@@ -2,45 +2,67 @@
 {% load static %}
 {% block styles %}
 {{ block.super }}
-
-
 {% endblock %}
 
 {% block content %}
 <div class="space">
-<h2>Listado de Telas</h2>
+  <h2>Listado de Telas</h2>
+  <a href="{% url 'telas_crear' %}" class="btn btn-primary m-10">Crear Nueva Tela</a>
+ <div class="center">
+    <table id="tablaTelas" class="table table-bordered text-light w-100">
+        <thead class="table-dark text-center">
+            <tr>
+                <th>ID</th>
+                <th>Proveedor</th>
+                <th>Código</th>
+                <th>Tela</th>
+                <th>Precio</th>
+                <th>Ancho</th>
+                <th>Inventario</th>
+                <th>Disponible</th>
+                <th>Categoría</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tela in telas %}
+            <tr>
+                <td data-label="ID:">{{ tela.ID }}</td>
+                <td data-label="Proveedor:">{{ tela.Proveedor.Nombre }}</td>
+                <td data-label="Código:">{{ tela.Codigo }}</td>
+                <td data-label="Tela:">{{ tela.Tela }}</td>
+                <td data-label="Precio:">${{ tela.Precio }}</td>
+                <td data-label="Ancho:">{{ tela.Ancho }} cm</td>
+                <td data-label="Inventario:">{{ tela.Inventario }}</td>
+                <td data-label="Disponible:">{{ tela.Disponible }}</td>
+                <td data-label="Categoría:">{{ tela.Categoria }}</td>
+                <td data-label="Estado:">
+                    {% if tela.Estado %}
+                        <span class="badge bg-success">Activo</span>
+                    {% else %}
+                        <span class="badge bg-danger">Inactivo</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'telas_editar' tela.ID %}">
+                        <button class="btn btn-download">Editar</button>
+                    </a>
+                    <button class="btn btn-primary"
+                        onclick="abrir_modal('{% url 'telas_eliminar' tela.ID %}')">
+                        Eliminar
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="11" class="text-center">No hay telas registradas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div id="modal-container"></div>
+</div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Código</th>
-      <th>Tela</th>
-      <th>Precio</th>
-      <th>Ancho</th>
-      <th>Inventario</th>
-      <th>Disponible</th>
-      <th>Proveedor</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for tela in telas %}
-    <tr>
-      <td>{{ tela.Codigo }}</td>
-      <td>{{ tela.Tela }}</td>
-      <td>{{ tela.Precio }}</td>
-      <td>{{ tela.Ancho }}</td>
-      <td>{{ tela.Inventario }}</td>
-      <td>{{ tela.Disponible }}</td>
-      <td>{{ tela.proveedor }}</td>
-      <td>
-
-      </td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="8">No hay telas disponibles.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
 </div>
 {% endblock %}

@@ -8,50 +8,50 @@
 {% block content %}
 <div class="space">
   <h2>Crear calculadora</h2>
-  <aside  class="costos_totales-container">
-  <div class="form-group">
-    <label for="total-costos">Total de costos</label>
-    <input type="text" id="total-costos" class="input-user" readonly value="$0">
-  </div>
+  <aside class="costos_totales-container">
+    <div class="form-group">
+      <label for="total-costos">Total de costos</label>
+      <input type="text" id="total-costos" class="input-user" readonly value="$0">
+    </div>
 
-  <div class="form-group ajuste-group">
-    <input type="checkbox" id="aplicar-ajuste" class="input-user custom-checkbox" checked>
-    <label for="aplicar-ajuste" class="custom-checkbox">Aplicar ajuste 10% (x1.1)</label>
-    <input type="text" id="total-ajustado" class="input-user" readonly value="$0">
-  </div>
+    <div class="form-group ajuste-group">
+      <input type="checkbox" id="aplicar-ajuste" class="input-user custom-checkbox" checked>
+      <label for="aplicar-ajuste" class="custom-checkbox">Aplicar ajuste 10% (x1.1)</label>
+      <input type="text" id="total-ajustado" class="input-user" readonly value="$0">
+    </div>
 
-  <div class="form-group">
-    <label for="mcb-select-1">M.C.B.</label>
-    <select id="mcb-select-1" class="input-user mcb-select">
-      <option value="0.50">0.50</option>
-      <option value="0.55">0.55</option>
-      <option value="0.60">0.60</option>
-      <option value="0.65">0.65</option>
-      <option value="0.70" selected>0.70</option>
-      <option value="0.75">0.75</option>
-      <option value="0.80">0.80</option>
-      <option value="0.85">0.85</option>
-    </select>
-    <input type="text" id="resultado-mcb-1" class="input-user" readonly value="$0">
-  </div>
+    <div class="form-group">
+      <label for="mcb-select-1">M.C.B.</label>
+      <select id="mcb-select-1" class="input-user mcb-select">
+        <option value="0.50">0.50</option>
+        <option value="0.55">0.55</option>
+        <option value="0.60">0.60</option>
+        <option value="0.65">0.65</option>
+        <option value="0.70" selected>0.70</option>
+        <option value="0.75">0.75</option>
+        <option value="0.80">0.80</option>
+        <option value="0.85">0.85</option>
+      </select>
+      <input type="text" id="resultado-mcb-1" class="input-user" readonly value="$0">
+    </div>
 
-  <div class="form-group">
-    <label for="mcb-select-2">M.C.B.</label>
-    <select id="mcb-select-2" class="input-user mcb-select">
-      <option value="0.50">0.50</option>
-      <option value="0.55">0.55</option>
-      <option value="0.60">0.60</option>
-      <option value="0.65">0.65</option>
-      <option value="0.70">0.70</option>
-      <option value="0.75" selected>0.75</option>
-      <option value="0.80">0.80</option>
-      <option value="0.85">0.85</option>
-    </select>
-    <input type="text" id="resultado-mcb-2" class="input-user" readonly value="$0">
-    {{ calculadora_form.Precio_total.label_tag }}
-    {{ calculadora_form.Precio_total }}
-  </div>
-</aside >
+    <div class="form-group">
+      <label for="mcb-select-2">M.C.B.</label>
+      <select id="mcb-select-2" class="input-user mcb-select">
+        <option value="0.50">0.50</option>
+        <option value="0.55">0.55</option>
+        <option value="0.60">0.60</option>
+        <option value="0.65">0.65</option>
+        <option value="0.70">0.70</option>
+        <option value="0.75" selected>0.75</option>
+        <option value="0.80">0.80</option>
+        <option value="0.85">0.85</option>
+      </select>
+      <input type="text" id="resultado-mcb-2" class="input-user" readonly value="$0">
+      {{ calculadora_form.Precio_total.label_tag }}
+      {{ calculadora_form.Precio_total }}
+    </div>
+  </aside>
 
 
 
@@ -69,9 +69,9 @@
     </div>
     {% if calculadora_form %}
     <hr>
-   <h4 class="sub-title">
-  Asignar calculadora a: <span id="cliente-seleccionado">{{ cliente_seleccionado }}</span>
-</h4>
+    <h4 class="sub-title">
+      Asignar calculadora a: <span id="cliente-seleccionado">{{ cliente_seleccionado }}</span>
+    </h4>
     <div class="form-group  checkbox-container">
       {% with calculadora_form.Proveedor_select as checkbox %}
       <input type="checkbox" id="{{ checkbox.id_for_label }}" name="{{ checkbox.html_name }}" class="input-user" />
@@ -168,32 +168,50 @@
     </div>
     <hr>
 
+<!-- Botón principal para mostrar/ocultar el campo "Bordado" -->
+<button type="button" class="btn btn-primary" onclick="toggleCampo('bordado-campo', this, 'bordado')">
+  Agregar bordado
+</button>
 
-    <div class="bordado-wrapper">
-      <div id="bordados-container"></div>
-      <button type="button" class="btn btn-primary btn-sm " id="agregar-bordado">
-        Agregar bordado adicional
-      </button>
+<!-- Contenedor oculto por defecto -->
+<div id="bordado-campo" class="bordado-wrapper hidden">
+  <div id="bordados-container"></div>
+  <button type="button" class="btn btn-primary btn-sm" id="agregar-bordado">
+    Agregar bordado adicional
+  </button>
 
-      <!-- Campo oculto donde se guarda el JSON -->
-      <input type="hidden" name="Bordado" id="id_Bordado">
-    </div>
+  <!-- Campo oculto donde se guarda el JSON -->
+  <input type="hidden" name="Bordado" id="id_Bordado">
+</div>
 
     <hr>
-    <div class="pegado-wrapper">
+    <!-- Botón principal para mostrar/ocultar el campo "Pegado" -->
+    <button type="button" class="btn btn-primary" onclick="toggleCampo('pegado-campo', this, 'pegado')">
+      Agregar pegado
+    </button>
+
+    <!-- Contenedor oculto del campo Pegado -->
+    <div id="pegado-campo" class="pegado-wrapper hidden">
       <div id="pegados-container"></div>
-      <button type="button" class="btn btn-primary btn-sm " id="agregar-pegado">
+      <button type="button" class="btn btn-primary btn-sm" id="agregar-pegado">
         Agregar pegado adicional
       </button>
 
       <!-- Campo oculto donde se guarda el JSON -->
       <input type="hidden" name="Pegado" id="id_Pegado">
     </div>
+
     <hr>
 
-    <div class="broche-wrapper">
+    <!-- Botón principal para mostrar/ocultar el campo "Broche" -->
+    <button type="button" class="btn btn-primary" onclick="toggleCampo('broche-campo', this, 'broche')">
+      Agregar broche
+    </button>
+
+    <!-- Contenedor oculto por defecto -->
+    <div id="broche-campo" class="broche-wrapper hidden">
       <div id="broches-container"></div>
-      <button type="button" class="btn btn-primary btn-sm " id="agregar-broche">
+      <button type="button" class="btn btn-primary btn-sm" id="agregar-broche">
         Agregar broche adicional
       </button>
 
@@ -203,9 +221,15 @@
 
     <hr>
 
-    <div class="plantrel-wrapper">
+    <!-- Botón principal para mostrar/ocultar el campo "Plantrel" -->
+    <button type="button" class="btn btn-primary" onclick="toggleCampo('plantrel-campo', this, 'plantrel')">
+      Agregar plantrel
+    </button>
+
+    <!-- Contenedor oculto del campo Plantrel -->
+    <div id="plantrel-campo" class="plantrel-wrapper hidden">
       <div id="plantreles-container"></div>
-      <button type="button" class="btn btn-primary btn-sm " id="agregar-plantrel">
+      <button type="button" class="btn btn-primary btn-sm" id="agregar-plantrel">
         Agregar plantrel adicional
       </button>
 
@@ -214,10 +238,17 @@
     </div>
 
 
+
     <hr>
-    <div class="cinta-wrapper">
+    <!-- Botón principal para mostrar/ocultar el campo "Cinta" -->
+    <button type="button" class="btn btn-primary" onclick="toggleCampo('cinta-campo', this, 'cinta')">
+      Agregar cinta
+    </button>
+
+    <!-- Contenedor oculto por defecto -->
+    <div id="cinta-campo" class="cinta-wrapper hidden">
       <div id="cinta-container"></div>
-      <button type="button" class="btn btn-primary btn-sm " id="agregar-cinta">
+      <button type="button" class="btn btn-primary btn-sm" id="agregar-cinta">
         Agregar cinta adicional
       </button>
       <input type="hidden" name="Cinta" id="id_Cinta">
@@ -226,10 +257,15 @@
     <hr>
 
 
+    <!-- Botón principal para mostrar/ocultar el campo "Cierre" -->
+    <button type="button" class="btn btn-primary" onclick="toggleCampo('cierre-campo', this, 'cierre')">
+      Agregar cierre
+    </button>
 
-    <div class="cierre-wrapper">
+    <!-- Contenedor oculto del campo Cierre -->
+    <div id="cierre-campo" class="cierre-wrapper hidden">
       <div id="cierre-container"></div>
-      <button type="button" class="btn btn-primary btn-sm " id="agregar-cierre">
+      <button type="button" class="btn btn-primary btn-sm" id="agregar-cierre">
         Agregar cierre adicional
       </button>
       <input type="hidden" name="Cierre" id="id_Cierre">
@@ -248,11 +284,16 @@
 
 
 
+    <!-- Botón principal para mostrar/ocultar -->
+    <button type="button" class="btn btn-primary" onclick="toggleCampo('elastico-campo', this, 'elástico')">
+      Agregar elástico
+    </button>
 
-    <div class="elastico-wrapper">
+    <!-- Contenedor oculto por defecto -->
+    <div id="elastico-campo" class="elastico-wrapper hidden">
       <div id="elastico-container"></div>
-      <button type="button" class="btn btn-primary btn-sm " id="agregar-elastico">
-        Agregar elastico adicional
+      <button type="button" class="btn btn-primary btn-sm" id="agregar-elastico">
+        Agregar elástico adicional
       </button>
       <input type="hidden" name="Elastico" id="id_Elastico">
     </div>
@@ -260,14 +301,18 @@
 
     <hr>
 
+    <!-- Botón principal para mostrar/ocultar el campo "Botón" -->
+    <button type="button" class="btn btn-primary" onclick="toggleCampo('boton-campo', this, 'botón')">
+      Agregar botón
+    </button>
 
-    <div class="boton-wrapper">
+    <!-- Contenedor oculto del campo Botón -->
+    <div id="boton-campo" class="boton-wrapper hidden">
       <div id="boton-container"></div>
-      <button type="button" class="btn btn-primary btn-sm " id="agregar-boton">
-        Agregar boton adicional
+      <button type="button" class="btn btn-primary btn-sm" id="agregar-boton">
+        Agregar botón adicional
       </button>
       <input type="hidden" name="Boton" id="id_Boton">
-
     </div>
 
 
@@ -278,40 +323,41 @@
 
 
 
+    <!-- Botón principal para mostrar/ocultar -->
+    <button type="button" class="btn btn-primary" onclick="toggleCampo('velcro-campo', this, 'velcro')">
+      Agregar velcro
+    </button>
 
-
-
-    <div class="velcro-wrapper">
+    <!-- Contenedor oculto por defecto -->
+    <div id="velcro-campo" class="velcro-wrapper hidden">
       <div id="velcro-container"></div>
-      <button type="button" class="btn btn-primary btn-sm " id="agregar-velcro">
+      <button type="button" class="btn btn-primary btn-sm" id="agregar-velcro">
         Agregar velcro adicional
       </button>
       <input type="hidden" name="Velcro" id="id_Velcro">
-
     </div>
 
     <hr>
 
+    <!-- Botón para sesgo -->
+    <button type="button" class="btn btn-primary" onclick="toggleCampo('sesgo-campo', this, 'sesgo')">Agregar
+      sesgo</button>
 
-
-    <div class="sesgo-wrapper">
+    <div id="sesgo-campo" class="sesgo-wrapper hidden">
       <div id="sesgo-container"></div>
-      <button type="button" class="btn btn-primary btn-sm " id="agregar-sesgo">
-        Agregar sesgo adicional
-      </button>
+      <button type="button" class="btn btn-primary btn-sm" id="agregar-sesgo">Agregar sesgo adicional</button>
       <input type="hidden" name="Sesgo" id="id_Sesgo">
-
     </div>
 
     <hr>
 
+    <!-- Botón para costo extra -->
+    <button type="button" class="btn btn-primary" onclick="toggleCampo('extra-campo', this, 'costo extra')">Agregar
+      costo extra</button>
 
-
-    <div class="extra-wrapper">
+    <div id="extra-campo" class="extra-wrapper hidden">
       <div id="extra-container"></div>
-      <button type="button" class="btn btn-primary btn-sm " id="agregar-extra">
-        Agregar costo extra
-      </button>
+      <button type="button" class="btn btn-primary btn-sm" id="agregar-extra">Agregar costo extra adicional</button>
       <input type="hidden" name="Extra" id="id_Extra" value="[]">
     </div>
 

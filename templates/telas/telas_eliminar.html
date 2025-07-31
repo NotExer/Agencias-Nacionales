@@ -1,0 +1,17 @@
+<div class="modal" id="modal">
+  <div class="modal-content-eliminar">
+    <div class="modal_header">
+
+      <h2>¿Eliminar {{ object.Nombre }}?</h2>
+        <form  method="post" action="{% url 'telas_eliminar' object.ID %}">
+
+    <p>Esta acción no se puede deshacer. ¿Estás seguro de que deseas eliminar esta tela?</p>
+      {% csrf_token %}
+      <div class="confirmation_container">
+        <button type="submit" class="eliminar_button">Sí, eliminar</button>
+        <button type="button" class="crear_button" onclick="cerrar_modal()">Cancelar</button> 
+       </div>
+      </div>
+   </form>
+  </div>
+</div>

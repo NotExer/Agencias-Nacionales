@@ -2481,3 +2481,18 @@ setInterval(() => {
       clienteNombreSpan.textContent = nombreCliente;
     });
   });
+
+
+  function toggleCampo(idCampo, boton, nombreCampo) {
+    const campo = document.getElementById(idCampo);
+    const estaOculto = campo.classList.contains('hidden');
+
+    campo.classList.toggle('hidden');
+
+    // Cambia el texto del botón dinámicamente
+    if (estaOculto) {
+      boton.textContent = `Eliminar ${nombreCampo}`;
+    } else {
+      boton.textContent = `Agregar ${nombreCampo}`;
+    }
+  }
