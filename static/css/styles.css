@@ -3744,11 +3744,6 @@ input[type="checkbox"].input-user:checked + label::before {
 }
 
 
-
-
-
-
-
 #elastico-container {
   display: flex;
   flex-wrap: wrap;
@@ -4170,6 +4165,11 @@ input[type="checkbox"].input-user:checked + label::before {
   width: 100%;
   margin: 20px 0px;
 }
+
+
+
+
+
 /* Cada form-group ocupa una celda */
 .extra-fila .form-group {
   display: flex;
@@ -4309,4 +4309,8 @@ hr {
 
 .hidden {
   display: none;
+}
+
+.confeccion-wrapper{
+  width:100%;
 }

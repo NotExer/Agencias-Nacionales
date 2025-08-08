@@ -162,27 +162,37 @@
 
     <hr>
 
-    <div class="form-group mb-3">
-      {{ calculadora_form.Confeccion.label_tag }}
-      {{ calculadora_form.Confeccion }}
-    </div>
-    <hr>
 
-<!-- Botón principal para mostrar/ocultar el campo "Bordado" -->
-<button type="button" class="btn btn-primary" onclick="toggleCampo('bordado-campo', this, 'bordado')">
-  Agregar bordado
+<button type="button" class="btn btn-primary" onclick="toggleCampo('confeccion-campo', this, 'confección')">
+  Agregar confección
 </button>
 
-<!-- Contenedor oculto por defecto -->
-<div id="bordado-campo" class="bordado-wrapper hidden">
-  <div id="bordados-container"></div>
-  <button type="button" class="btn btn-primary btn-sm" id="agregar-bordado">
-    Agregar bordado adicional
-  </button>
-
-  <!-- Campo oculto donde se guarda el JSON -->
-  <input type="hidden" name="Bordado" id="id_Bordado">
+<!-- Contenedor oculto por defecto con clases Bootstrap que aseguran el ancho completo -->
+<div id="confeccion-campo" class="confeccion-wrapper hidden">
+  <div class="form-group mb-3">
+    {{ calculadora_form.Confeccion.label_tag }}
+    {{ calculadora_form.Confeccion }}
+  </div>
 </div>
+
+
+    <hr>
+
+    <!-- Botón principal para mostrar/ocultar el campo "Bordado" -->
+    <button type="button" class="btn btn-primary" onclick="toggleCampo('bordado-campo', this, 'bordado')">
+      Agregar bordado
+    </button>
+
+    <!-- Contenedor oculto por defecto -->
+    <div id="bordado-campo" class="bordado-wrapper hidden">
+      <div id="bordados-container"></div>
+      <button type="button" class="btn btn-primary btn-sm" id="agregar-bordado">
+        Agregar bordado adicional
+      </button>
+
+      <!-- Campo oculto donde se guarda el JSON -->
+      <input type="hidden" name="Bordado" id="id_Bordado">
+    </div>
 
     <hr>
     <!-- Botón principal para mostrar/ocultar el campo "Pegado" -->
