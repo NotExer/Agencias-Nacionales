@@ -6,94 +6,71 @@
 
 {% block content %}
 <div class="space">
-    <h2>Editar prenda de {{ proveedor.Nombre }}</h2>
-    <form method="post" enctype="multipart/form-data" id="kondorForm">
-        {% csrf_token %}
-        <div class="form-group">
+  <h2>Editar prenda: {{ prenda.nombre }}</h2>
+  <form method="post" enctype="multipart/form-data" id="kondorForm">
+    {% csrf_token %}
+    <div class="form-group">
 
-            {% if form.non_field_errors %}
-            <div class="alert alert-danger" role="alert">
-                {{ form.non_field_errors }}
-            </div>
-            {% endif %}
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger" role="alert">
+        {{ form.non_field_errors }}
+      </div>
+      {% endif %}
 
-            {% for field in form %}
-                {% if field.name == 'Imagen' %}
-                <div class="mb-3">
-                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                    {{ field }}
-                    <div class="preview-container mt-2">
-                        {% if form.instance.Imagen %}
-                            <img id="preview-imagen" src="{{ form.instance.Imagen.url }}" alt="Imagen actual" style="max-height: 200px;">
-                        {% else %}
-                            <img id="preview-imagen" src="#" alt="Vista previa" style="display: none; max-height: 200px;">
-                        {% endif %}
-                    </div>
-                    {% if field.errors %}
-                        <div class="text-danger">{{ field.errors }}</div>
-                    {% endif %}
-                </div>
+      {% for field in form %}
+      {% if field.name != 'Referencia_color_talla_Costo_precio' and field.name != 'categorias' %}
+      <div class="mb-3">
+        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+        {{ field }}
 
-                {% elif field.name == 'Ficha' %}
-                <div class="mb-3">
-                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                    {{ field }}
-                    <div class="preview-container mt-2">
-                        {% if form.instance.Ficha %}
-                            <div class="pdf_preview">
-                                <p><strong>PDF cargado:</strong> {{ form.instance.Ficha.name }}</p>
-                                <span class="badge bg-success">✓ Archivo disponible</span>
-                            </div>
-                        {% else %}
-                            <div class="pdf_preview" style="display: none;">
-                                <p>No hay PDF cargado</p>
-                            </div>
-                        {% endif %}
-                    </div>
-                    {% if field.errors %}
-                        <div class="text-danger">{{ field.errors }}</div>
-                    {% endif %}
-                </div>
-
-                {% elif field.name != 'Referencia_color_talla_Costo_precio' and field.name != 'categorias' %}
-                <div class="mb-3">
-                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                        <div class="text-danger">{{ field.errors }}</div>
-                    {% endif %}
-                </div>
-                {% endif %}
-            {% endfor %}
-
-            <!-- 🟩 Categorías -->
-            <!-- 🟩 Categoría única -->
-<div class="mb-3">
-    <label for="{{ form.Categorias.id_for_label }}" class="form-label">{{ form.Categorias.label }}</label>
-    {{ form.Categorias }}
-    {% if form.Categorias.errors %}
-        <div class="text-danger">{{ form.Categorias.errors }}</div>
-    {% endif %}
-</div>
-
-
-            <!-- 🟩 Sección dinámica: referencia / color / talla / costo / precio -->
-            <label class="form-label">Referencia / Color / Talla / Costo / Precio</label>
-            <div id="tallas-precios-container"></div>
-
-
-            <button type="button" class="btn btn-secondary btn-sm" id="agregar-talla-precio">Agregar referencia</button>
-
-            <!-- 🟩 Campo oculto donde el JS inyecta el JSON -->
-            <input type="hidden" name="Referencia_color_talla_Costo_precio" id="id_Referencia_color_talla_Costo_precio">
-
-            {% if form.instance.Referencia_color_talla_Costo_precio %}
-                {{ form.instance.Referencia_color_talla_Costo_precio|json_script:"referencia-color-talla-costo-precio-json" }}
-            {% endif %}
-
+        {% if field.name == 'Imagen' and form.instance.Imagen %}
+        <div class="preview-container mt-2">
+          <img id="preview-imagen" src="{{ form.instance.Imagen.url }}" alt="Vista previa de la imagen" style="max-height: 200px;">
         </div>
+        {% elif field.name == 'Imagen' %}
+        <div class="preview-container mt-2">
+          <img id="preview-imagen" src="#" alt="Vista previa" style="display: none; max-height: 200px;">
+        </div>
+        {% endif %}
 
-        <button type="submit" class="btn btn-primary">Guardar</button>
-    </form>
+        {% if field.errors %}
+        <div class="text-danger">{{ field.errors }}</div>
+        {% endif %}
+      </div>
+      {% endif %}
+      {% endfor %}
+
+      <div class="mb-3">
+        <label for="{{ form.categorias.id_for_label }}" class="form-label">{{ form.categorias.label }}</label>
+        
+        {{ form.categorias }}
+        
+        <div id="categoria-selector" class="categoria-custom-selector"></div>
+        
+        {% if form.categorias.errors %}
+        <div class="text-danger">{{ form.categorias.errors }}</div>
+        {% endif %}
+      </div>
+      
+      <label class="form-label">Referencia / Color / Talla / Costo / Precio</label>
+      <div id="tallas-precios-container"></div>
+      
+      
+      <button type="button" class="btn btn-secondary btn-sm" id="agregar-talla-precio">Agregar referencia</button>
+      
+      <input type="hidden" name="Referencia_color_talla_Costo_precio" id="id_Referencia_color_talla_Costo_precio">
+      {% if form.instance.Referencia_color_talla_Costo_precio %}
+      <script id="referencia-color-talla-costo-precio-json" type="application/json">
+        {{ form.instance.Referencia_color_talla_Costo_precio|safe }}
+      </script>
+      {% else %}
+      <script id="referencia-color-talla-costo-precio-json" type="application/json">[]</script>
+      {% endif %}
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+
+  </form>
 </div>
 {% endblock %}

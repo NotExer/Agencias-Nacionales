@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.accounts',
+    'apps.usuarios',
     'apps.inventario',
     'apps.comercial',
     'apps.cotizaciones',
@@ -98,7 +98,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 
-LANGUAGE_CODE = 'es-co'
+LANGUAGE_CODE = 'es-es'
 
 TIME_ZONE = 'UTC'
 

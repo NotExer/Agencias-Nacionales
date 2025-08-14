@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const navbar = document.getElementById("scrollspy");
 
   if (!navbar) {
-    console.warn("No se encontró el elemento con id 'scrollspy'");
+
     return;
   }
 
@@ -350,7 +350,7 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         }
       })
-      .catch(error => console.error(error));
+
 
     return false;
   };
@@ -517,7 +517,6 @@ function enviarOrdenAlBackend(tbody) {
     .map(fila => fila.dataset.id)
     .filter(id => id !== undefined && id !== null && id !== '');
 
-  console.log("Orden a enviar:", orden); // para debug
 
   fetch(url, {
     method: 'POST',
@@ -530,13 +529,13 @@ function enviarOrdenAlBackend(tbody) {
     .then(res => res.json())
     .then(data => {
       if (data.success) {
-        console.log('Orden guardada con éxito');
+
       } else {
-        console.error('Error al guardar el orden:', data.error);
+
       }
     })
     .catch(err => {
-      console.error('Error en la petición:', err);
+
     });
 }
 
@@ -622,7 +621,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     inputJSON.value = JSON.stringify(resultado);
-    console.log("📤 JSON enviado:", inputJSON.value);
+
   });
 
 });
@@ -673,65 +672,84 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-
 document.addEventListener("DOMContentLoaded", function () {
-  const select = document.getElementById("id_categorias_prenda") || document.getElementById("id_categorias_original");
-  const container = document.getElementById("categoria-selector");
+  // Configuración de los selectores
+  const configuraciones = [
+    {
+      selectId: "id_categorias_prenda",
+      selectAltId: "id_categorias_original",
+      containerId: "categoria-selector",
+      placeholder: "Agregar categoría..."
+    },
+    {
+      selectId: "id_productos_original",
+      containerId: "producto-selector",
+      placeholder: "Agregar producto..."
+    }
+  ];
 
-  if (!select || !container) return;  // No hace nada si no encuentra los elementos
+  configuraciones.forEach(config => {
+    // Buscar el select (usa selectAltId como respaldo si existe)
+    const select = document.getElementById(config.selectId) || 
+                   (config.selectAltId ? document.getElementById(config.selectAltId) : null);
+    const container = document.getElementById(config.containerId);
 
-  function renderSelectedOptions() {
-    container.innerHTML = '';
+    if (!select || !container) return; // Si no existe, saltar
 
-    Array.from(select.options).forEach(option => {
-      if (option.selected) {
-        const tag = document.createElement('span');
-        tag.className = 'badge';
-        tag.textContent = option.text;
+    function renderSelectedOptions() {
+      container.innerHTML = '';
 
-        const close = document.createElement('span');
-        close.textContent = ' ×';
-        close.onclick = () => {
-          option.selected = false;
+      // Mostrar opciones seleccionadas como badges
+      Array.from(select.options).forEach(option => {
+        if (option.selected) {
+          const tag = document.createElement('span');
+          tag.className = 'badge';
+          tag.textContent = option.text;
+
+          const close = document.createElement('span');
+          close.textContent = ' ×';
+          close.onclick = () => {
+            option.selected = false;
+            renderSelectedOptions();
+          };
+
+          tag.appendChild(close);
+          container.appendChild(tag);
+        }
+      });
+
+      // Dropdown con opciones no seleccionadas
+      const dropdown = document.createElement('select');
+      dropdown.className = 'form-select categoria-dropdown';
+      const defaultOpt = document.createElement('option');
+      defaultOpt.text = config.placeholder;
+      defaultOpt.disabled = true;
+      defaultOpt.selected = true;
+      dropdown.appendChild(defaultOpt);
+
+      Array.from(select.options).forEach(option => {
+        if (!option.selected) {
+          const opt = document.createElement('option');
+          opt.value = option.value;
+          opt.text = option.text;
+          dropdown.appendChild(opt);
+        }
+      });
+
+      dropdown.onchange = function () {
+        const selectedOption = select.querySelector(`option[value="${this.value}"]`);
+        if (selectedOption) {
+          selectedOption.selected = true;
           renderSelectedOptions();
-        };
+        }
+      };
 
-        tag.appendChild(close);
-        container.appendChild(tag);
-      }
-    });
+      container.appendChild(dropdown);
+    }
 
-    const dropdown = document.createElement('select');
-    dropdown.className = 'form-select categoria-dropdown';
-    const defaultOpt = document.createElement('option');
-    defaultOpt.text = 'Agregar categoría...';
-    defaultOpt.disabled = true;
-    defaultOpt.selected = true;
-    dropdown.appendChild(defaultOpt);
-
-    Array.from(select.options).forEach(option => {
-      if (!option.selected) {
-        const opt = document.createElement('option');
-        opt.value = option.value;
-        opt.text = option.text;
-        dropdown.appendChild(opt);
-      }
-    });
-
-    dropdown.onchange = function () {
-      const selectedOption = select.querySelector(`option[value="${this.value}"]`);
-      if (selectedOption) {
-        selectedOption.selected = true;
-        renderSelectedOptions();
-      }
-    };
-
-    container.appendChild(dropdown);
-  }
-
-  renderSelectedOptions();
+    renderSelectedOptions();
+  });
 });
-
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -814,27 +832,27 @@ document.addEventListener("DOMContentLoaded", function () {
   const prendaSelect = document.getElementById("id_prenda");
 
   if (!proveedorSelect || !prendaSelect) {
-    console.error("No se encontraron los campos necesarios.");
+
     return;
   }
 
   proveedorSelect.addEventListener("change", function () {
     const proveedorId = this.value;
-    console.log("🔍 Proveedor seleccionado:", proveedorId);
+
 
     if (!proveedorId) {
-      console.warn("⚠️ No se seleccionó ningún proveedor.");
+
       prendaSelect.innerHTML = '<option value="">Seleccione una prenda</option>';
       return;
     }
 
     fetch(`/ajax/obtener-prendas/?proveedor_id=${proveedorId}`)
       .then(response => {
-        console.log("📡 Estado del fetch:", response.status);
+
         return response.json();
       })
       .then(data => {
-        console.log("📥 Respuesta del servidor:", data);
+
 
         prendaSelect.innerHTML = ''; // Limpiar select
         if (data.prendas.length === 0) {
@@ -855,7 +873,7 @@ document.addEventListener("DOMContentLoaded", function () {
         window.actualizarTotalCostos?.();
       })
       .catch(error => {
-        console.error("❌ Error al obtener prendas:", error);
+
       });
   });
 });
@@ -1040,7 +1058,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     inputHidden.value = JSON.stringify(datos);
-    console.log('📤 Bordados guardados:', inputHidden.value);
+
   }
 
   // Crear primera fila sin botón de eliminar
@@ -1053,16 +1071,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('✅ Script de cintas cargado');
+
 
   const cintaDataElement = document.getElementById('cintas-data');
   if (!cintaDataElement) {
-    console.error('❌ No se encontró el script con id="cintas-data"');
+
     return;
   }
 
   const cintasDisponibles = JSON.parse(cintaDataElement.textContent || '[]');
-  console.log('🎀 Cintas cargadas:', cintasDisponibles);
+
 
   const container = document.getElementById('cinta-container');
   const btnAgregar = document.getElementById('agregar-cinta');
@@ -1180,19 +1198,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     inputHidden.value = JSON.stringify(datos);
-    console.log('📤 Cintas guardadas:', inputHidden.value);
-  }
+    }
 
   // Cargar datos iniciales si existen
   const datosIniciales = JSON.parse(inputHidden.value || '[]');
-  console.log('📦 Datos iniciales:', datosIniciales);
+
   if (datosIniciales.length > 0) {
-    console.log('📥 Cargando filas desde datos iniciales...');
+
     datosIniciales.forEach(cinta => {
       crearFilaCinta(cinta.id, cinta.cantidad, true);
     });
   } else {
-    console.log('🆕 Cargando primera fila vacía');
+
     crearFilaCinta('', '', false);
   }
 
@@ -1281,7 +1298,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     inputHidden.value = JSON.stringify(datos);
-    console.log('📤 Pegados guardados:', inputHidden.value);
+
   }
 
   // Crear primera fila sin botón de eliminar
@@ -1296,16 +1313,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('✅ Script de cierres cargado');
+
 
   const cierreDataElement = document.getElementById('cierres-data');
   if (!cierreDataElement) {
-    console.error('❌ No se encontró el script con id="cierres-data"');
+
     return;
   }
 
   const cierresDisponibles = JSON.parse(cierreDataElement.textContent || '[]');
-  console.log('🎀 Cierres cargadas:', cierresDisponibles);
+
 
   const container = document.getElementById('cierre-container');
   const btnAgregar = document.getElementById('agregar-cierre');
@@ -1413,19 +1430,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     inputHidden.value = JSON.stringify(datos);
-    console.log('📤 Cierres guardadas:', inputHidden.value);
+
   }
 
   // Cargar datos iniciales si existen
   const datosIniciales = JSON.parse(inputHidden.value || '[]');
-  console.log('📦 Datos iniciales:', datosIniciales);
+
   if (datosIniciales.length > 0) {
-    console.log('📥 Cargando filas desde datos iniciales...');
+
     datosIniciales.forEach(cierre => {
       crearFilaCierre(cierre.id, cierre.cantidad, true);
     });
-  } else {
-    console.log('🆕 Cargando primera fila vacía');
+
     crearFilaCierre('', '', false);
   }
 
@@ -1512,7 +1528,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     inputHidden.value = JSON.stringify(datos);
-    console.log('📤 Broches guardados:', inputHidden.value);
+ 
   }
 
   // Crear primera fila sin botón de eliminar
@@ -1527,16 +1543,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('✅ Script de elasticos cargado');
+
 
   const elasticoDataElement = document.getElementById('elasticos-data');
   if (!elasticoDataElement) {
-    console.error('❌ No se encontró el script con id="elasticos-data"');
+
     return;
   }
 
   const elasticosDisponibles = JSON.parse(elasticoDataElement.textContent || '[]');
-  console.log('🎀 Elasticos cargadas:', elasticosDisponibles);
+
 
   const container = document.getElementById('elastico-container');
   const btnAgregar = document.getElementById('agregar-elastico');
@@ -1644,19 +1660,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     inputHidden.value = JSON.stringify(datos);
-    console.log('📤 Elasticos guardadas:', inputHidden.value);
+
   }
 
   // Cargar datos iniciales si existen
   const datosIniciales = JSON.parse(inputHidden.value || '[]');
-  console.log('📦 Datos iniciales:', datosIniciales);
+
   if (datosIniciales.length > 0) {
-    console.log('📥 Cargando filas desde datos iniciales...');
+
     datosIniciales.forEach(elastico => {
       crearFilaElastico(elastico.id, elastico.cantidad, true);
     });
   } else {
-    console.log('🆕 Cargando primera fila vacía');
+
     crearFilaElastico('', '', false);
   }
 
@@ -1668,16 +1684,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('✅ Script de botones cargado');
+
 
   const botonDataElement = document.getElementById('botones-data');
   if (!botonDataElement) {
-    console.error('❌ No se encontró el script con id="botones-data"');
+
     return;
   }
 
   const botonesDisponibles = JSON.parse(botonDataElement.textContent || '[]');
-  console.log('🎀 Botones cargadas:', botonesDisponibles);
+
 
   const container = document.getElementById('boton-container');
   const btnAgregar = document.getElementById('agregar-boton');
@@ -1785,19 +1801,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     inputHidden.value = JSON.stringify(datos);
-    console.log('📤 Botones guardadas:', inputHidden.value);
+
   }
 
   // Cargar datos iniciales si existen
   const datosIniciales = JSON.parse(inputHidden.value || '[]');
-  console.log('📦 Datos iniciales:', datosIniciales);
+
   if (datosIniciales.length > 0) {
-    console.log('📥 Cargando filas desde datos iniciales...');
+
     datosIniciales.forEach(boton => {
       crearFilaBoton(boton.id, boton.cantidad, true);
     });
   } else {
-    console.log('🆕 Cargando primera fila vacía');
+
     crearFilaBoton('', '', false);
   }
 
@@ -1888,7 +1904,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     inputHidden.value = JSON.stringify(datos);
-    console.log('📤 Plantrel guardado:', inputHidden.value);
+
   }
 
   // Crear primera fila sin botón de eliminar
@@ -1906,16 +1922,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('✅ Script de velcros cargado');
+
 
   const velcroDataElement = document.getElementById('velcros-data');
   if (!velcroDataElement) {
-    console.error('❌ No se encontró el script con id="velcros-data"');
+
     return;
   }
 
   const velcrosDisponibles = JSON.parse(velcroDataElement.textContent || '[]');
-  console.log('🎀 Velcros cargadas:', velcrosDisponibles);
+
 
   const container = document.getElementById('velcro-container');
   const btnAgregar = document.getElementById('agregar-velcro');
@@ -2023,19 +2039,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     inputHidden.value = JSON.stringify(datos);
-    console.log('📤 Velcros guardadas:', inputHidden.value);
+
   }
 
   // Cargar datos iniciales si existen
   const datosIniciales = JSON.parse(inputHidden.value || '[]');
-  console.log('📦 Datos iniciales:', datosIniciales);
+
   if (datosIniciales.length > 0) {
-    console.log('📥 Cargando filas desde datos iniciales...');
+
     datosIniciales.forEach(velcro => {
       crearFilaVelcro(velcro.id, velcro.cantidad, true);
     });
   } else {
-    console.log('🆕 Cargando primera fila vacía');
+
     crearFilaVelcro('', '', false);
   }
 
@@ -2046,16 +2062,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('✅ Script de sesgos cargado');
 
   const sesgoDataElement = document.getElementById('sesgos-data');
   if (!sesgoDataElement) {
-    console.error('❌ No se encontró el script con id="sesgos-data"');
+
     return;
   }
 
   const sesgosDisponibles = JSON.parse(sesgoDataElement.textContent || '[]');
-  console.log('🎀 Sesgos cargados:', sesgosDisponibles);
+
 
   const container = document.getElementById('sesgo-container');
   const btnAgregar = document.getElementById('agregar-sesgo');
@@ -2161,19 +2176,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     inputHidden.value = JSON.stringify(datos);
-    console.log('📤 Sesgos guardados:', inputHidden.value);
+
   }
 
   // Cargar datos iniciales si existen
   const datosIniciales = JSON.parse(inputHidden.value || '[]');
-  console.log('📦 Datos iniciales:', datosIniciales);
+
   if (datosIniciales.length > 0) {
-    console.log('📥 Cargando filas desde datos iniciales...');
+
     datosIniciales.forEach(sesgo => {
       crearFilaSesgo(sesgo.id, sesgo.cantidad, true);
     });
   } else {
-    console.log('🆕 Cargando primera fila vacía');
+
     crearFilaSesgo('', '', false);
   }
 
@@ -2185,7 +2200,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('✅ Script de Extras cargado');
+
 
   const container = document.getElementById('extra-container');
   const btnAgregar = document.getElementById('agregar-extra');
@@ -2276,19 +2291,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     inputHidden.value = JSON.stringify(datos);
-    console.log('📤 Extras guardados:', inputHidden.value);
+
   }
 
   // Cargar datos iniciales si existen
   const datosIniciales = JSON.parse(inputHidden.value || '[]');
-  console.log('📦 Datos iniciales (Extra):', datosIniciales);
+
   if (datosIniciales.length > 0) {
-    console.log('📥 Cargando filas desde datos iniciales...');
     datosIniciales.forEach(extra => {
       crearFilaExtra(extra.descripcion, extra.precio_unitario, extra.cantidad, true);
     });
   } else {
-    console.log('🆕 Cargando primera fila vacía');
+  
     crearFilaExtra('', '', '', false);
   }
 

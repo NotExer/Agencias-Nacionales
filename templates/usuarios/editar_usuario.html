@@ -1,0 +1,53 @@
+{% extends 'main/index.html' %}
+
+{% block styles %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="space">
+  <h2>Editar usuario</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger" role="alert">
+        {{ form.non_field_errors }}
+      </div>
+      {% endif %}
+
+      {% for field in form %}
+      {% if field.name != 'foto' %}
+      <div class="mb-3">
+        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="text-danger">{{ field.errors }}</div>
+        {% endif %}
+      </div>
+      {% endif %}
+      {% endfor %}
+
+      <div class="mb-3">
+        <label for="{{ form.foto.id_for_label }}" class="form-label">{{ form.foto.label }}</label>
+        
+        {% if form.instance.foto %}
+        <div class="preview-container mt-2">
+            <img id="preview-img" src="{{ form.instance.foto.url }}" alt="Foto de perfil" style="display: block; max-height: 200px;" >
+        </div>
+        {% else %}
+          <img id="preview-img" src="#" alt="Vista previa de la imagen" style="display: none;">
+        {% endif %}
+        
+        {{ form.foto }}
+        
+        {% if form.foto.errors %}
+          <div class="text-danger">{{ form.foto.errors }}</div>
+        {% endif %}
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+  </form>
+</div>
+{% endblock %}
+w

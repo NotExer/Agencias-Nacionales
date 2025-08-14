@@ -37,9 +37,9 @@
    
                                 <td>
                                     <a href="{% url 'insumos_editar' insumo.ID %}">
-                                        <button class="editar_button">Editar</button>
+                                        <button class="btn btn-primary">Editar</button>
                                     </a>
-                                    <button class="eliminar_button" onclick="abrir_modal('{% url 'insumos_eliminar' insumo.ID %}')">
+                                    <button class="btn btn-download" onclick="abrir_modal('{% url 'insumos_eliminar' insumo.ID %}')">
                                         Eliminar
                                     </button>
                                 </td>

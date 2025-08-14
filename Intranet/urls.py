@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from apps.accounts.views import login_view
+from apps.usuarios.views import login_view
 from apps.main.views import home 
 from django.urls import path, include 
 from django.views.generic import RedirectView
@@ -25,12 +25,18 @@ from apps.telas.views import TelasHome, TelaListView, TelaCreateView, TelaUpdate
 from apps.trazos.views import TrazosHome
 from django.conf import settings
 from django.conf.urls.static import static
+from apps.usuarios.views import crear_usuario, editar_usuario, lista_usuarios, resetear_contrasena_admin, modal_reset_password
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', login_view, name='login'), 
     path('logout/', custom_logout, name='logout'),
     path('home/', home, name='home'),
+    path('usuarios/', lista_usuarios, name='lista_usuarios'),
+    path('usuarios/crear/', crear_usuario, name='crear_usuario'),
+    path('usuarios/editar/<int:pk>/', editar_usuario, name='editar_usuario'),
+    path('usuarios/<int:pk>/resetear-contrasena/', resetear_contrasena_admin, name='resetear_contrasena_admin'),
+    path('usuarios/cambiarContrasena/<int:pk>/', modal_reset_password, name='modal_reset_password'),
     path('', RedirectView.as_view(url='/login/', permanent=False), name='login'),
     path('bordados/', BordadosHome, name='bordados_home'),
     path('comercial/', ComercialHome, name='comercial_home'),

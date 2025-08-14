@@ -19,7 +19,7 @@ CATEGORIA = [
 class Insumos(models.Model):
     ID = models.AutoField(primary_key=True)  
     descripcion = models.CharField(max_length=200)
-    inventario = models.DecimalField(decimal_places=2 , max_digits=20)
+    inventario = models.DecimalField(decimal_places=0 , max_digits=20)
     precio = models.DecimalField(max_digits=12, decimal_places=0)
     fecha_edicion = models.DateField(auto_now=True)
     categoria = models.CharField(max_length=50, choices=CATEGORIA)

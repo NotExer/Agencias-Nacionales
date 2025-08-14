@@ -1,5 +1,17 @@
 from django.db import models
 
+
+OPCIONES_PRODUCTOS = [
+    ('Botones', 'Botones'),
+    ('Camisetas', 'Camisetas'),
+    ('Calzado Agencias', 'Calzado Agencias'),
+    ('Calzado Kondor', 'Calzado Kondor'),
+    ('Epp', 'Epp'),
+    ('Prendas de cabeza', 'Prendas de cabeza'),
+]
+
+
+
 class Clientes(models.Model):
     ESTADOS = [
         ('','Seleccione'),
@@ -51,7 +63,6 @@ class Clientes(models.Model):
 
     ]
 
-
     ID = models.AutoField(primary_key=True)  
     Nit = models.CharField(max_length=9, unique=True) #
     Razon = models.CharField("Razón social", max_length=200) #
@@ -67,12 +78,18 @@ class Clientes(models.Model):
     CorreoExtra = models.EmailField(max_length=100, blank=True) #
     CorreoFactura = models.EmailField(max_length=100, blank=True) #
     Sector = models.CharField(max_length=50, choices=SECTORES, default='') #
-    Productos = models.CharField(max_length=50, choices=PRODUCTOS, default='') #
+    Productos = models.TextField(blank=True) 
     Pagina = models.CharField(max_length=200, blank=True) #
     Estado = models.CharField(max_length=20, choices=ESTADOS, default='') #
     Vendedor = models.CharField(max_length=50, choices=VENDEDORES ,default='') #
     TipoContacto = models.CharField(max_length=50, choices=CONTACTO ,default='') #
-    Comentario = models.TextField(blank=True) #
+    Comentario = models.TextField(blank=True) 
 
     def __str__(self):
         return f"{self.Razon} ({self.Nit})"
+
+
+    def get_productos_list(self):
+        if not self.Productos:
+            return []
+        return [p.strip() for p in self.Productos.split(',')]
