@@ -71,7 +71,6 @@ class Calculadora(models.Model):
     prenda = models.ForeignKey(Prenda, on_delete=models.CASCADE, null=True,  blank=True)
     Cantidad = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     Descripcion = models.CharField(max_length=100, blank=True)
-    
     PrecioTela = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     PromedioTela = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     AjusteTela = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)

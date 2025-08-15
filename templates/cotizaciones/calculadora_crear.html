@@ -371,6 +371,41 @@
 
 
 
+    {% if cintas %}
+    {{ cintas|json_script:"cintas-data" }}
+    {% endif %}
+    
+    {% if cierres %}
+    {{ cierres|json_script:"cierres-data" }}
+    {% endif %}
+    
+    
+    
+    {% if elasticos %}
+    {{ elasticos|json_script:"elasticos-data" }}
+    {% endif %}
+    
+    
+    {% if botones %}
+    {{ botones|json_script:"botones-data" }}
+    {% endif %}
+    
+    
+    {% if velcros %}
+    {{ velcros|json_script:"velcros-data" }}
+    {% endif %}
+    
+    
+    {% if sesgos %}
+    {{ sesgos|json_script:"sesgos-data" }}
+    {% endif %}
+    
+    
+    {% if form.instance.Bordado %}
+    <script id="bordado-json" type="application/json">
+        {{ form.instance.Bordado|safe }}
+      </script>
+    {% endif %}
 
     <button type="submit" class="btn btn-download">Guardar</button>
     {% else %}
@@ -382,40 +417,5 @@
 
 <!-- ✅ Fuera del form -->
 
-{% if cintas %}
-{{ cintas|json_script:"cintas-data" }}
-{% endif %}
-
-{% if cierres %}
-{{ cierres|json_script:"cierres-data" }}
-{% endif %}
-
-
-
-{% if elasticos %}
-{{ elasticos|json_script:"elasticos-data" }}
-{% endif %}
-
-
-{% if botones %}
-{{ botones|json_script:"botones-data" }}
-{% endif %}
-
-
-{% if velcros %}
-{{ velcros|json_script:"velcros-data" }}
-{% endif %}
-
-
-{% if sesgos %}
-{{ sesgos|json_script:"sesgos-data" }}
-{% endif %}
-
-
-{% if form.instance.Bordado %}
-<script id="bordado-json" type="application/json">
-    {{ form.instance.Bordado|safe }}
-  </script>
-{% endif %}
 
 {% endblock %}

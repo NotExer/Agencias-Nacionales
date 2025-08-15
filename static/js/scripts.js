@@ -690,8 +690,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   configuraciones.forEach(config => {
     // Buscar el select (usa selectAltId como respaldo si existe)
-    const select = document.getElementById(config.selectId) || 
-                   (config.selectAltId ? document.getElementById(config.selectAltId) : null);
+    const select = document.getElementById(config.selectId) ||
+      (config.selectAltId ? document.getElementById(config.selectAltId) : null);
     const container = document.getElementById(config.containerId);
 
     if (!select || !container) return; // Si no existe, saltar
@@ -869,7 +869,7 @@ document.addEventListener("DOMContentLoaded", function () {
           prendaSelect.appendChild(option);
         });
 
-        // ✅ Volver a calcular el total (para que bordados, botones, etc. se mantengan actualizados)
+
         window.actualizarTotalCostos?.();
       })
       .catch(error => {
@@ -877,7 +877,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   });
 });
-
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -893,18 +892,30 @@ document.addEventListener('DOMContentLoaded', function () {
   const precioLavadoInput = document.getElementById('precio-lavado');
   const precioEstampadoInput = document.getElementById('precio-estampado');
   const precioFusionadoInput = document.getElementById('precio-fusionado');
-  const totalCostosInput = document.getElementById('total-costos');
 
+  // Datos globales para evitar que los campos se queden sin información
   let prendasData = [];
   let preciosForro = {};
   let preciosLavado = {};
   let preciosFusionado = {};
+  let preciosEstampado = {
+    'default': 0
+  };
+  let preciosConfeccion = {};
 
-
-
-  proveedorSelect.addEventListener('change', function () {
-    const proveedorId = this.value;
-    if (!proveedorId) return;
+  // Función para obtener todos los datos del proveedor y otros insumos
+  function obtenerDatosProveedor(proveedorId) {
+    if (!proveedorId) {
+      // Limpia los campos si no hay proveedor seleccionado
+      prendaSelect.innerHTML = '<option value="">Seleccione una prenda</option>';
+      precioPrendaInput.value = 'No definido';
+      precioForroInput.value = 'No definido';
+      precioLavadoInput.value = 'No definido';
+      precioEstampadoInput.value = 'No definido';
+      precioFusionadoInput.value = 'No definido';
+      window.actualizarTotalCostos();
+      return;
+    }
 
     fetch(`/ajax/obtener-prendas/?proveedor_id=${proveedorId}`)
       .then(response => response.json())
@@ -913,7 +924,10 @@ document.addEventListener('DOMContentLoaded', function () {
         preciosForro = data.precios_forro || {};
         preciosLavado = data.precios_lavado || {};
         preciosFusionado = data.precios_fusionado || {};
+        preciosEstampado = data.precios_estampado || {};
+        preciosConfeccion = data.precios_confeccion || {};
 
+        // Rellena el select de prendas
         prendaSelect.innerHTML = '<option value="">Seleccione una prenda</option>';
         prendasData.forEach(prenda => {
           const option = document.createElement('option');
@@ -923,54 +937,71 @@ document.addEventListener('DOMContentLoaded', function () {
           prendaSelect.appendChild(option);
         });
 
-        precioPrendaInput.value = 'No definido';
-        precioForroInput.value = 'No definido';
-        precioLavadoInput.value = 'No definido';
-        precioEstampadoInput.value = 'No definido';
-        precioFusionadoInput.value = 'No definido';
-        totalCostosInput.value = '$0';
+        // Reinicia los valores mostrados en los campos de precio
+        reiniciarValoresMostrados();
+        window.actualizarTotalCostos();
       });
+  }
+
+  // Función para reiniciar todos los campos de precio a su estado inicial
+  function reiniciarValoresMostrados() {
+    precioPrendaInput.value = 'No definido';
+    precioForroInput.value = 'No definido';
+    precioLavadoInput.value = 'No definido';
+    precioEstampadoInput.value = 'No definido';
+    precioFusionadoInput.value = 'No definido';
+  }
+
+  // Event listeners
+  proveedorSelect.addEventListener('change', function () {
+    obtenerDatosProveedor(this.value);
   });
 
   prendaSelect.addEventListener('change', function () {
     const selectedOption = this.options[this.selectedIndex];
     const precio = selectedOption?.dataset?.precio;
     precioPrendaInput.value = precio ? `$${precio}` : 'No definido';
-    actualizarTotalCostos();
+    window.actualizarTotalCostos();
   });
 
   forroSelect?.addEventListener('change', function () {
     const selected = this.value;
     const precio = preciosForro[selected];
     precioForroInput.value = precio !== undefined ? `$${precio}` : 'No definido';
-    actualizarTotalCostos();
+    window.actualizarTotalCostos();
   });
 
   lavadoSelect?.addEventListener('change', function () {
     const selected = this.value;
     const precio = preciosLavado[selected];
     precioLavadoInput.value = precio !== undefined ? `$${precio}` : 'No definido';
-    actualizarTotalCostos();
+    window.actualizarTotalCostos();
   });
 
   estampadoInput?.addEventListener('input', function () {
-    const cantidad = parseInt(this.value);
+    const cantidad = parseInt(this.value) || 0;
     let precio = 0;
-    if (!isNaN(cantidad) && cantidad > 1) {
-      precio = cantidad * 1000;
+    if (cantidad > 0) {
+      // Usa el precio de la data si está disponible, si no, usa un valor por defecto.
+      const precioUnitario = preciosEstampado['default'] || 1000;
+      precio = cantidad * precioUnitario;
     }
     precioEstampadoInput.value = `$${precio}`;
-    actualizarTotalCostos();
+    window.actualizarTotalCostos();
   });
 
   fusionadoSelect?.addEventListener('change', function () {
     const selected = this.value;
     const precio = preciosFusionado[selected];
     precioFusionadoInput.value = precio !== undefined ? `$${precio}` : 'No definido';
-    actualizarTotalCostos();
+    window.actualizarTotalCostos();
   });
-});
 
+  // Inicializa la carga de datos al cargar la página
+  if (proveedorSelect.value) {
+    obtenerDatosProveedor(proveedorSelect.value);
+  }
+});
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1123,18 +1154,23 @@ document.addEventListener('DOMContentLoaded', () => {
     <input type="text" class="input-user cinta-costo" readonly value="${costoTotal}">
   </div>
 
-  ${mostrarEliminar
+${mostrarEliminar
         ? `
-        <div style="width: 100%; display: flex; justify-content: center; margin-top: 1.8rem;">
-          <button type="button" class="btn btn-download btn-sm eliminar-cinta">
-            Eliminar
-          </button>
-        </div>
-      `
+    <div style="
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: center;
+      margin-top: 1.8rem;
+    ">
+      <button type="button" class="btn btn-download btn-sm eliminar-cinta">
+        Eliminar
+      </button>
+    </div>
+  `
         : ''
       }
-`;
 
+`;
 
     container.appendChild(div);
 
@@ -1198,7 +1234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     inputHidden.value = JSON.stringify(datos);
-    }
+  }
 
   // Cargar datos iniciales si existen
   const datosIniciales = JSON.parse(inputHidden.value || '[]');
@@ -1229,24 +1265,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const div = document.createElement('div');
     div.className = 'form-row-50 mb-2 pegado-fila';
 
+
     div.innerHTML = `
-      <div class="form-group half-width">
-        <label>Precio de pegado</label>
-        <input type="number" class="input-user precio-pegado" min="0" step="1" value="${precio}">
-      </div>
+    <div class="form-group half-width">
+      <label>Precio de pegado</label>
+      <input type="number" class="input-user precio-pegado" min="0" step="1" value="${precio}">
+    </div>
 
-      <div class="form-group half-width">
-        <label>Cantidad de pegado</label>
-        <input type="number" class="input-user cantidad-pegado" min="0" step="1" value="${cantidad}">
-      </div>
+    <div class="form-group half-width">
+      <label>Cantidad de pegado</label>
+      <input type="number" class="input-user cantidad-pegado" min="0" step="1" value="${cantidad}">
+    </div>
 
-      <div class="form-group half-width">
-        <label>Costo total de pegado</label>
-        <input type="text" class="input-user costo-pegado" readonly value="No definido">
-      </div>
+    <div class="form-group half-width">
+      <label>Costo total de pegado</label>
+      <input type="text" class="input-user costo-pegado" readonly value="No definido">
+    </div>
 
-      ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-pegado" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
-      `;
+    ${mostrarEliminar
+        ? `<div style="width: 100%; display: flex; justify-content: center; margin-top: 1.8rem;">
+           <button type="button" class="btn btn-download btn-sm eliminar-pegado">Eliminar</button>
+         </div>`
+        : ''
+      }
+  `;
 
     container.appendChild(div);
     actualizarEventos();
@@ -1343,31 +1385,44 @@ document.addEventListener('DOMContentLoaded', () => {
     div.className = 'form-row-50 mb-2 cierre-fila';
 
     div.innerHTML = `
-  <div class="form-group">
-    <label>Tipo de cierre</label>
-    <select class="form-select cierre-select">
-      ${opciones}
-    </select>
-  </div>
+    <div class="form-group">
+        <label>Tipo de cierre</label>
+        <select class="form-select cierre-select">
+            ${opciones}
+        </select>
+    </div>
 
-  <div class="form-group">
-    <label>Precio de cierre</label>
-    <input type="number" class="input-user cierre-precio" readonly value="${precio}">
-  </div>
+    <div class="form-group">
+        <label>Precio de cierre</label>
+        <input type="number" class="input-user cierre-precio" readonly value="${precio}">
+    </div>
 
-  <div class="form-group">
-    <label>Cantidad</label>
-    <input type="number" class="input-user cierre-cantidad" min="0" step="1" value="${cantidad}">
-  </div>
+    <div class="form-group">
+        <label>Cantidad</label>
+        <input type="number" class="input-user cierre-cantidad" min="0" step="1" value="${cantidad}">
+    </div>
 
-  <div class="form-group">
-    <label>Costo total</label>
-    <input type="text" class="input-user cierre-costo" readonly value="${costoTotal}">
-  </div>
+    <div class="form-group">
+        <label>Costo total</label>
+        <input type="text" class="input-user cierre-costo" readonly value="${costoTotal}">
+    </div>
 
-  ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-cierre" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+    ${mostrarEliminar
+        ? `
+        <div style="
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            margin-top: 1.8rem;
+        ">
+            <button type="button" class="btn btn-download btn-sm eliminar-cierre">
+                Eliminar
+            </button>
+        </div>
+      `
+        : ''
+      }
 `;
-
     container.appendChild(div);
 
 
@@ -1434,14 +1489,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Cargar datos iniciales si existen
+  // Cargar datos iniciales si existen
   const datosIniciales = JSON.parse(inputHidden.value || '[]');
 
   if (datosIniciales.length > 0) {
-
     datosIniciales.forEach(cierre => {
       crearFilaCierre(cierre.id, cierre.cantidad, true);
     });
-
+  } else { // <--- ¡Esta es la parte que falta!
     crearFilaCierre('', '', false);
   }
 
@@ -1460,24 +1515,28 @@ document.addEventListener('DOMContentLoaded', () => {
     div.className = 'form-row-50 mb-2 broche-fila';
 
     div.innerHTML = `
-      <div class="form-group half-width">
-        <label>Precio del broche</label>
-        <input type="number" class="input-user precio-broche" min="0" step="1" value="${precio}">
-      </div>
+    <div class="form-group half-width">
+      <label>Precio del broche</label>
+      <input type="number" class="input-user precio-broche" min="0" step="1" value="${precio}">
+    </div>
 
-      <div class="form-group half-width">
-        <label>Cantidad de broche</label>
-        <input type="number" class="input-user cantidad-broche" min="0" step="1" value="${cantidad}">
-      </div>
+    <div class="form-group half-width">
+      <label>Cantidad de broche</label>
+      <input type="number" class="input-user cantidad-broche" min="0" step="1" value="${cantidad}">
+    </div>
 
-      <div class="form-group half-width">
-        <label>Costo total del broche</label>
-        <input type="text" class="input-user costo-broche" readonly value="No definido">
-      </div>
+    <div class="form-group half-width">
+      <label>Costo total del broche</label>
+      <input type="text" class="input-user costo-broche" readonly value="No definido">
+    </div>
 
-      ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-broche" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
-      `;
-
+    ${mostrarEliminar
+        ? `<div style="width: 100%; display: flex; justify-content: center; margin-top: 1.8rem;">
+           <button type="button" class="btn btn-download btn-sm eliminar-broche">Eliminar</button>
+         </div>`
+        : ''
+      }
+  `;
     container.appendChild(div);
     actualizarEventos();
   }
@@ -1528,7 +1587,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     inputHidden.value = JSON.stringify(datos);
- 
+
   }
 
   // Crear primera fila sin botón de eliminar
@@ -1541,18 +1600,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-
 document.addEventListener('DOMContentLoaded', () => {
-
 
   const elasticoDataElement = document.getElementById('elasticos-data');
   if (!elasticoDataElement) {
-
     return;
   }
 
   const elasticosDisponibles = JSON.parse(elasticoDataElement.textContent || '[]');
-
 
   const container = document.getElementById('elastico-container');
   const btnAgregar = document.getElementById('agregar-elastico');
@@ -1573,33 +1628,42 @@ document.addEventListener('DOMContentLoaded', () => {
     div.className = 'form-row-50 mb-2 elastico-fila';
 
     div.innerHTML = `
-  <div class="form-group">
-    <label>Tipo de elastico</label>
-    <select class="form-select elastico-select">
-      ${opciones}
-    </select>
-  </div>
+    <div class="form-group">
+        <label>Tipo de elástico</label>
+        <select class="form-select elastico-select">
+            ${opciones}
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Precio de elástico</label>
+        <input type="number" class="input-user elastico-precio" readonly value="${precio}">
+    </div>
+    <div class="form-group">
+        <label>Cantidad</label>
+        <input type="number" class="input-user elastico-cantidad" min="0" step="1" value="${cantidad}">
+    </div>
+    <div class="form-group">
+        <label>Costo total</label>
+        <input type="text" class="input-user elastico-costo" readonly value="${costoTotal}">
+    </div>
 
-  <div class="form-group">
-    <label>Precio de elastico</label>
-    <input type="number" class="input-user elastico-precio" readonly value="${precio}">
-  </div>
-
-  <div class="form-group">
-    <label>Cantidad</label>
-    <input type="number" class="input-user elastico-cantidad" min="0" step="1" value="${cantidad}">
-  </div>
-
-  <div class="form-group">
-    <label>Costo total</label>
-    <input type="text" class="input-user elastico-costo" readonly value="${costoTotal}">
-  </div>
-
-  ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-elastico" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+    ${mostrarEliminar
+        ? `
+        <div style="
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            margin-top: 1.8rem;
+        ">
+            <button type="button" class="btn btn-download btn-sm eliminar-elastico">
+                Eliminar
+            </button>
+        </div>
+      `
+        : ''
+      }
 `;
-
     container.appendChild(div);
-
 
     actualizarEventos();
   }
@@ -1660,27 +1724,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     inputHidden.value = JSON.stringify(datos);
-
   }
 
-  // Cargar datos iniciales si existen
-  const datosIniciales = JSON.parse(inputHidden.value || '[]');
+  // Nueva función para inicializar el contenedor cuando se hace visible
+  function inicializarCampos() {
+    const datosIniciales = JSON.parse(inputHidden.value || '[]');
+    if (datosIniciales.length > 0) {
+      datosIniciales.forEach(elastico => {
+        crearFilaElastico(elastico.id, elastico.cantidad, true);
+      });
+    } else {
+      crearFilaElastico('', '', false);
+    }
+  }
 
-  if (datosIniciales.length > 0) {
-
-    datosIniciales.forEach(elastico => {
-      crearFilaElastico(elastico.id, elastico.cantidad, true);
+  // Se agrega el "escuchador de eventos" al botón para inicializar cuando se muestra el campo
+  const botonMostrar = document.querySelector('button[onclick*="elastico-campo"]');
+  if (botonMostrar) {
+    botonMostrar.addEventListener('click', () => {
+      if (container.children.length === 0) {
+        inicializarCampos();
+      }
     });
-  } else {
-
-    crearFilaElastico('', '', false);
   }
 
   btnAgregar.addEventListener('click', () => {
     crearFilaElastico('', '', true);
   });
-});
 
+  // Cargar datos iniciales si existen, en caso de que el contenedor no esté oculto por defecto
+  if (!document.getElementById('elastico-campo').classList.contains('hidden')) {
+    inicializarCampos();
+  }
+});
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1713,7 +1789,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const div = document.createElement('div');
     div.className = 'form-row-50 mb-2 boton-fila';
 
-    div.innerHTML = `
+div.innerHTML = `
   <div class="form-group">
     <label>Tipo de boton</label>
     <select class="form-select boton-select">
@@ -1736,7 +1812,17 @@ document.addEventListener('DOMContentLoaded', () => {
     <input type="text" class="input-user boton-costo" readonly value="${costoTotal}">
   </div>
 
-  ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-boton" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+  ${
+    mostrarEliminar
+      ? `
+        <div style="grid-column: 1 / -1; text-align: center; margin-top: 1rem;">
+          <button type="button" class="btn btn-download btn-sm eliminar-boton">
+            Eliminar
+          </button>
+        </div>
+      `
+      : ''
+  }
 `;
 
     container.appendChild(div);
@@ -1836,23 +1922,28 @@ document.addEventListener('DOMContentLoaded', () => {
     div.className = 'form-row-50 mb-2 plantrel-fila';
 
     div.innerHTML = `
-      <div class="form-group half-width">
-        <label>Precio del plantrel</label>
-        <input type="number" class="input-user precio-plantrel" min="0" step="1" value="${precio}">
-      </div>
+    <div class="form-group half-width">
+      <label>Precio del plantrel</label>
+      <input type="number" class="input-user precio-plantrel" min="0" step="1" value="${precio}">
+    </div>
 
-      <div class="form-group half-width">
-        <label>Cantidad de plantrel</label>
-        <input type="number" class="input-user cantidad-plantrel" min="0" step="1" value="${cantidad}">
-      </div>
+    <div class="form-group half-width">
+      <label>Cantidad de plantrel</label>
+      <input type="number" class="input-user cantidad-plantrel" min="0" step="1" value="${cantidad}">
+    </div>
 
-      <div class="form-group half-width">
-        <label>Costo total del plantrel</label>
-        <input type="text" class="input-user costo-plantrel" readonly value="No definido">
-      </div>
+    <div class="form-group half-width">
+      <label>Costo total del plantrel</label>
+      <input type="text" class="input-user costo-plantrel" readonly value="No definido">
+    </div>
 
-      ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-plantrel" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
-    `;
+    ${mostrarEliminar
+        ? `<div style="width: 100%; display: flex; justify-content: center; margin-top: 1.8rem;">
+           <button type="button" class="btn btn-download btn-sm eliminar-plantrel">Eliminar</button>
+         </div>`
+        : ''
+      }
+  `;
 
     container.appendChild(div);
     actualizarEventos();
@@ -1951,7 +2042,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const div = document.createElement('div');
     div.className = 'form-row-50 mb-2 velcro-fila';
 
-    div.innerHTML = `
+div.innerHTML = `
   <div class="form-group">
     <label>Tipo de velcro</label>
     <select class="form-select velcro-select">
@@ -1974,8 +2065,19 @@ document.addEventListener('DOMContentLoaded', () => {
     <input type="text" class="input-user velcro-costo" readonly value="${costoTotal}">
   </div>
 
-  ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-velcro" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
+  ${
+    mostrarEliminar
+      ? `
+        <div style="grid-column: 1 / -1; text-align: center; margin-top: 1rem;">
+          <button type="button" class="btn btn-download btn-sm eliminar-velcro">
+            Eliminar
+          </button>
+        </div>
+      `
+      : ''
+  }
 `;
+
 
     container.appendChild(div);
 
@@ -2090,31 +2192,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const div = document.createElement('div');
     div.className = 'form-row-50 mb-2 sesgo-fila';
 
-    div.innerHTML = `
-      <div class="form-group">
-        <label>Tipo de sesgo</label>
-        <select class="form-select sesgo-select">
-          ${opciones}
-        </select>
-      </div>
+   div.innerHTML = `
+  <div class="form-group">
+    <label>Tipo de sesgo</label>
+    <select class="form-select sesgo-select">
+      ${opciones}
+    </select>
+  </div>
 
-      <div class="form-group">
-        <label>Precio del sesgo</label>
-        <input type="number" class="input-user sesgo-precio" readonly value="${precio}">
-      </div>
+  <div class="form-group">
+    <label>Precio del sesgo</label>
+    <input type="number" class="input-user sesgo-precio" readonly value="${precio}">
+  </div>
 
-      <div class="form-group">
-        <label>Cantidad</label>
-        <input type="number" class="input-user sesgo-cantidad" min="0" step="1" value="${cantidad}">
-      </div>
+  <div class="form-group">
+    <label>Cantidad</label>
+    <input type="number" class="input-user sesgo-cantidad" min="0" step="1" value="${cantidad}">
+  </div>
 
-      <div class="form-group">
-        <label>Costo total</label>
-        <input type="text" class="input-user sesgo-costo" readonly value="${costoTotal}">
-      </div>
+  <div class="form-group">
+    <label>Costo total</label>
+    <input type="text" class="input-user sesgo-costo" readonly value="${costoTotal}">
+  </div>
 
-      ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-sesgo" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
-    `;
+  ${
+    mostrarEliminar
+      ? `
+        <div style="grid-column: 1 / -1; text-align: center; margin-top: 1rem;">
+          <button type="button" class="btn btn-download btn-sm eliminar-sesgo">
+            Eliminar
+          </button>
+        </div>
+      `
+      : ''
+  }
+`;
+
 
     container.appendChild(div);
     actualizarEventos();
@@ -2212,29 +2325,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const div = document.createElement('div');
     div.className = 'form-row-50 mb-2 extra-fila';
 
-    div.innerHTML = `
-      <div class="form-group">
-        <label>Descripción de costo extra</label>
-        <input type="text" class="input-user extra-descripcion" value="${descripcion}">
-      </div>
+ div.innerHTML = `
+  <div class="form-group">
+    <label>Descripción de costo extra</label>
+    <input type="text" class="input-user extra-descripcion" value="${descripcion}">
+  </div>
 
-      <div class="form-group">
-        <label>Precio unitario de costo extra</label>
-        <input type="number" class="input-user extra-precio" min="0" step="0.01" value="${precio}">
-      </div>
+  <div class="form-group">
+    <label>Precio unitario de costo extra</label>
+    <input type="number" class="input-user extra-precio" min="0" step="0.01" value="${precio}">
+  </div>
 
-      <div class="form-group">
-        <label>Cantidad de costo extra</label>
-        <input type="number" class="input-user extra-cantidad" min="0" step="1" value="${cantidad}">
-      </div>
+  <div class="form-group">
+    <label>Cantidad de costo extra</label>
+    <input type="number" class="input-user extra-cantidad" min="0" step="1" value="${cantidad}">
+  </div>
 
-      <div class="form-group">
-        <label>Costo total de costo extra</label>
-        <input type="text" class="input-user extra-total" readonly value="${total}">
-      </div>
+  <div class="form-group">
+    <label>Costo total de costo extra</label>
+    <input type="text" class="input-user extra-total" readonly value="${total}">
+  </div>
 
-      ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-extra" style="margin-top: 1.8rem;">Eliminar</button>' : ''}
-    `;
+  ${
+    mostrarEliminar
+      ? `
+        <div style="grid-column: 1 / -1; text-align: center; margin-top: 1rem;">
+          <button type="button" class="btn btn-download btn-sm eliminar-extra">
+            Eliminar
+          </button>
+        </div>
+      `
+      : ''
+  }
+`;
 
     container.appendChild(div);
     actualizarEventos();
@@ -2302,7 +2425,7 @@ document.addEventListener('DOMContentLoaded', () => {
       crearFilaExtra(extra.descripcion, extra.precio_unitario, extra.cantidad, true);
     });
   } else {
-  
+
     crearFilaExtra('', '', '', false);
   }
 
@@ -2311,28 +2434,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-
 window.actualizarTotalCostos = function () {
-  // Asignar evento al campo de confección si no está asignado ya
-  const inputConfeccion = document.getElementById('id_Confeccion');
-  if (inputConfeccion && !inputConfeccion.dataset.listenerAdded) {
-    inputConfeccion.addEventListener('input', window.actualizarTotalCostos);
-    inputConfeccion.dataset.listenerAdded = "true";
-  }
-
   const limpiar = (valor) => parseFloat((valor || '').replace('$', '').trim()) || 0;
 
-  const precioPrenda = limpiar(document.getElementById('precio-prenda')?.value);
-  const precioForro = limpiar(document.getElementById('precio-forro')?.value);
-  const precioLavado = limpiar(document.getElementById('precio-lavado')?.value);
-  const precioEstampado = limpiar(document.getElementById('precio-estampado')?.value);
-  const precioFusionado = limpiar(document.getElementById('precio-fusionado')?.value);
-  const precioConfeccion = limpiar(document.getElementById('id_Confeccion')?.value);
-
+  // Obtener la cantidad de prendas. Si no existe o es 0, usar 1.
   const cantidadInput = document.querySelector('input[name="Cantidad"]');
-  const cantidad = cantidadInput ? parseFloat(cantidadInput.value) || 1 : 1;
+  const cantidad = parseFloat(cantidadInput?.value) || 1;
 
-  const sumarCostosPorClase = (clase) => {
+  // Función para obtener el costo total de los insumos dinámicos
+  const sumarCostosDinamicos = (clase) => {
     let total = 0;
     document.querySelectorAll(`.${clase}`).forEach(input => {
       total += limpiar(input.value);
@@ -2340,30 +2450,44 @@ window.actualizarTotalCostos = function () {
     return total;
   };
 
-  const totalBordado = sumarCostosPorClase('costo-bordado');
-  const totalPegado = sumarCostosPorClase('costo-pegado');
-  const totalPlantrel = sumarCostosPorClase('costo-plantrel');
-  const totalBotones = sumarCostosPorClase('boton-costo');
-  const totalVelcro = sumarCostosPorClase('velcro-costo');
-  const totalSesgos = sumarCostosPorClase('sesgo-costo');
-  const totalElasticos = sumarCostosPorClase('elastico-costo');
-  const totalCierres = sumarCostosPorClase('cierre-costo');
-  const totalCintas = sumarCostosPorClase('cinta-costo');
-  const totalExtras = sumarCostosPorClase('extra-total');
+  // 1. Obtener los costos unitarios de los insumos fijos
+  const precioPrenda = limpiar(document.getElementById('precio-prenda')?.value);
+  const precioForro = limpiar(document.getElementById('precio-forro')?.value);
+  const precioLavado = limpiar(document.getElementById('precio-lavado')?.value);
+  const precioEstampado = limpiar(document.getElementById('precio-estampado')?.value);
+  const precioFusionado = limpiar(document.getElementById('precio-fusionado')?.value);
+  const precioConfeccion = limpiar(document.getElementById('id_Confeccion')?.value);
 
+  // 2. Sumar el costo total de los insumos dinámicos
+  const totalBordado = sumarCostosDinamicos('costo-bordado');
+  const totalPegado = sumarCostosDinamicos('costo-pegado');
+  const totalPlantrel = sumarCostosDinamicos('costo-plantrel');
+  const totalBotones = sumarCostosDinamicos('boton-costo');
+  const totalVelcro = sumarCostosDinamicos('velcro-costo');
+  const totalSesgos = sumarCostosDinamicos('sesgo-costo');
+  const totalElasticos = sumarCostosDinamicos('elastico-costo');
+  const totalCierres = sumarCostosDinamicos('cierre-costo');
+  const totalCintas = sumarCostosDinamicos('cinta-costo');
+  const totalExtras = sumarCostosDinamicos('extra-total');
+
+  // El cálculo de broches ya está bien, suma el total de cada fila
   let totalBroches = 0;
   document.querySelectorAll('.broche-fila').forEach(fila => {
     const precio = limpiar(fila.querySelector('.precio-broche')?.value);
-    const cantidad = parseFloat(fila.querySelector('.cantidad-broche')?.value) || 0;
-    totalBroches += precio * cantidad;
+    const cantidadBroche = parseFloat(fila.querySelector('.cantidad-broche')?.value) || 0;
+    totalBroches += precio * cantidadBroche;
   });
 
-  const totalUnitario =
+  // 3. Sumar todos los costos para obtener el "total de costos"
+  const totalInsumosUnitario =
     precioPrenda +
     precioForro +
     precioLavado +
     precioEstampado +
     precioFusionado +
+    precioConfeccion;
+
+  const totalProcesosUnitario =
     totalBordado +
     totalPegado +
     totalPlantrel +
@@ -2373,19 +2497,42 @@ window.actualizarTotalCostos = function () {
     totalElasticos +
     totalCierres +
     totalCintas +
-    totalExtras +
     totalBroches +
-    precioConfeccion;
+    totalExtras;
 
-  const totalFinal = totalUnitario * cantidad;
+  const totalFinal = (totalInsumosUnitario * cantidad) + totalProcesosUnitario;
 
+  // Actualizar el campo de "Total de costos"
   const totalCostosInput = document.getElementById('total-costos');
   if (totalCostosInput) {
-    totalCostosInput.value = `$${totalFinal}`;
+    totalCostosInput.value = `$${totalFinal.toFixed(2)}`;
   }
+
+  // 4. Calcular y actualizar el ajuste del 10%
+  const aplicarAjusteCheckbox = document.getElementById('aplicar-ajuste');
+  const totalAjustadoInput = document.getElementById('total-ajustado');
+  let totalAjustado = totalFinal;
+
+  if (aplicarAjusteCheckbox.checked) {
+    totalAjustado = totalFinal * 1.10;
+  }
+  totalAjustadoInput.value = `$${totalAjustado.toFixed(2)}`;
+
+  // 5. Calcular y actualizar los precios de M.C.B.
+  const mcbSelect1 = document.getElementById('mcb-select-1');
+  const resultadoMcb1Input = document.getElementById('resultado-mcb-1');
+  const mcbSelect2 = document.getElementById('mcb-select-2');
+  const resultadoMcb2Input = document.getElementById('resultado-mcb-2');
+
+  const mcb1 = parseFloat(mcbSelect1.value);
+  const mcb2 = parseFloat(mcbSelect2.value);
+
+  const resultadoMcb1 = totalAjustado / mcb1;
+  const resultadoMcb2 = totalAjustado / mcb2;
+
+  resultadoMcb1Input.value = `$${resultadoMcb1.toFixed(2)}`;
+  resultadoMcb2Input.value = `$${resultadoMcb2.toFixed(2)}`;
 };
-
-
 
 // 👇 Ejecutar al cambiar la cantidad (aparte del cálculo automático)
 document.addEventListener('DOMContentLoaded', () => {
@@ -2445,7 +2592,7 @@ function parseMoney(value) {
 }
 
 function formatMoney(value) {
-  return `$${value.toLocaleString('es-CO', { minimumFractionDigits: 2,maximumFractionDigits: 2})}`;
+  return `$${value.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function updateMCBResults() {
@@ -2482,31 +2629,80 @@ setInterval(() => {
 }, 200);
 
 
-  document.addEventListener('DOMContentLoaded', function () {
-    const clienteSelect = document.getElementById('cliente-select');
-    const clienteNombreSpan = document.getElementById('cliente-seleccionado');
+document.addEventListener('DOMContentLoaded', function () {
+  const clienteSelect = document.getElementById('cliente-select');
+  const clienteNombreSpan = document.getElementById('cliente-seleccionado');
 
-    clienteSelect.addEventListener('change', function () {
-      // Obtener el texto del cliente seleccionado
-      const selectedOption = this.options[this.selectedIndex];
-      const nombreCliente = selectedOption.textContent;
+  clienteSelect.addEventListener('change', function () {
+    // Obtener el texto del cliente seleccionado
+    const selectedOption = this.options[this.selectedIndex];
+    const nombreCliente = selectedOption.textContent;
 
-      // Cambiar el h4 con el nuevo nombre
-      clienteNombreSpan.textContent = nombreCliente;
-    });
+    // Cambiar el h4 con el nuevo nombre
+    clienteNombreSpan.textContent = nombreCliente;
   });
+});
 
 
-  function toggleCampo(idCampo, boton, nombreCampo) {
-    const campo = document.getElementById(idCampo);
-    const estaOculto = campo.classList.contains('hidden');
+function toggleCampo(idCampo, boton, nombreCampo) {
+  const campo = document.getElementById(idCampo);
+  const estaOculto = campo.classList.contains('hidden');
 
-    campo.classList.toggle('hidden');
+  campo.classList.toggle('hidden');
 
-    // Cambia el texto del botón dinámicamente
-    if (estaOculto) {
-      boton.textContent = `Eliminar ${nombreCampo}`;
+  // Cambia el texto del botón dinámicamente
+  if (estaOculto) {
+    boton.textContent = `Eliminar ${nombreCampo}`;
+  } else {
+    boton.textContent = `Agregar ${nombreCampo}`;
+  }
+}
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  const proveedorCheckbox = document.getElementById('id_Proveedor_select');
+  const proveedorContainer = document.getElementById('id_Proveedor').closest('.form-group');
+  const proveedorSelect = document.getElementById('id_Proveedor');
+  const prendaSelect = document.getElementById('id_prenda');
+  const precioPrendaInput = document.getElementById('precio-prenda');
+
+  function clearPrendaOptions() {
+    // Guarda la primera opción, que es la de "---------", o la que sea por defecto.
+    const defaultOption = prendaSelect.options[0];
+    // Vacía el select
+    prendaSelect.innerHTML = '';
+    // Vuelve a añadir la opción por defecto
+    prendaSelect.appendChild(defaultOption);
+  }
+
+  function toggleProveedorField() {
+    if (!proveedorCheckbox.checked) {
+      // Oculta el div del proveedor
+      proveedorContainer.style.display = 'none';
+
+      // Restablece el valor del select del proveedor
+      proveedorSelect.selectedIndex = 0;
+
+      // Llama a la nueva función para limpiar las opciones de prendas
+      clearPrendaOptions();
+
+      // Borra el precio de la prenda
+      precioPrendaInput.value = 'No definido';
+
+      // Dispara el evento 'change' en el campo del proveedor para asegurar que otros scripts se sincronicen
+      const changeEvent = new Event('change');
+      proveedorSelect.dispatchEvent(changeEvent);
+
     } else {
-      boton.textContent = `Agregar ${nombreCampo}`;
+      // Muestra el div
+      proveedorContainer.style.display = 'block';
     }
   }
+
+  // Llama a la función al cargar la página para establecer el estado inicial
+  toggleProveedorField();
+
+  // Agrega un listener para el evento 'change' en el checkbox
+  proveedorCheckbox.addEventListener('change', toggleProveedorField);
+});
