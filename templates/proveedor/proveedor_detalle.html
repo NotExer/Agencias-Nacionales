@@ -173,10 +173,10 @@
                 {% endif %}
               </td>
               <td>
-                <a href="{% url 'prenda_editar' prenda.ID %}" class="btn btn-sm btn-download">Editar</a>
-                <button class="btn btn-primary" onclick="abrir_modal('{% url 'prenda_eliminar' prenda.ID %}')">
-                  Eliminar
-                </button>
+    <a href="{% url 'prenda_editar' pk=prenda.ID %}" class="btn btn-sm btn-download">Editar</a>
+<button class="btn btn-primary" onclick="abrir_modal('{% url 'prenda_eliminar' pk=prenda.ID %}')">
+    Eliminar
+</button>
               </td>
             </tr>
             {% endfor %}

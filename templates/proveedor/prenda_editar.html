@@ -55,14 +55,14 @@
       <label class="form-label">Referencia / Color / Talla / Costo / Precio</label>
       <div id="tallas-precios-container"></div>
       
-      
       <button type="button" class="btn btn-secondary btn-sm" id="agregar-talla-precio">Agregar referencia</button>
-      
+
       <input type="hidden" name="Referencia_color_talla_Costo_precio" id="id_Referencia_color_talla_Costo_precio">
+
       {% if form.instance.Referencia_color_talla_Costo_precio %}
-      <script id="referencia-color-talla-costo-precio-json" type="application/json">
-        {{ form.instance.Referencia_color_talla_Costo_precio|safe }}
-      </script>
+
+{{ form.instance.Referencia_color_talla_Costo_precio|json_script:"referencia-color-talla-costo-precio-json" }}
+
       {% else %}
       <script id="referencia-color-talla-costo-precio-json" type="application/json">[]</script>
       {% endif %}

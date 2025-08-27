@@ -72,69 +72,85 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
-//boton siguiente y atras en imagenes
+//zoom a la imagen del lobby
 document.addEventListener("DOMContentLoaded", function () {
-  const images = document.querySelectorAll(".gallery-image");
-  const prevBtn = document.getElementById("prevBtn");
-  const nextBtn = document.getElementById("nextBtn");
+    const galleryImages = document.querySelectorAll(".gallery-image");
+    const zoomOverlay = document.getElementById("zoom-overlay");
+    const zoomedImage = document.getElementById("zoomed-image");
+    const closeBtn = document.getElementById("close-btn");
 
-  let currentIndex = 0;
+    if (galleryImages.length > 0 && zoomOverlay && zoomedImage && closeBtn) {
+        // Agrega un escuchador de eventos a cada imagen de la galería
+        galleryImages.forEach(image => {
+            image.addEventListener("click", function () {
+                // Muestra el overlay
+                zoomOverlay.style.display = "flex";
+                // Establece la fuente de la imagen ampliada
+                zoomedImage.src = this.src;
+                // Opcional: agrega un atributo alt a la imagen ampliada para accesibilidad
+                zoomedImage.alt = this.alt;
+            });
+        });
 
-  function showImage(index) {
-    images.forEach((img, i) => {
-      img.classList.toggle("active", i === index);
-    });
-  }
+        // Agrega un escuchador de eventos al botón de cerrar
+        closeBtn.addEventListener("click", function () {
+            zoomOverlay.style.display = "none";
+            zoomedImage.src = ""; // Resetea la fuente para liberar memoria
+        });
 
-  prevBtn.addEventListener("click", () => {
-    currentIndex = (currentIndex - 1 + images.length) % images.length;
-    showImage(currentIndex);
-  });
-
-  nextBtn.addEventListener("click", () => {
-    currentIndex = (currentIndex + 1) % images.length;
-    showImage(currentIndex);
-  });
-
-  showImage(currentIndex);
-});
-
-//zoom a la imagen
-document.addEventListener("DOMContentLoaded", function () {
-  const galleryImages = document.querySelectorAll(".gallery-image");
-  const zoomOverlay = document.getElementById("zoom-overlay");
-  const zoomedImage = document.getElementById("zoomed-image");
-  const closeBtn = document.getElementById("close-btn");
-
-  // Al hacer clic en una imagen, mostrar overlay con zoom
-  galleryImages.forEach(img => {
-    img.addEventListener("click", function () {
-      zoomedImage.src = this.src;
-      zoomOverlay.style.display = "flex"; // Mostrar overlay
-
-      // Forzar reinicio de la animación (opcional, si tienes animación CSS)
-      zoomedImage.style.animation = "none";
-      void zoomedImage.offsetWidth; // Reflow
-      zoomedImage.style.animation = "zoomIn 0.3s ease";
-    });
-  });
-
-  // Al hacer clic en la X, cerrar el overlay
-  closeBtn.addEventListener("click", function () {
-    zoomOverlay.style.display = "none";
-    zoomedImage.src = ""; // Limpia la imagen al cerrar
-  });
-
-  // Opcional: cerrar haciendo clic fuera de la imagen
-  zoomOverlay.addEventListener("click", function (e) {
-    if (e.target === zoomOverlay) {
-      zoomOverlay.style.display = "none";
-      zoomedImage.src = "";
+        // Agrega un escuchador de eventos al overlay para cerrar si se hace clic fuera de la imagen
+        zoomOverlay.addEventListener("click", function (e) {
+            // Verifica si el clic fue directamente en el overlay y no en la imagen
+            if (e.target === zoomOverlay) {
+                zoomOverlay.style.display = "none";
+                zoomedImage.src = ""; // Resetea la fuente para liberar memoria
+            }
+        });
+    } else {
+        console.error("No se encontraron todos los elementos necesarios para la funcionalidad de zoom. Asegúrate de que los elementos con las clases/IDs 'gallery-image', 'zoom-overlay', 'zoomed-image' y 'close-btn' existan en tu HTML.");
     }
-  });
 });
 
+//siguiente y anterior de la galeria del lobby
+document.addEventListener("DOMContentLoaded", function () {
+    const galleryImages = document.querySelectorAll(".gallery-image");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    let currentImageIndex = 0;
+
+    // Función para mostrar la imagen actual
+    function showCurrentImage() {
+        galleryImages.forEach((image, index) => {
+            image.style.display = index === currentImageIndex ? "block" : "none";
+        });
+    }
+
+    // Manejar el botón "Siguiente"
+    if (nextBtn) {
+        nextBtn.addEventListener("click", () => {
+            currentImageIndex++;
+            if (currentImageIndex >= galleryImages.length) {
+                currentImageIndex = 0; // Vuelve a la primera imagen al final
+            }
+            showCurrentImage();
+        });
+    }
+
+    // Manejar el botón "Anterior"
+    if (prevBtn) {
+        prevBtn.addEventListener("click", () => {
+            currentImageIndex--;
+            if (currentImageIndex < 0) {
+                currentImageIndex = galleryImages.length - 1; // Vuelve a la última imagen al principio
+            }
+            showCurrentImage();
+        });
+    }
+
+    // Muestra la primera imagen al cargar la página
+    showCurrentImage();
+});
 
 //menu principal desplegado
 document.addEventListener("DOMContentLoaded", () => {
@@ -212,105 +228,111 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //filtro de contactos
 document.addEventListener("DOMContentLoaded", () => {
-  const inputUsuario = document.getElementById('buscarUsuario');
-  const inputUbicacion = document.getElementById('buscarUbicacion');
-  const filas = document.querySelectorAll('table tbody tr');
+    const inputUsuario = document.getElementById('buscarUsuario');
+    const inputUbicacion = document.getElementById('buscarUbicacion');
 
-  function filtrarTabla() {
-    const usuarioFiltro = inputUsuario.value.toLowerCase();
-    const ubicacionFiltro = inputUbicacion.value.toLowerCase();
+    // Se ejecuta el código solo si ambos campos de búsqueda existen
+    if (inputUsuario && inputUbicacion) {
+        const filas = document.querySelectorAll('table tbody tr');
 
-    filas.forEach(fila => {
-      const usuario = fila.cells[1].textContent.toLowerCase();
-      const ubicacion = fila.cells[3].textContent.toLowerCase();
+        function filtrarTabla() {
+            const usuarioFiltro = inputUsuario.value.toLowerCase();
+            const ubicacionFiltro = inputUbicacion.value.toLowerCase();
 
-      const coincideUsuario = usuario.includes(usuarioFiltro);
-      const coincideUbicacion = ubicacion.includes(ubicacionFiltro);
+            filas.forEach(fila => {
+                const usuario = fila.cells[1].textContent.toLowerCase();
+                const ubicacion = fila.cells[3].textContent.toLowerCase();
 
-      fila.style.display = (coincideUsuario && coincideUbicacion) ? '' : 'none';
-    });
-  }
+                const coincideUsuario = usuario.includes(usuarioFiltro);
+                const coincideUbicacion = ubicacion.includes(ubicacionFiltro);
 
-  inputUsuario.addEventListener('input', filtrarTabla);
-  inputUbicacion.addEventListener('input', filtrarTabla);
+                fila.style.display = (coincideUsuario && coincideUbicacion) ? '' : 'none';
+            });
+        }
+
+        inputUsuario.addEventListener('input', filtrarTabla);
+        inputUbicacion.addEventListener('input', filtrarTabla);
+    }
 });
-
 
 //filtras clientes
 document.addEventListener("DOMContentLoaded", function () {
-  const razonInput = document.getElementById('filterRazon');
-  const ciudadSelect = document.getElementById('filterCiudad');
-  const vendedorSelect = document.getElementById('filterVendedor');
-  const estadoSelect = document.getElementById('filterEstado');
-  const ordenFechaSelect = document.getElementById('ordenFecha');
-  const tbody = document.querySelector('#tablaClientes tbody');
+    const razonInput = document.getElementById('filterRazon');
+    const ciudadSelect = document.getElementById('filterCiudad');
+    const vendedorSelect = document.getElementById('filterVendedor');
+    const estadoSelect = document.getElementById('filterEstado');
+    const ordenFechaSelect = document.getElementById('ordenFecha');
+    const tbody = document.querySelector('#tablaClientes tbody');
 
-  // 🧠 Rellena un <select> con valores únicos de las celdas indicadas
-  function llenarSelectUnicos(select, className) {
-    const valores = new Set();
-    tbody.querySelectorAll(`.${className}`).forEach(cell => {
-      const texto = cell.textContent.trim();
-      if (texto) valores.add(texto);
-    });
+    // ✅ La clave: Verificar si el tbody existe.
+    if (tbody) {
+        // 🧠 Rellena un <select> con valores únicos de las celdas indicadas
+        function llenarSelectUnicos(select, className) {
+            const valores = new Set();
+            tbody.querySelectorAll(`.${className}`).forEach(cell => {
+                const texto = cell.textContent.trim();
+                if (texto) valores.add(texto);
+            });
 
-    // Borra opciones previas
-    select.innerHTML = '<option value="">MOSTRAR TODOS</option>';
+            // Borra opciones previas
+            select.innerHTML = '<option value="">MOSTRAR TODOS</option>';
 
-    // Añade opciones únicas ordenadas
-    Array.from(valores).sort().forEach(valor => {
-      const option = document.createElement('option');
-      option.value = valor;
-      option.textContent = valor;
-      select.appendChild(option);
-    });
-  }
+            // Añade opciones únicas ordenadas
+            Array.from(valores).sort().forEach(valor => {
+                const option = document.createElement('option');
+                option.value = valor;
+                option.textContent = valor;
+                select.appendChild(option);
+            });
+        }
 
-  function filtrarYOrdenar() {
-    const razon = razonInput.value.toLowerCase();
-    const ciudad = ciudadSelect.value.toLowerCase();
-    const vendedor = vendedorSelect.value.toLowerCase();
-    const estado = estadoSelect.value.toLowerCase();
+        // Resto de la lógica de filtrado y ordenamiento...
+        function filtrarYOrdenar() {
+            const razon = razonInput.value.toLowerCase();
+            const ciudad = ciudadSelect.value.toLowerCase();
+            const vendedor = vendedorSelect.value.toLowerCase();
+            const estado = estadoSelect.value.toLowerCase();
 
-    let rows = Array.from(tbody.querySelectorAll('tr'));
+            let rows = Array.from(tbody.querySelectorAll('tr'));
 
-    rows.forEach(row => {
-      const razonCell = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
-      const ciudadCell = row.querySelector('.ciudad')?.textContent.toLowerCase() || '';
-      const vendedorCell = row.querySelector('.vendedor')?.textContent.toLowerCase() || '';
-      const estadoCell = row.querySelector('.estado')?.textContent.toLowerCase() || '';
+            rows.forEach(row => {
+                const razonCell = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
+                const ciudadCell = row.querySelector('.ciudad')?.textContent.toLowerCase() || '';
+                const vendedorCell = row.querySelector('.vendedor')?.textContent.toLowerCase() || '';
+                const estadoCell = row.querySelector('.estado')?.textContent.toLowerCase() || '';
 
-      const matchRazon = razonCell.includes(razon);
-      const matchCiudad = ciudad === '' || ciudadCell === ciudad;
-      const matchVendedor = vendedor === '' || vendedorCell === vendedor;
-      const matchEstado = estado === '' || estadoCell === estado;
+                const matchRazon = razonCell.includes(razon);
+                const matchCiudad = ciudad === '' || ciudadCell === ciudad;
+                const matchVendedor = vendedor === '' || vendedorCell === vendedor;
+                const matchEstado = estado === '' || estadoCell === estado;
 
-      row.style.display = (matchRazon && matchCiudad && matchVendedor && matchEstado) ? '' : 'none';
-    });
+                row.style.display = (matchRazon && matchCiudad && matchVendedor && matchEstado) ? '' : 'none';
+            });
 
-    // 🔃 Ordenar por fecha
-    const orden = ordenFechaSelect.value;
-    rows = Array.from(tbody.querySelectorAll('tr')).filter(row => row.style.display !== 'none');
+            const orden = ordenFechaSelect.value;
+            rows = Array.from(tbody.querySelectorAll('tr')).filter(row => row.style.display !== 'none');
 
-    rows.sort((a, b) => {
-      const fechaA = new Date(a.querySelector('.fecha')?.textContent.trim() || '2000-01-01');
-      const fechaB = new Date(b.querySelector('.fecha')?.textContent.trim() || '2000-01-01');
-      return orden === 'asc' ? fechaA - fechaB : fechaB - fechaA;
-    });
+            rows.sort((a, b) => {
+                const fechaA = new Date(a.querySelector('.fecha')?.textContent.trim() || '2000-01-01');
+                const fechaB = new Date(b.querySelector('.fecha')?.textContent.trim() || '2000-01-01');
+                return orden === 'asc' ? fechaA - fechaB : fechaB - fechaA;
+            });
 
-    rows.forEach(row => tbody.appendChild(row));
-  }
+            rows.forEach(row => tbody.appendChild(row));
+        }
 
-  // Inicializar filtros únicos
-  llenarSelectUnicos(ciudadSelect, 'ciudad');
-  llenarSelectUnicos(vendedorSelect, 'vendedor');
-  llenarSelectUnicos(estadoSelect, 'estado');
+        // Inicializar filtros únicos
+        llenarSelectUnicos(ciudadSelect, 'ciudad');
+        llenarSelectUnicos(vendedorSelect, 'vendedor');
+        llenarSelectUnicos(estadoSelect, 'estado');
 
-  // Eventos
-  razonInput.addEventListener('input', filtrarYOrdenar);
-  ciudadSelect.addEventListener('change', filtrarYOrdenar);
-  vendedorSelect.addEventListener('change', filtrarYOrdenar);
-  estadoSelect.addEventListener('change', filtrarYOrdenar);
-  ordenFechaSelect.addEventListener('change', filtrarYOrdenar);
+        // Eventos
+        razonInput.addEventListener('input', filtrarYOrdenar);
+        ciudadSelect.addEventListener('change', filtrarYOrdenar);
+        vendedorSelect.addEventListener('change', filtrarYOrdenar);
+        estadoSelect.addEventListener('change', filtrarYOrdenar);
+        ordenFechaSelect.addEventListener('change', filtrarYOrdenar);
+    }
 });
 
 
@@ -369,30 +391,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 //modal del descargar pdf
-function mostrar_modal_pdf(pdfUrl, titulo) {
-  const modal = document.getElementById("modal-pdf");
-  const iframe = document.getElementById("visor-pdf");
-  const link = document.getElementById("descargar-pdf");
-  const title = document.getElementById("modal-title");
+document.addEventListener("DOMContentLoaded", () => {
+    function mostrar_modal_pdf(pdfUrl, titulo) {
+        const modal = document.getElementById("modal-pdf");
+        const iframe = document.getElementById("visor-pdf");
+        const link = document.getElementById("descargar-pdf");
+        const title = document.getElementById("modal-title");
 
-  iframe.src = pdfUrl;
-  link.href = pdfUrl;
-  title.textContent = titulo;
+        // ✅ Verificación de que todos los elementos existen
+        if (modal && iframe && link && title) {
+            iframe.src = pdfUrl;
+            link.href = pdfUrl;
+            title.textContent = titulo;
 
-  modal.classList.add("show");
-  modal.style.display = "flex";
-  document.body.style.overflow = "hidden";
-}
+            modal.classList.add("show");
+            modal.style.display = "flex";
+            document.body.style.overflow = "hidden";
+        } else {
+            console.error("No se encontraron todos los elementos necesarios para el modal PDF.");
+        }
+    }
 
-function cerrar_modal_pdf() {
-  const modal = document.getElementById("modal-pdf");
-  const iframe = document.getElementById("visor-pdf");
+});
 
-  iframe.src = "";  // Limpia el iframe al cerrar
-  modal.classList.remove("show");
-  modal.style.display = "none";
-  document.body.style.overflow = "";
-}
+
 
 // Cierra si se hace clic fuera del contenido
 document.addEventListener("click", function (e) {
@@ -403,7 +425,7 @@ document.addEventListener("click", function (e) {
 });
 
 
-//preview de las imagenes en
+//preview de las imagenes en formularios crear y editar
 document.addEventListener('DOMContentLoaded', function () {
   const fileInput = document.getElementById('id_Imagen');  // Campo de imagen generado por Django
   const previewImg = document.getElementById('preview-imagen') || document.getElementById('preview-img');
@@ -427,6 +449,9 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+
+
+//// Drag and drop para reordenar filas en tablas de clientes
 document.addEventListener('DOMContentLoaded', () => {
   const tbodies = document.querySelectorAll('tbody[id^="tbodyClientes"]');
 
@@ -490,142 +515,185 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// Actualiza los números de orden en cada fila de clientes del drag and drop
+document.addEventListener('DOMContentLoaded', () => {
+    function actualizarNumerosOrden() {
+        const tbodys = document.querySelectorAll('tbody[id^="tbodyClientes"]');
+
+        tbodys.forEach(tbody => {
+            let contador = 1;
+            const filas = tbody.querySelectorAll('tr');
+
+            filas.forEach(fila => {
+                const tdOrden = fila.querySelector('td.orden');
+                if (tdOrden) {
+                    tdOrden.textContent = contador;
+                    contador++;
+                }
+            });
+        });
+    }
+
+    // Llama a la función al cargar la página
+    actualizarNumerosOrden();
+});
+
+// Enviar orden al backend del drag and drop
+document.addEventListener('DOMContentLoaded', () => {
+    function enviarOrdenAlBackend(tbody) {
+ 
+        if (!tbody) {
+            console.error('El elemento <tbody> no fue proporcionado a la función.');
+            return;
+        }
+
+        const url = tbody.dataset.url; // debe estar definido en cada <tbody data-url="...">
+
+        const filas = tbody.querySelectorAll('tr');
+        const orden = Array.from(filas)
+            .map(fila => fila.dataset.id)
+            .filter(id => id !== undefined && id !== null && id !== '');
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': obtenerCSRFToken()
+            },
+            body: JSON.stringify({ orden: orden })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Orden enviada con éxito');
+                } else {
+                    console.error('Error al enviar la orden:', data.error);
+                }
+            })
+            .catch(err => {
+                console.error('Error de red o del servidor:', err);
+            });
+    }
+});
 
 
-function actualizarNumerosOrden() {
-  const tbodys = document.querySelectorAll('tbody[id^="tbodyClientes"]');
 
-  tbodys.forEach(tbody => {
-    let contador = 1;
-    const filas = tbody.querySelectorAll('tr');
-
-    filas.forEach(fila => {
-      const tdOrden = fila.querySelector('td.orden');
-      if (tdOrden) {
-        tdOrden.textContent = contador;
-        contador++;
-      }
-    });
-  });
-}
-
-function enviarOrdenAlBackend(tbody) {
-  const url = tbody.dataset.url; // debe estar definido en cada <tbody data-url="...">
-
-  const filas = tbody.querySelectorAll('tr');
-  const orden = Array.from(filas)
-    .map(fila => fila.dataset.id)
-    .filter(id => id !== undefined && id !== null && id !== '');
-
-
-  fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': obtenerCSRFToken()
-    },
-    body: JSON.stringify({ orden: orden })
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-
-      } else {
-
-      }
-    })
-    .catch(err => {
-
-    });
-}
-
-// Obtener token CSRF de cookies
-function obtenerCSRFToken() {
-  const cookieValue = document.cookie.match(/csrftoken=([^;]+)/);
-  return cookieValue ? cookieValue[1] : '';
-}
 
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  const form = document.querySelector('form');
-  const contenedor = document.getElementById('tallas-precios-container');
-  const btnAgregar = document.getElementById('agregar-talla-precio');
-  const inputJSON = document.getElementById('id_Referencia_color_talla_Costo_precio');
-  const dataJsonTag = document.getElementById('referencia-color-talla-costo-precio-json');
-
-  btnAgregar?.classList.add('btn-primary');
-
-  function crearFila(referencia = '', color = '', talla = '', costo = '', precio = '', mostrarEliminar = true) {
-    const div = document.createElement('div');
-    div.className = 'talla-precio-pair mb-2';
-
-    div.innerHTML = `
-      <input type="text" name="referencia" placeholder="Referencia" class="input-user" required value="${referencia}">
-      <input type="text" name="color" placeholder="Color" class="input-user" required value="${color}">
-      <input type="text" name="talla" placeholder="Talla" class="input-user" required value="${talla}">
-      <input type="number" name="costo" placeholder="Costo" class="input-user" required value="${costo}">
-      <input type="number" name="precio" placeholder="Precio" class="input-user" required value="${precio}">
-      ${mostrarEliminar ? '<button type="button" class="btn btn-download btn-sm eliminar-pair" style="margin-left: 8px;">Eliminar</button>' : ''}
-    `;
-
-    contenedor.appendChild(div);
-  }
-
-  contenedor.addEventListener('click', (e) => {
-    if (e.target.classList.contains('eliminar-pair')) {
-      e.target.parentElement.remove();
+    // Obtener token CSRF de cookies
+    function obtenerCSRFToken() {
+        const cookieValue = document.cookie.match(/csrftoken=([^;]+)/);
+        return cookieValue ? cookieValue[1] : '';
     }
-  });
-
-  btnAgregar?.addEventListener('click', () => {
-    crearFila('', '', '', '', '', true);
-  });
-
-  // Prellenar desde el <script type="application/json">
-  if (dataJsonTag && dataJsonTag.textContent.trim() !== '') {
-    const data = JSON.parse(dataJsonTag.textContent || '[]');
-    data.forEach((item, index) => {
-      crearFila(
-        item.referencia || '',
-        item.color || '',
-        item.talla || '',
-        item.costo || '',
-        item.precio || '',
-        true
-      );
-    });
-  } else {
-    crearFila('', '', '', '', '', false);
-  }
-
-  form.addEventListener('submit', (e) => {
-    const pares = contenedor.querySelectorAll('.talla-precio-pair');
-    const resultado = [];
-
-    pares.forEach(par => {
-      const referencia = par.querySelector('input[name="referencia"]').value;
-      const color = par.querySelector('input[name="color"]').value;
-      const talla = par.querySelector('input[name="talla"]').value;
-      const costo = par.querySelector('input[name="costo"]').value;
-      const precio = par.querySelector('input[name="precio"]').value;
-
-      resultado.push({ referencia, color, talla, costo, precio });
-    });
-
-    // Validación rápida
-    if (!inputJSON) {
-      alert("No se encontró el input hidden para guardar el JSON.");
-      e.preventDefault();
-      return;
-    }
-
-    inputJSON.value = JSON.stringify(resultado);
-
-  });
-
 });
 
+
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('form');
+    const contenedor = document.getElementById('tallas-precios-container');
+    const btnAgregar = document.getElementById('agregar-talla-precio');
+    const inputJSON = document.getElementById('id_Referencia_color_talla_Costo_precio');
+    const dataJsonTag = document.getElementById('referencia-color-talla-costo-precio-json');
+
+    // ✅ La clave: Verificar que los elementos principales existan.
+    if (form && contenedor && btnAgregar && inputJSON) {
+        
+        // El resto de tu código va aquí
+        btnAgregar.classList.add('btn-primary');
+
+        /**
+         * Crea y añade una nueva fila de inputs para Referencia, Color, Talla, Costo y Precio.
+         */
+        function crearFila(referencia = '', color = '', talla = '', costo = '', precio = '') {
+            const div = document.createElement('div');
+            div.className = 'talla-precio-pair mb-2';
+
+            div.innerHTML = `
+                <input type="text" name="referencia" placeholder="Referencia" class="input-user" required value="${referencia}">
+                <input type="text" name="color" placeholder="Color" class="input-user" required value="${color}">
+                <input type="text" name="talla" placeholder="Talla" class="input-user" required value="${talla}">
+                <input type="number" name="costo" placeholder="Costo" class="input-user" required value="${costo}">
+                <input type="number" name="precio" placeholder="Precio" class="input-user" required value="${precio}">
+                <button type="button" class="btn btn-download btn-sm eliminar-pair" style="margin-left: 8px;">Eliminar</button>
+            `;
+
+            contenedor.appendChild(div);
+        }
+
+        // Escucha clics en el contenedor para eliminar filas.
+        contenedor.addEventListener('click', (e) => {
+            if (e.target.classList.contains('eliminar-pair')) {
+                e.target.parentElement.remove();
+            }
+        });
+
+        // Escucha clics en el botón para agregar nuevas filas.
+        btnAgregar.addEventListener('click', () => {
+            crearFila('', '', '', '', '');
+        });
+
+        // ... El resto de tus funciones y lógica ...
+
+        /**
+         * Parsea el JSON de la etiqueta <script> si existe y tiene contenido.
+         * @returns {Array} Los datos parseados o un array vacío.
+         */
+        const getJsonData = () => {
+            if (dataJsonTag && dataJsonTag.textContent.trim() !== '') {
+                try {
+                    return JSON.parse(dataJsonTag.textContent);
+                } catch (e) {
+                    console.error('Error al parsear el JSON:', e);
+                    return [];
+                }
+            }
+            return [];
+        };
+
+        // --- Lógica de carga inicial de datos para edición y creación ---
+        const initialData = getJsonData();
+
+        if (Array.isArray(initialData) && initialData.length > 0) {
+            initialData.forEach((item) => {
+                crearFila(
+                    item.referencia || item.Referencia || '',
+                    item.color || item.Color || '',
+                    item.talla || item.Talla || '',
+                    item.costo || item.Costo || '',
+                    item.precio || item.Precio || ''
+                );
+            });
+        } else {
+            crearFila('', '', '', '', '');
+        }
+
+        // Maneja el evento de envío del formulario para convertir los datos a JSON.
+        form.addEventListener('submit', (e) => {
+            const pares = contenedor.querySelectorAll('.talla-precio-pair');
+            const resultado = [];
+
+            pares.forEach(par => {
+                const referencia = par.querySelector('input[name="referencia"]').value;
+                const color = par.querySelector('input[name="color"]').value;
+                const talla = par.querySelector('input[name="talla"]').value;
+                const costo = par.querySelector('input[name="costo"]').value;
+                const precio = par.querySelector('input[name="precio"]').value;
+
+                resultado.push({ referencia, color, talla, costo, precio });
+            });
+
+            if (!inputJSON) {
+                alert("No se encontró el input hidden para guardar el JSON.");
+                e.preventDefault();
+                return;
+            }
+
+            inputJSON.value = JSON.stringify(resultado);
+        });
+    }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   const fichaInput = document.getElementById('id_Ficha');
@@ -791,315 +859,255 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-
 document.addEventListener("DOMContentLoaded", function () {
-  const input = document.getElementById("cliente-input");
-  const hiddenInput = document.getElementById("id_cliente_id");
-  const options = document.querySelectorAll("#clientes-list option");
+    const input = document.getElementById("cliente-input");
+    const hiddenInput = document.getElementById("id_cliente_id");
+    const options = document.querySelectorAll("#clientes-list option");
 
-  input.addEventListener("input", function () {
-    let found = false;
-    options.forEach(option => {
-      if (option.value === input.value) {
-        hiddenInput.value = option.dataset.id;
-        found = true;
-      }
-    });
-    if (!found) {
-      hiddenInput.value = "";
-    }
-  });
-});
-
-
-function activarTogglePrendas() {
-  const btnToggle = document.getElementById('mostrarPrendasBtn');
-  const tablaWrapper = document.getElementById('tablaPrendasWrapper');
-
-  if (btnToggle && tablaWrapper) {
-    btnToggle.addEventListener('click', () => {
-      const visible = tablaWrapper.style.display === 'block';
-      tablaWrapper.style.display = visible ? 'none' : 'block';
-      btnToggle.textContent = visible ? 'Mostrar prendas asociadas' : 'Ocultar prendas';
-    });
-  }
-}
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-  const proveedorSelect = document.getElementById("id_Proveedor");
-  const prendaSelect = document.getElementById("id_prenda");
-
-  if (!proveedorSelect || !prendaSelect) {
-
-    return;
-  }
-
-  proveedorSelect.addEventListener("change", function () {
-    const proveedorId = this.value;
-
-
-    if (!proveedorId) {
-
-      prendaSelect.innerHTML = '<option value="">Seleccione una prenda</option>';
-      return;
-    }
-
-    fetch(`/ajax/obtener-prendas/?proveedor_id=${proveedorId}`)
-      .then(response => {
-
-        return response.json();
-      })
-      .then(data => {
-
-
-        prendaSelect.innerHTML = ''; // Limpiar select
-        if (data.prendas.length === 0) {
-          prendaSelect.innerHTML = '<option value="">Sin prendas disponibles</option>';
-          return;
-        }
-
-        prendaSelect.innerHTML = '<option value="">Seleccione una prenda</option>';
-        data.prendas.forEach(prenda => {
-          const option = document.createElement('option');
-          option.value = prenda.id;
-          option.text = prenda.descripcion;
-          option.dataset.precio = prenda.precio;
-          prendaSelect.appendChild(option);
+    // Verifica que el elemento principal (input) exista
+    if (input) {
+        input.addEventListener("input", function () {
+            let found = false;
+            options.forEach(option => {
+                if (option.value === input.value) {
+                    hiddenInput.value = option.dataset.id;
+                    found = true;
+                }
+            });
+            if (!found) {
+                hiddenInput.value = "";
+            }
         });
-
-
-        window.actualizarTotalCostos?.();
-      })
-      .catch(error => {
-
-      });
-  });
-});
-
-
-document.addEventListener('DOMContentLoaded', function () {
-  const proveedorSelect = document.getElementById('id_Proveedor');
-  const prendaSelect = document.getElementById('id_prenda');
-  const forroSelect = document.getElementById('id_Forro');
-  const lavadoSelect = document.getElementById('id_Lavado');
-  const estampadoInput = document.getElementById('id_Estampado');
-  const fusionadoSelect = document.getElementById('id_Fusionado');
-
-  const precioPrendaInput = document.getElementById('precio-prenda');
-  const precioForroInput = document.getElementById('precio-forro');
-  const precioLavadoInput = document.getElementById('precio-lavado');
-  const precioEstampadoInput = document.getElementById('precio-estampado');
-  const precioFusionadoInput = document.getElementById('precio-fusionado');
-
-  // Datos globales para evitar que los campos se queden sin información
-  let prendasData = [];
-  let preciosForro = {};
-  let preciosLavado = {};
-  let preciosFusionado = {};
-  let preciosEstampado = {
-    'default': 0
-  };
-  let preciosConfeccion = {};
-
-  // Función para obtener todos los datos del proveedor y otros insumos
-  function obtenerDatosProveedor(proveedorId) {
-    if (!proveedorId) {
-      // Limpia los campos si no hay proveedor seleccionado
-      prendaSelect.innerHTML = '<option value="">Seleccione una prenda</option>';
-      precioPrendaInput.value = 'No definido';
-      precioForroInput.value = 'No definido';
-      precioLavadoInput.value = 'No definido';
-      precioEstampadoInput.value = 'No definido';
-      precioFusionadoInput.value = 'No definido';
-      window.actualizarTotalCostos();
-      return;
     }
-
-    fetch(`/ajax/obtener-prendas/?proveedor_id=${proveedorId}`)
-      .then(response => response.json())
-      .then(data => {
-        prendasData = data.prendas || [];
-        preciosForro = data.precios_forro || {};
-        preciosLavado = data.precios_lavado || {};
-        preciosFusionado = data.precios_fusionado || {};
-        preciosEstampado = data.precios_estampado || {};
-        preciosConfeccion = data.precios_confeccion || {};
-
-        // Rellena el select de prendas
-        prendaSelect.innerHTML = '<option value="">Seleccione una prenda</option>';
-        prendasData.forEach(prenda => {
-          const option = document.createElement('option');
-          option.value = prenda.id;
-          option.textContent = prenda.descripcion;
-          option.dataset.precio = prenda.precio;
-          prendaSelect.appendChild(option);
-        });
-
-        // Reinicia los valores mostrados en los campos de precio
-        reiniciarValoresMostrados();
-        window.actualizarTotalCostos();
-      });
-  }
-
-  // Función para reiniciar todos los campos de precio a su estado inicial
-  function reiniciarValoresMostrados() {
-    precioPrendaInput.value = 'No definido';
-    precioForroInput.value = 'No definido';
-    precioLavadoInput.value = 'No definido';
-    precioEstampadoInput.value = 'No definido';
-    precioFusionadoInput.value = 'No definido';
-  }
-
-  // Event listeners
-  proveedorSelect.addEventListener('change', function () {
-    obtenerDatosProveedor(this.value);
-  });
-
-  prendaSelect.addEventListener('change', function () {
-    const selectedOption = this.options[this.selectedIndex];
-    const precio = selectedOption?.dataset?.precio;
-    precioPrendaInput.value = precio ? `$${precio}` : 'No definido';
-    window.actualizarTotalCostos();
-  });
-
-  forroSelect?.addEventListener('change', function () {
-    const selected = this.value;
-    const precio = preciosForro[selected];
-    precioForroInput.value = precio !== undefined ? `$${precio}` : 'No definido';
-    window.actualizarTotalCostos();
-  });
-
-  lavadoSelect?.addEventListener('change', function () {
-    const selected = this.value;
-    const precio = preciosLavado[selected];
-    precioLavadoInput.value = precio !== undefined ? `$${precio}` : 'No definido';
-    window.actualizarTotalCostos();
-  });
-
-  estampadoInput?.addEventListener('input', function () {
-    const cantidad = parseInt(this.value) || 0;
-    let precio = 0;
-    if (cantidad > 0) {
-      // Usa el precio de la data si está disponible, si no, usa un valor por defecto.
-      const precioUnitario = preciosEstampado['default'] || 1000;
-      precio = cantidad * precioUnitario;
-    }
-    precioEstampadoInput.value = `$${precio}`;
-    window.actualizarTotalCostos();
-  });
-
-  fusionadoSelect?.addEventListener('change', function () {
-    const selected = this.value;
-    const precio = preciosFusionado[selected];
-    precioFusionadoInput.value = precio !== undefined ? `$${precio}` : 'No definido';
-    window.actualizarTotalCostos();
-  });
-
-  // Inicializa la carga de datos al cargar la página
-  if (proveedorSelect.value) {
-    obtenerDatosProveedor(proveedorSelect.value);
-  }
 });
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  const container = document.getElementById('bordados-container');
-  const btnAgregar = document.getElementById('agregar-bordado');
-  const inputHidden = document.getElementById('id_Bordado');
+    function activarTogglePrendas() {
+        const btnToggle = document.getElementById('mostrarPrendasBtn');
+        const tablaWrapper = document.getElementById('tablaPrendasWrapper');
 
-  function crearFilaBordado(precio = '', cantidad = '', mostrarEliminar = true) {
-    const div = document.createElement('div');
-    div.className = 'form-row-50 mb-2 bordado-fila';
+        if (btnToggle && tablaWrapper) {
+            btnToggle.addEventListener('click', () => {
+                const visible = tablaWrapper.style.display === 'block';
+                tablaWrapper.style.display = visible ? 'none' : 'block';
+                btnToggle.textContent = visible ? 'Mostrar prendas asociadas' : 'Ocultar prendas';
+            });
+        }
+    }
 
-    div.innerHTML = `
-  <div class="form-group half-width">
-    <label>Precio de bordado</label>
-    <input type="number" class="input-user precio-bordado" min="0" step="1" value="${precio}">
-  </div>
-
-  <div class="form-group half-width">
-    <label>Cantidad de bordado</label>
-    <input type="number" class="input-user cantidad-bordado" min="0" step="1" value="${cantidad}">
-  </div>
-
-  <div class="form-group half-width">
-    <label>Costo total de bordado</label>
-    <input type="text" class="input-user costo-bordado" readonly value="No definido">
-  </div>
-
-  ${mostrarEliminar
-        ? `<div style="width: 100%; display: flex; justify-content: center; margin-top: 1.8rem;">
-           <button type="button" class="btn btn-download btn-sm eliminar-bordado">Eliminar</button>
-         </div>`
-        : ''
-      }
-`;
-
-
-    container.appendChild(div);
-    actualizarEventos();
-  }
-
-  function actualizarEventos() {
-    const filas = container.querySelectorAll('.bordado-fila');
-
-    filas.forEach(fila => {
-      const precioInput = fila.querySelector('.precio-bordado');
-      const cantidadInput = fila.querySelector('.cantidad-bordado');
-      const costoOutput = fila.querySelector('.costo-bordado');
-
-      const calcular = () => {
-        const precio = parseFloat(precioInput.value) || 0;
-        const cantidad = parseInt(cantidadInput.value) || 0;
-        const total = precio * cantidad;
-        costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
-        guardarJSON();
-        window.actualizarTotalCostos?.(); // ✅ Se actualiza el total general
-      };
-
-      precioInput.addEventListener('input', calcular);
-      cantidadInput.addEventListener('input', calcular);
-
-      const btnEliminar = fila.querySelector('.eliminar-bordado');
-      if (btnEliminar) {
-        btnEliminar.onclick = () => {
-          fila.remove(); // ✅ Elimina la fila
-          guardarJSON(); // 🔁 Guarda nuevo JSON sin esa fila
-          window.actualizarTotalCostos?.(); // ✅ Actualiza el total general
-        };
-      }
-    });
-  }
-
-  function guardarJSON() {
-    const datos = [];
-
-    container.querySelectorAll('.bordado-fila').forEach(fila => {
-      const precio = parseFloat(fila.querySelector('.precio-bordado')?.value || 0);
-      const cantidad = parseInt(fila.querySelector('.cantidad-bordado')?.value || 0);
-      const total = precio * cantidad;
-
-      datos.push({
-        precio_unitario: precio,
-        cantidad: cantidad,
-        costo_total: total
-      });
-    });
-
-    inputHidden.value = JSON.stringify(datos);
-
-  }
-
-  // Crear primera fila sin botón de eliminar
-  crearFilaBordado('', '', false);
-
-  btnAgregar.addEventListener('click', () => {
-    crearFilaBordado('', '', true);
-  });
+    // Llama a la función para activarla cuando el DOM esté listo
+    activarTogglePrendas();
 });
 
+
+document.addEventListener('DOMContentLoaded', function () {
+    const prendaSelect = document.getElementById('id_prenda');
+    const forroSelect = document.getElementById('id_Forro');
+    const lavadoSelect = document.getElementById('id_Lavado');
+    const estampadoInput = document.getElementById('id_Estampado');
+    const fusionadoSelect = document.getElementById('id_Fusionado');
+
+    const precioPrendaInput = document.getElementById('precio-prenda');
+    const precioForroInput = document.getElementById('precio-forro');
+    const precioLavadoInput = document.getElementById('precio-lavado');
+    const precioEstampadoInput = document.getElementById('precio-estampado');
+    const precioFusionadoInput = document.getElementById('precio-fusionado');
+
+
+    if (prendaSelect && precioPrendaInput) {
+        // Datos globales
+        let prendasData = [];
+        let preciosForro = {};
+        let preciosLavado = {};
+        let preciosFusionado = {};
+        let preciosEstampado = { 'default': 0 };
+        let preciosConfeccion = {};
+
+
+        function obtenerDatos() {
+            fetch(`/ajax/obtener-prendas/`)
+                .then(response => response.json())
+                .then(data => {
+                    prendasData = data.prendas || [];
+                    preciosForro = data.precios_forro || {};
+                    preciosLavado = data.precios_lavado || {};
+                    preciosFusionado = data.precios_fusionado || {};
+                    preciosEstampado = data.precios_estampado || {};
+                    preciosConfeccion = data.precios_confeccion || {};
+
+                    prendaSelect.innerHTML = '<option value="">Seleccione una prenda</option>';
+                    prendasData.forEach(prenda => {
+                        const option = document.createElement('option');
+                        option.value = prenda.id;
+                        option.textContent = prenda.descripcion;
+                        option.dataset.precio = prenda.precio;
+                        prendaSelect.appendChild(option);
+                    });
+
+                    // Reinicia valores
+                    reiniciarValoresMostrados();
+                    window.actualizarTotalCostos();
+                });
+        }
+
+
+        function reiniciarValoresMostrados() {
+            precioPrendaInput.value = 'No definido';
+            if (precioForroInput) precioForroInput.value = 'No definido';
+            if (precioLavadoInput) precioLavadoInput.value = 'No definido';
+            if (precioEstampadoInput) precioEstampadoInput.value = 'No definido';
+            if (precioFusionadoInput) precioFusionadoInput.value = 'No definido';
+        }
+
+
+        prendaSelect.addEventListener('change', function () {
+            const selectedOption = this.options[this.selectedIndex];
+            const precio = selectedOption?.dataset?.precio;
+            precioPrendaInput.value = precio ? `$${precio}` : 'No definido';
+            window.actualizarTotalCostos();
+        });
+
+
+        forroSelect?.addEventListener('change', function () {
+            const selected = this.value;
+            const precio = preciosForro[selected];
+            if (precioForroInput) {
+                precioForroInput.value = precio !== undefined ? `$${precio}` : 'No definido';
+            }
+            window.actualizarTotalCostos();
+        });
+
+        lavadoSelect?.addEventListener('change', function () {
+            const selected = this.value;
+            const precio = preciosLavado[selected];
+            if (precioLavadoInput) {
+                precioLavadoInput.value = precio !== undefined ? `$${precio}` : 'No definido';
+            }
+            window.actualizarTotalCostos();
+        });
+
+        estampadoInput?.addEventListener('input', function () {
+            const cantidad = parseInt(this.value) || 0;
+            let precio = 0;
+            if (cantidad > 0) {
+                const precioUnitario = preciosEstampado['default'] || 1000;
+                precio = cantidad * precioUnitario;
+            }
+            if (precioEstampadoInput) {
+                precioEstampadoInput.value = `$${precio}`;
+            }
+            window.actualizarTotalCostos();
+        });
+
+        fusionadoSelect?.addEventListener('change', function () {
+            const selected = this.value;
+            const precio = preciosFusionado[selected];
+            if (precioFusionadoInput) {
+                precioFusionadoInput.value = precio !== undefined ? `$${precio}` : 'No definido';
+            }
+            window.actualizarTotalCostos();
+        });
+
+        // Inicializa la carga de datos al cargar la página
+        obtenerDatos();
+    }
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('bordados-container');
+    const btnAgregar = document.getElementById('agregar-bordado');
+    const inputHidden = document.getElementById('id_Bordado');
+
+    // ✅ La clave: si el contenedor principal no existe, el script no hace nada.
+    if (container) {
+        function crearFilaBordado(precio = '', cantidad = '', mostrarEliminar = true) {
+            const div = document.createElement('div');
+            div.className = 'form-row-50 mb-2 bordado-fila';
+
+            div.innerHTML = `
+                <div class="form-group half-width">
+                    <label>Precio de bordado</label>
+                    <input type="number" class="input-user precio-bordado" min="0" step="1" value="${precio}">
+                </div>
+
+                <div class="form-group half-width">
+                    <label>Cantidad de bordado</label>
+                    <input type="number" class="input-user cantidad-bordado" min="0" step="1" value="${cantidad}">
+                </div>
+
+                <div class="form-group half-width">
+                    <label>Costo total de bordado</label>
+                    <input type="text" class="input-user costo-bordado" readonly value="No definido">
+                </div>
+
+                ${mostrarEliminar
+                    ? `<div style="width: 100%; display: flex; justify-content: center; margin-top: 1.8rem;">
+                         <button type="button" class="btn btn-download btn-sm eliminar-bordado">Eliminar</button>
+                       </div>`
+                    : ''
+                }
+            `;
+            container.appendChild(div);
+            actualizarEventos();
+        }
+
+        function actualizarEventos() {
+            const filas = container.querySelectorAll('.bordado-fila');
+            filas.forEach(fila => {
+                const precioInput = fila.querySelector('.precio-bordado');
+                const cantidadInput = fila.querySelector('.cantidad-bordado');
+                const costoOutput = fila.querySelector('.costo-bordado');
+
+                const calcular = () => {
+                    const precio = parseFloat(precioInput.value) || 0;
+                    const cantidad = parseInt(cantidadInput.value) || 0;
+                    const total = precio * cantidad;
+                    costoOutput.value = (precio > 0 && cantidad > 0) ? `$${total}` : 'No definido';
+                    guardarJSON();
+                    window.actualizarTotalCostos?.();
+                };
+
+                precioInput.addEventListener('input', calcular);
+                cantidadInput.addEventListener('input', calcular);
+
+                const btnEliminar = fila.querySelector('.eliminar-bordado');
+                if (btnEliminar) {
+                    btnEliminar.onclick = () => {
+                        fila.remove();
+                        guardarJSON();
+                        window.actualizarTotalCostos?.();
+                    };
+                }
+            });
+        }
+
+        function guardarJSON() {
+            const datos = [];
+            container.querySelectorAll('.bordado-fila').forEach(fila => {
+                const precio = parseFloat(fila.querySelector('.precio-bordado')?.value || 0);
+                const cantidad = parseInt(fila.querySelector('.cantidad-bordado')?.value || 0);
+                const total = precio * cantidad;
+                datos.push({
+                    precio_unitario: precio,
+                    cantidad: cantidad,
+                    costo_total: total
+                });
+            });
+            inputHidden.value = JSON.stringify(datos);
+        }
+
+        // Crear primera fila sin botón de eliminar
+        crearFilaBordado('', '', false);
+
+        if (btnAgregar) {
+            btnAgregar.addEventListener('click', () => {
+                crearFilaBordado('', '', true);
+            });
+        }
+    }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -1255,7 +1263,6 @@ ${mostrarEliminar
 });
 
 
-
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('pegados-container');
   const btnAgregar = document.getElementById('agregar-pegado');
@@ -1350,8 +1357,6 @@ document.addEventListener('DOMContentLoaded', () => {
     crearFilaPegado('', '', true); // Nuevas filas con botón de eliminar
   });
 });
-
-
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1909,9 +1914,6 @@ div.innerHTML = `
 });
 
 
-
-
-
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('plantreles-container');
   const btnAgregar = document.getElementById('agregar-plantrel');
@@ -2005,11 +2007,6 @@ document.addEventListener('DOMContentLoaded', () => {
     crearFilaPlantrel('', '', true); // Nuevas filas con botón de eliminar
   });
 });
-
-
-
-
-
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -2434,105 +2431,106 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-window.actualizarTotalCostos = function () {
-  const limpiar = (valor) => parseFloat((valor || '').replace('$', '').trim()) || 0;
+document.addEventListener('DOMContentLoaded', () => {
+    // La función completa que me diste va aquí, sin cambios.
+    window.actualizarTotalCostos = function () {
+        const limpiar = (valor) => parseFloat((valor || '').replace('$', '').trim()) || 0;
 
-  // Obtener la cantidad de prendas. Si no existe o es 0, usar 1.
-  const cantidadInput = document.querySelector('input[name="Cantidad"]');
-  const cantidad = parseFloat(cantidadInput?.value) || 1;
+        const cantidadInput = document.querySelector('input[name="Cantidad"]');
+        const cantidad = parseFloat(cantidadInput?.value) || 1;
 
-  // Función para obtener el costo total de los insumos dinámicos
-  const sumarCostosDinamicos = (clase) => {
-    let total = 0;
-    document.querySelectorAll(`.${clase}`).forEach(input => {
-      total += limpiar(input.value);
-    });
-    return total;
-  };
+        const sumarCostosDinamicos = (clase) => {
+            let total = 0;
+            document.querySelectorAll(`.${clase}`).forEach(input => {
+                total += limpiar(input.value);
+            });
+            return total;
+        };
 
-  // 1. Obtener los costos unitarios de los insumos fijos
-  const precioPrenda = limpiar(document.getElementById('precio-prenda')?.value);
-  const precioForro = limpiar(document.getElementById('precio-forro')?.value);
-  const precioLavado = limpiar(document.getElementById('precio-lavado')?.value);
-  const precioEstampado = limpiar(document.getElementById('precio-estampado')?.value);
-  const precioFusionado = limpiar(document.getElementById('precio-fusionado')?.value);
-  const precioConfeccion = limpiar(document.getElementById('id_Confeccion')?.value);
+        const precioPrenda = limpiar(document.getElementById('precio-prenda')?.value);
+        const precioForro = limpiar(document.getElementById('precio-forro')?.value);
+        const precioLavado = limpiar(document.getElementById('precio-lavado')?.value);
+        const precioEstampado = limpiar(document.getElementById('precio-estampado')?.value);
+        const precioFusionado = limpiar(document.getElementById('precio-fusionado')?.value);
+        const precioConfeccion = limpiar(document.getElementById('id_Confeccion')?.value);
 
-  // 2. Sumar el costo total de los insumos dinámicos
-  const totalBordado = sumarCostosDinamicos('costo-bordado');
-  const totalPegado = sumarCostosDinamicos('costo-pegado');
-  const totalPlantrel = sumarCostosDinamicos('costo-plantrel');
-  const totalBotones = sumarCostosDinamicos('boton-costo');
-  const totalVelcro = sumarCostosDinamicos('velcro-costo');
-  const totalSesgos = sumarCostosDinamicos('sesgo-costo');
-  const totalElasticos = sumarCostosDinamicos('elastico-costo');
-  const totalCierres = sumarCostosDinamicos('cierre-costo');
-  const totalCintas = sumarCostosDinamicos('cinta-costo');
-  const totalExtras = sumarCostosDinamicos('extra-total');
+        const totalBordado = sumarCostosDinamicos('costo-bordado');
+        const totalPegado = sumarCostosDinamicos('costo-pegado');
+        const totalPlantrel = sumarCostosDinamicos('costo-plantrel');
+        const totalBotones = sumarCostosDinamicos('boton-costo');
+        const totalVelcro = sumarCostosDinamicos('velcro-costo');
+        const totalSesgos = sumarCostosDinamicos('sesgo-costo');
+        const totalElasticos = sumarCostosDinamicos('elastico-costo');
+        const totalCierres = sumarCostosDinamicos('cierre-costo');
+        const totalCintas = sumarCostosDinamicos('cinta-costo');
+        const totalExtras = sumarCostosDinamicos('extra-total');
 
-  // El cálculo de broches ya está bien, suma el total de cada fila
-  let totalBroches = 0;
-  document.querySelectorAll('.broche-fila').forEach(fila => {
-    const precio = limpiar(fila.querySelector('.precio-broche')?.value);
-    const cantidadBroche = parseFloat(fila.querySelector('.cantidad-broche')?.value) || 0;
-    totalBroches += precio * cantidadBroche;
-  });
+        let totalBroches = 0;
+        document.querySelectorAll('.broche-fila').forEach(fila => {
+            const precio = limpiar(fila.querySelector('.precio-broche')?.value);
+            const cantidadBroche = parseFloat(fila.querySelector('.cantidad-broche')?.value) || 0;
+            totalBroches += precio * cantidadBroche;
+        });
 
-  // 3. Sumar todos los costos para obtener el "total de costos"
-  const totalInsumosUnitario =
-    precioPrenda +
-    precioForro +
-    precioLavado +
-    precioEstampado +
-    precioFusionado +
-    precioConfeccion;
+        const totalInsumosUnitario =
+            precioPrenda +
+            precioForro +
+            precioLavado +
+            precioEstampado +
+            precioFusionado +
+            precioConfeccion;
 
-  const totalProcesosUnitario =
-    totalBordado +
-    totalPegado +
-    totalPlantrel +
-    totalBotones +
-    totalVelcro +
-    totalSesgos +
-    totalElasticos +
-    totalCierres +
-    totalCintas +
-    totalBroches +
-    totalExtras;
+        const totalProcesosUnitario =
+            totalBordado +
+            totalPegado +
+            totalPlantrel +
+            totalBotones +
+            totalVelcro +
+            totalSesgos +
+            totalElasticos +
+            totalCierres +
+            totalCintas +
+            totalBroches +
+            totalExtras;
 
-  const totalFinal = (totalInsumosUnitario * cantidad) + totalProcesosUnitario;
+        const totalFinal = (totalInsumosUnitario * cantidad) + totalProcesosUnitario;
 
-  // Actualizar el campo de "Total de costos"
-  const totalCostosInput = document.getElementById('total-costos');
-  if (totalCostosInput) {
-    totalCostosInput.value = `$${totalFinal.toFixed(2)}`;
-  }
+        const totalCostosInput = document.getElementById('total-costos');
+        if (totalCostosInput) {
+            totalCostosInput.value = `$${totalFinal}`;
+        }
 
-  // 4. Calcular y actualizar el ajuste del 10%
-  const aplicarAjusteCheckbox = document.getElementById('aplicar-ajuste');
-  const totalAjustadoInput = document.getElementById('total-ajustado');
-  let totalAjustado = totalFinal;
+        const aplicarAjusteCheckbox = document.getElementById('aplicar-ajuste');
+        const totalAjustadoInput = document.getElementById('total-ajustado');
+        let totalAjustado = totalFinal;
 
-  if (aplicarAjusteCheckbox.checked) {
-    totalAjustado = totalFinal * 1.10;
-  }
-  totalAjustadoInput.value = `$${totalAjustado.toFixed(2)}`;
+        if (aplicarAjusteCheckbox?.checked) {
+            totalAjustado = totalFinal * 1.10;
+        }
+        if (totalAjustadoInput) {
+            totalAjustadoInput.value = `$${totalAjustado.toFixed(2)}`;
+        }
 
-  // 5. Calcular y actualizar los precios de M.C.B.
-  const mcbSelect1 = document.getElementById('mcb-select-1');
-  const resultadoMcb1Input = document.getElementById('resultado-mcb-1');
-  const mcbSelect2 = document.getElementById('mcb-select-2');
-  const resultadoMcb2Input = document.getElementById('resultado-mcb-2');
+        const mcbSelect1 = document.getElementById('mcb-select-1');
+        const resultadoMcb1Input = document.getElementById('resultado-mcb-1');
+        const mcbSelect2 = document.getElementById('mcb-select-2');
+        const resultadoMcb2Input = document.getElementById('resultado-mcb-2');
 
-  const mcb1 = parseFloat(mcbSelect1.value);
-  const mcb2 = parseFloat(mcbSelect2.value);
+        if (mcbSelect1 && resultadoMcb1Input && mcbSelect2 && resultadoMcb2Input) {
+            const mcb1 = parseFloat(mcbSelect1.value);
+            const mcb2 = parseFloat(mcbSelect2.value);
 
-  const resultadoMcb1 = totalAjustado / mcb1;
-  const resultadoMcb2 = totalAjustado / mcb2;
+            const resultadoMcb1 = totalAjustado / mcb1;
+            const resultadoMcb2 = totalAjustado / mcb2;
 
-  resultadoMcb1Input.value = `$${resultadoMcb1.toFixed(2)}`;
-  resultadoMcb2Input.value = `$${resultadoMcb2.toFixed(2)}`;
-};
+            resultadoMcb1Input.value = `$${resultadoMcb1.toFixed(2)}`;
+            resultadoMcb2Input.value = `$${resultadoMcb2.toFixed(2)}`;
+        }
+    };
+
+    // Llamamos a la función para ejecutarla al cargar la página
+    window.actualizarTotalCostos();
+});
 
 // 👇 Ejecutar al cambiar la cantidad (aparte del cálculo automático)
 document.addEventListener('DOMContentLoaded', () => {
@@ -2547,39 +2545,80 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-// Obtener el input
-const totalCostosInput = document.getElementById("total-costos");
 
-// Guardar la referencia original de value
-let valorInterno = totalCostosInput.value;
+document.addEventListener("DOMContentLoaded", () => {
+    const totalCostosInput = document.getElementById("total-costos");
 
-Object.defineProperty(totalCostosInput, "value", {
-  get() {
-    return valorInterno;
-  },
-  set(nuevoValor) {
-    valorInterno = nuevoValor;
-    totalCostosInput.setAttribute("value", nuevoValor); // útil si necesitas visibilidad en el DOM
-    aplicarAjuste(); // actualiza el total ajustado
-  }
+    // ✅ La clave: Verifica si el elemento existe antes de hacer algo con él
+    if (totalCostosInput) {
+        let valorInterno = totalCostosInput.value;
+        
+        Object.defineProperty(totalCostosInput, "value", {
+            get() {
+                return valorInterno;
+            },
+            set(nuevoValor) {
+                valorInterno = nuevoValor;
+                totalCostosInput.setAttribute("value", nuevoValor); // útil si necesitas visibilidad en el DOM
+                aplicarAjuste(); // actualiza el total ajustado
+            }
+        });
+    }
 });
 
-// También por si cambia el checkbox
-document.getElementById("aplicar-ajuste").addEventListener("change", aplicarAjuste);
 
-// Función de ajuste
-function aplicarAjuste() {
-  const aplicar = document.getElementById("aplicar-ajuste").checked;
-  let raw = totalCostosInput.value.replace(/\$/g, "").replace(/,/g, "");
-  let numero = parseFloat(raw);
-  if (isNaN(numero)) numero = 0;
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Definición de los elementos
+    const totalCostosInput = document.getElementById("total-costos");
+    const totalAjustadoInput = document.getElementById("total-ajustado");
+    const aplicarAjusteCheckbox = document.getElementById("aplicar-ajuste");
 
-  const ajustado = aplicar ? numero * 1.1 : numero;
-  document.getElementById("total-ajustado").value = `$${ajustado.toFixed(0)}`;
-}
+    // 2. Verificación de existencia
+    if (totalCostosInput && totalAjustadoInput && aplicarAjusteCheckbox) {
 
-// Llamar al cargar por primera vez
-window.addEventListener("DOMContentLoaded", aplicarAjuste);
+        // 3. Definición de la función dentro del mismo ámbito
+        function aplicarAjuste() {
+            const aplicar = aplicarAjusteCheckbox.checked;
+            let raw = totalCostosInput.value.replace(/\$/g, "").replace(/,/g, "");
+            let numero = parseFloat(raw);
+            if (isNaN(numero)) numero = 0;
+
+            const ajustado = aplicar ? numero * 1.1 : numero;
+            totalAjustadoInput.value = `$${ajustado.toFixed(0)}`;
+        }
+
+        // 4. Adjuntar el evento después de que la función esté definida
+        aplicarAjusteCheckbox.addEventListener("change", aplicarAjuste);
+
+        // Puedes llamar a la función aquí para establecer el valor inicial
+        aplicarAjuste();
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const totalCostosInput = document.getElementById("total-costos");
+    const totalAjustadoInput = document.getElementById("total-ajustado");
+    const aplicarAjusteCheckbox = document.getElementById("aplicar-ajuste");
+
+    // ✅ Verificación de existencia
+    if (totalCostosInput && totalAjustadoInput && aplicarAjusteCheckbox) {
+
+        // La función aplicarAjuste debe estar definida aquí para acceder a las variables
+        function aplicarAjuste() {
+            const aplicar = aplicarAjusteCheckbox.checked;
+            let raw = totalCostosInput.value.replace(/\$/g, "").replace(/,/g, "");
+            let numero = parseFloat(raw);
+            if (isNaN(numero)) numero = 0;
+
+            const ajustado = aplicar ? numero * 1.1 : numero;
+            totalAjustadoInput.value = `$${ajustado.toFixed(0)}`;
+        }
+
+        // Ahora, la función se puede llamar sin errores.
+        aplicarAjusteCheckbox.addEventListener("change", aplicarAjuste);
+
+    }
+});
 
 
 
@@ -2630,19 +2669,19 @@ setInterval(() => {
 
 
 document.addEventListener('DOMContentLoaded', function () {
-  const clienteSelect = document.getElementById('cliente-select');
-  const clienteNombreSpan = document.getElementById('cliente-seleccionado');
+    const clienteSelect = document.getElementById('cliente-select');
+    const clienteNombreSpan = document.getElementById('cliente-seleccionado');
 
-  clienteSelect.addEventListener('change', function () {
-    // Obtener el texto del cliente seleccionado
-    const selectedOption = this.options[this.selectedIndex];
-    const nombreCliente = selectedOption.textContent;
+    if (clienteSelect && clienteNombreSpan) {
+        clienteSelect.addEventListener('change', function () {
+            const selectedOption = this.options[this.selectedIndex];
+            const nombreCliente = selectedOption.textContent;
 
-    // Cambiar el h4 con el nuevo nombre
-    clienteNombreSpan.textContent = nombreCliente;
-  });
+            // Cambiar el h4 con el nuevo nombre
+            clienteNombreSpan.textContent = nombreCliente;
+        });
+    }
 });
-
 
 function toggleCampo(idCampo, boton, nombreCampo) {
   const campo = document.getElementById(idCampo);
@@ -2659,50 +2698,78 @@ function toggleCampo(idCampo, boton, nombreCampo) {
 }
 
 
-
 document.addEventListener('DOMContentLoaded', function () {
-  const proveedorCheckbox = document.getElementById('id_Proveedor_select');
-  const proveedorContainer = document.getElementById('id_Proveedor').closest('.form-group');
-  const proveedorSelect = document.getElementById('id_Proveedor');
-  const prendaSelect = document.getElementById('id_prenda');
-  const precioPrendaInput = document.getElementById('precio-prenda');
+    const proveedorCheckbox = document.getElementById('id_Proveedor_select');
+    const proveedorContainer = document.getElementById('id_Proveedor').closest('.form-group');
+    const proveedorSelect = document.getElementById('id_Proveedor');
+    const prendaSelect = document.getElementById('id_prenda');
+    const precioPrendaInput = document.getElementById('precio-prenda');
 
-  function clearPrendaOptions() {
-    // Guarda la primera opción, que es la de "---------", o la que sea por defecto.
-    const defaultOption = prendaSelect.options[0];
-    // Vacía el select
-    prendaSelect.innerHTML = '';
-    // Vuelve a añadir la opción por defecto
-    prendaSelect.appendChild(defaultOption);
-  }
+    // Función para obtener y popular las opciones de prenda
+    async function updatePrendaOptions(proveedorId, useProveedorSelect) {
+        clearPrendaOptions();
+        
+        let url = `/api/prendas/`; // URL base de tu API
+        
+        if (useProveedorSelect) {
+            // Si el checkbox está marcado, filtra por el proveedor seleccionado
+            if (proveedorId) {
+                url += `?proveedor_id=${proveedorId}`;
+            } else {
+                return; // No hay proveedor seleccionado, no se carga nada
+            }
+        } else {
+            // Si no está marcado, filtra por el proveedor con ID 1
+            url += `?proveedor_id=1`;
+        }
+        
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const prendas = await response.json();
+            
+            prendas.forEach(prenda => {
+                const option = new Option(prenda.descripcion, prenda.id);
+                prendaSelect.appendChild(option);
+            });
 
-  function toggleProveedorField() {
-    if (!proveedorCheckbox.checked) {
-      // Oculta el div del proveedor
-      proveedorContainer.style.display = 'none';
-
-      // Restablece el valor del select del proveedor
-      proveedorSelect.selectedIndex = 0;
-
-      // Llama a la nueva función para limpiar las opciones de prendas
-      clearPrendaOptions();
-
-      // Borra el precio de la prenda
-      precioPrendaInput.value = 'No definido';
-
-      // Dispara el evento 'change' en el campo del proveedor para asegurar que otros scripts se sincronicen
-      const changeEvent = new Event('change');
-      proveedorSelect.dispatchEvent(changeEvent);
-
-    } else {
-      // Muestra el div
-      proveedorContainer.style.display = 'block';
+        } catch (error) {
+            console.error('Error fetching prendas:', error);
+        }
     }
-  }
 
-  // Llama a la función al cargar la página para establecer el estado inicial
-  toggleProveedorField();
+    // Limpia las opciones del select de prendas
+    function clearPrendaOptions() {
+        const defaultOption = new Option("---------", "");
+        prendaSelect.innerHTML = '';
+        prendaSelect.appendChild(defaultOption);
+    }
+    
+    // Función que se encarga de toda la lógica de visibilidad y carga de datos
+    function toggleProveedorAndLoadPrendas() {
+        const useProveedorSelect = proveedorCheckbox.checked;
 
-  // Agrega un listener para el evento 'change' en el checkbox
-  proveedorCheckbox.addEventListener('change', toggleProveedorField);
+        if (useProveedorSelect) {
+            proveedorContainer.style.display = 'block';
+            const selectedProveedorId = proveedorSelect.value;
+            updatePrendaOptions(selectedProveedorId, true);
+        } else {
+            proveedorContainer.style.display = 'none';
+            proveedorSelect.selectedIndex = 0;
+            updatePrendaOptions(null, false); // Carga las prendas del proveedor con ID 1
+            precioPrendaInput.value = 'No definido';
+        }
+    }
+
+    // Event listeners
+    proveedorCheckbox.addEventListener('change', toggleProveedorAndLoadPrendas);
+    proveedorSelect.addEventListener('change', function () {
+        const selectedProveedorId = this.value;
+        updatePrendaOptions(selectedProveedorId, true);
+    });
+
+
+    toggleProveedorAndLoadPrendas();
 });

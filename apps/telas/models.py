@@ -30,3 +30,6 @@ class Tela(models.Model):
     Disponible = models.DecimalField(max_digits=10, decimal_places=0)
     Estado = models.BooleanField(default=True)
     Categoria = models.CharField(max_length=100, choices=CATEGORIA_TELAS)
+
+    def __str__(self):
+        return f'{self.Tela} | {self.Proveedor.Nombre} | {self.Disponible}'

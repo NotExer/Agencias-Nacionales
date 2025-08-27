@@ -18,7 +18,7 @@ from apps.inventario.views import InventarioHome
 from apps.pedidos.views import PedidosHome, crear_pedido
 from apps.planchas.views import PlanchasHome
 from apps.produccion.views import ProduccionHome
-from apps.proveedor.views import proveedores_download, ProveedorListView, ProveedorCreateView, ProveedorDeleteView, ProveedorDetailView, ProveedorUpdateView, ProveedorHome, PrendaCreateView, PrendaUpdateView, PrendaDeleteView, guardar_orden_prendas
+from apps.proveedor.views import proveedores_download, ProveedorListView, ProveedorCreateView, ProveedorDeleteView, ProveedorDetailView, ProveedorUpdateView, ProveedorHome, PrendaCreateView, PrendaUpdateView, PrendaDeleteView
 
 from apps.remisiones.views import RemisionesHome
 from apps.telas.views import TelasHome, TelaListView, TelaCreateView, TelaUpdateView, TelaDeleteView
@@ -72,7 +72,6 @@ urlpatterns = [
     path('proveedor/proveedor/exportar', proveedores_download, name='exportar_preveedor_excel'),
     path('proveedor/proveedor/detalle/<int:ProveedorID>/', ProveedorDetailView.as_view(), name='detalle_proveedor'),
     path('proveedores/<int:proveedor_id>/prendas/nueva/', PrendaCreateView.as_view(), name='prenda_crear'),
-    path('guardar-orden-prendas/', guardar_orden_prendas, name='guardar_orden_prendas'),
     path('proveedores/prenda/<int:PrendaID>/editar/', PrendaUpdateView.as_view(), name='prenda_editar'),
     path('proveedores/prenda/<int:PrendaID>/eliminar/', PrendaDeleteView.as_view(), name='prenda_eliminar'),
     path('remisiones/', RemisionesHome, name='remisiones_home'),

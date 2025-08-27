@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render, redirect
 from apps.inventario.models import Insumos
 from apps.proveedor.models import Prenda, CATEGORIA_PRENDA_PRECIOS
-from apps.cotizaciones.models import Precio_forros, Precio_lavado, Precio_fusionado
+from apps.cotizaciones.models import Precio_forros, Precio_lavado, Precio_fusionado, Precio_estampado
 from .forms import PedidoCalculadoraForm, CalculadoraAsignarForm
 from apps.proveedor.models import Proveedor
 from django.http import JsonResponse
@@ -67,30 +67,38 @@ def crear_calculadora(request):
 
 @login_required
 def obtener_prendas_por_proveedor(request):
+    # Obtiene el proveedor_id de los parámetros de la URL
     proveedor_id = request.GET.get('proveedor_id')
+    
+    prendas = Prenda.objects.all()
 
-    try:
-        proveedor_id = int(proveedor_id)
-    except (TypeError, ValueError):
-        return JsonResponse({'error': 'ID inválido'}, status=400)
-
-    prendas = Prenda.objects.filter(proveedor_id=proveedor_id)
+    # Aplica la lógica de filtrado
+    if proveedor_id:
+        try:
+            proveedor = Proveedor.objects.get(id=proveedor_id)
+            prendas = prendas.filter(proveedor=proveedor)
+        except Proveedor.DoesNotExist:
+            # Si el proveedor no existe, no devuelve ninguna prenda
+            prendas = Prenda.objects.none()
 
     prendas_data = []
     for p in prendas:
+        # Aquí puedes agregar la lógica para calcular la categoría y precio
+        # Asumiendo que CATEGORIA_PRENDA_PRECIOS, Precio_forros, etc., están definidos
+        # en algún lugar de tu código o importados.
         categoria = p.Categorias.split(',')[0].strip() if p.Categorias else ''
         precio = CATEGORIA_PRENDA_PRECIOS.get(categoria, 0)
-
+        
         prendas_data.append({
             'id': p.ID,
             'descripcion': p.descripcion,
             'precio': precio,
         })
 
-    # ✅ Incluye precios de forro y lavado como diccionarios normales
     return JsonResponse({
         'prendas': prendas_data,
         'precios_forro': Precio_forros,
         'precios_lavado': Precio_lavado,
         'precios_fusionado': Precio_fusionado,
+        'precios_estampado': Precio_estampado,  
     })

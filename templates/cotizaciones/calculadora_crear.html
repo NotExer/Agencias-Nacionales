@@ -7,415 +7,367 @@
 
 {% block content %}
 <div class="space">
-  <h2>Crear calculadora</h2>
-  <aside class="costos_totales-container">
+    <h2>Crear calculadora</h2>
+    <aside class="costos_totales-container">
+        <div class="form-group">
+            <label for="total-costos">Total de costos</label>
+            <input type="text" id="total-costos" class="input-user" readonly value="$0">
+        </div>
+
+        <div class="form-group ajuste-group">
+            <input type="checkbox" id="aplicar-ajuste" class="input-user custom-checkbox" checked>
+            <label for="aplicar-ajuste" class="custom-checkbox">Aplicar ajuste 10% (x1.1)</label>
+            <input type="text" id="total-ajustado" class="input-user" readonly value="$0">
+        </div>
+
+        <div class="form-group">
+            <label for="mcb-select-1">M.C.B.</label>
+            <select id="mcb-select-1" class="input-user mcb-select">
+                <option value="0.50">0.50</option>
+                <option value="0.55">0.55</option>
+                <option value="0.60">0.60</option>
+                <option value="0.65">0.65</option>
+                <option value="0.70" selected>0.70</option>
+                <option value="0.75">0.75</option>
+                <option value="0.80">0.80</option>
+                <option value="0.85">0.85</option>
+            </select>
+            <input type="text" id="resultado-mcb-1" class="input-user" readonly value="$0">
+        </div>
+
+        <div class="form-group">
+            <label for="mcb-select-2">M.C.B.</label>
+            <select id="mcb-select-2" class="input-user mcb-select">
+                <option value="0.50">0.50</option>
+                <option value="0.55">0.55</option>
+                <option value="0.60">0.60</option>
+                <option value="0.65">0.65</option>
+                <option value="0.70">0.70</option>
+                <option value="0.75" selected>0.75</option>
+                <option value="0.80">0.80</option>
+                <option value="0.85">0.85</option>
+            </select>
+            <input type="text" id="resultado-mcb-2" class="input-user" readonly value="$0">
+            {{ calculadora_form.Precio_total.label_tag }}
+            {{ calculadora_form.Precio_total }}
+        </div>
+    </aside>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group mb-3">
+            <label for="{{ form.cliente.id_for_label }}">Cliente:</label>
+            {{ form.cliente }}
+            {% if form.cliente.errors %}
+            <div class="text-danger">{{ form.cliente.errors }}</div>
+            {% endif %}
+        </div>
+        {% if calculadora_form %}
+        <hr>
+        <h4 class="sub-title">
+            Asignar calculadora a: <span id="cliente-seleccionado">{{ cliente_seleccionado }}</span>
+        </h4>
+        <div class="form-group checkbox-container">
+            {% with calculadora_form.Proveedor_select as checkbox %}
+            <input type="checkbox" id="{{ checkbox.id_for_label }}" name="{{ checkbox.html_name }}" class="input-user" />
+            <label for="{{ checkbox.id_for_label }}">Usar prenda de proveedor</label>
+            {% endwith %}
+        </div>
+        <hr>
+
+        <div class="inline-container mb-3">
+            <div class="form-group">
+                {{ calculadora_form.Proveedor.label_tag }}
+                {{ calculadora_form.Proveedor }}
+            </div>
+
+            <div class="form-group">
+                {{ calculadora_form.Cantidad.label_tag }}
+                {{ calculadora_form.Cantidad }}
+            </div>
+        </div>
+        <hr>
+
+        <div class="inline-container mb-3">
+            <div class="form-group">
+                {{ calculadora_form.prenda.label_tag }}
+                {{ calculadora_form.prenda }}
+            </div>
+
+            <div class="form-group">
+                <label for="precio-prenda" class="form-label">Precio de corte:</label>
+                <input type="text" id="precio-prenda" class="input-user" value="No definido" readonly>
+            </div>
+        </div>
+        <hr>
+
+        <div class="form-group mb-3">
+            {{ calculadora_form.Descripcion.label_tag }}
+            {{ calculadora_form.Descripcion }}
+        </div>
+        <hr>
+
+<div class="inline-container mb-3">
     <div class="form-group">
-      <label for="total-costos">Total de costos</label>
-      <input type="text" id="total-costos" class="input-user" readonly value="$0">
+        {{ calculadora_form.tela.label_tag }}
+        {{ calculadora_form.tela }}
     </div>
-
-    <div class="form-group ajuste-group">
-      <input type="checkbox" id="aplicar-ajuste" class="input-user custom-checkbox" checked>
-      <label for="aplicar-ajuste" class="custom-checkbox">Aplicar ajuste 10% (x1.1)</label>
-      <input type="text" id="total-ajustado" class="input-user" readonly value="$0">
-    </div>
-
     <div class="form-group">
-      <label for="mcb-select-1">M.C.B.</label>
-      <select id="mcb-select-1" class="input-user mcb-select">
-        <option value="0.50">0.50</option>
-        <option value="0.55">0.55</option>
-        <option value="0.60">0.60</option>
-        <option value="0.65">0.65</option>
-        <option value="0.70" selected>0.70</option>
-        <option value="0.75">0.75</option>
-        <option value="0.80">0.80</option>
-        <option value="0.85">0.85</option>
-      </select>
-      <input type="text" id="resultado-mcb-1" class="input-user" readonly value="$0">
+        {{ calculadora_form.PromedioCorte.label_tag }}
+        {{ calculadora_form.PromedioCorte }}
     </div>
-
-    <div class="form-group">
-      <label for="mcb-select-2">M.C.B.</label>
-      <select id="mcb-select-2" class="input-user mcb-select">
-        <option value="0.50">0.50</option>
-        <option value="0.55">0.55</option>
-        <option value="0.60">0.60</option>
-        <option value="0.65">0.65</option>
-        <option value="0.70">0.70</option>
-        <option value="0.75" selected>0.75</option>
-        <option value="0.80">0.80</option>
-        <option value="0.85">0.85</option>
-      </select>
-      <input type="text" id="resultado-mcb-2" class="input-user" readonly value="$0">
-      {{ calculadora_form.Precio_total.label_tag }}
-      {{ calculadora_form.Precio_total }}
-    </div>
-  </aside>
-
-
-
-
-  <form method="post">
-    {% csrf_token %}
-
-    <!-- Cliente -->
-    <div class="form-group mb-3">
-      <label for="{{ form.cliente.id_for_label }}">Cliente:</label>
-      {{ form.cliente }}
-      {% if form.cliente.errors %}
-      <div class="text-danger">{{ form.cliente.errors }}</div>
-      {% endif %}
-    </div>
-    {% if calculadora_form %}
-    <hr>
-    <h4 class="sub-title">
-      Asignar calculadora a: <span id="cliente-seleccionado">{{ cliente_seleccionado }}</span>
-    </h4>
-    <div class="form-group  checkbox-container">
-      {% with calculadora_form.Proveedor_select as checkbox %}
-      <input type="checkbox" id="{{ checkbox.id_for_label }}" name="{{ checkbox.html_name }}" class="input-user" />
-      <label for="{{ checkbox.id_for_label }}">Usar prenda de proveedor</label>
-      {% endwith %}
-    </div>
-    <hr>
-
-
-    <div class="inline-container mb-3">
-      <div class="form-group">
-        {{ calculadora_form.Proveedor.label_tag }}
-        {{ calculadora_form.Proveedor }}
-      </div>
-
-      <div class="form-group">
-        {{ calculadora_form.Cantidad.label_tag }}
-        {{ calculadora_form.Cantidad }}
-      </div>
-    </div>
-    <hr>
-
-
-
-    <div class="inline-container mb-3">
-      <div class="form-group">
-        {{ calculadora_form.prenda.label_tag }}
-        {{ calculadora_form.prenda }}
-      </div>
-
-      <div class="form-group">
-        <label for="precio-prenda" class="form-label">Precio de corte:</label>
-        <input type="text" id="precio-prenda" class="input-user" value="No definido" readonly>
-      </div>
-    </div>
-    <hr>
-    <div class="inline-container mb-3">
-      <div class="form-group">
-        {{ calculadora_form.Forro.label_tag }}
-        {{ calculadora_form.Forro }}
-      </div>
-
-      <div class="form-group">
-        <label for="precio-forro" class="form-label">Precio del forro:</label>
-        <input type="text" id="precio-forro" class="input-user" value="No definido" readonly>
-      </div>
-    </div>
-    <hr>
-    <div class="inline-container mb-3">
-      <div class="form-group">
-        {{ calculadora_form.Lavado.label_tag }}
-        {{ calculadora_form.Lavado }}
-      </div>
-
-      <div class="form-group">
-        <label for="precio-lavado" class="form-label">Precio del lavado:</label>
-        <input type="text" id="precio-lavado" class="input-user" value="No definido" readonly>
-      </div>
-    </div>
-    <hr>
-    <div class="inline-container mb-3">
-      <div class="form-group">
-        {{ calculadora_form.Estampado.label_tag }}
-        {{ calculadora_form.Estampado }}
-      </div>
-      <div class="form-group mb-3">
-        <label for="precio-estampado" class="form-label">Precio del estampado:</label>
-        <input type="text" id="precio-estampado" class="input-user" value="No definido" readonly>
-      </div>
-    </div>
-
-
-
-
-    <hr>
-
-    <div class="inline-container mb-3">
-      <div class="form-group">
-        {{ calculadora_form.Fusionado.label_tag }}
-        {{ calculadora_form.Fusionado }}
-      </div>
-
-      <div class="form-group">
-        <label for="precio-fusionado" class="form-label">Precio del fusionado:</label>
-        <input type="text" id="precio-fusionado" class="input-user" value="No definido" readonly>
-      </div>
-    </div>
-
-    <hr>
-
-
-<!-- Contenedor oculto por defecto con clases Bootstrap que aseguran el ancho completo -->
-<div id="confeccion-campo" class="confeccion-wrapper hidden">
-  <div class="form-group mb-3">
-    {{ calculadora_form.Confeccion.label_tag }}
-    {{ calculadora_form.Confeccion }}
-  </div>
 </div>
+        <hr>
 
+        <div class="inline-container mb-3">
+            <div class="form-group">
+                {{ calculadora_form.Forro.label_tag }}
+                {{ calculadora_form.Forro }}
+            </div>
+            <div class="form-group">
+                <label for="precio-forro" class="form-label">Precio del forro:</label>
+                <input type="text" id="precio-forro" class="input-user" value="No definido" readonly>
+            </div>
+        </div>
+        <hr>
 
-    <hr>
+        <div class="inline-container mb-3">
+            <div class="form-group">
+                {{ calculadora_form.Lavado.label_tag }}
+                {{ calculadora_form.Lavado }}
+            </div>
+            <div class="form-group">
+                <label for="precio-lavado" class="form-label">Precio del lavado:</label>
+                <input type="text" id="precio-lavado" class="input-user" value="No definido" readonly>
+            </div>
+        </div>
+        <hr>
 
-    <!-- Botón principal para mostrar/ocultar el campo "Bordado" -->
-    <button type="button" class="btn btn-primary" onclick="toggleCampo('bordado-campo', this, 'bordado')">
-      Agregar bordado
-    </button>
+        <div class="inline-container mb-3">
+            <div class="form-group">
+                {{ calculadora_form.Estampado.label_tag }}
+                {{ calculadora_form.Estampado }}
+            </div>
+            <div class="form-group mb-3">
+                <label for="precio-estampado" class="form-label">Precio del estampado:</label>
+                <input type="text" id="precio-estampado" class="input-user" value="No definido" readonly>
+            </div>
+        </div>
+        <hr>
 
-    <!-- Contenedor oculto por defecto -->
-    <div id="bordado-campo" class="bordado-wrapper hidden">
-      <div id="bordados-container"></div>
-      <button type="button" class="btn btn-primary btn-sm" id="agregar-bordado">
-        Agregar bordado adicional
-      </button>
+        <div class="inline-container mb-3">
+            <div class="form-group">
+                {{ calculadora_form.Fusionado.label_tag }}
+                {{ calculadora_form.Fusionado }}
+            </div>
+            <div class="form-group">
+                <label for="precio-fusionado" class="form-label">Precio del fusionado:</label>
+                <input type="text" id="precio-fusionado" class="input-user" value="No definido" readonly>
+            </div>
+        </div>
+        <hr>
 
-      <!-- Campo oculto donde se guarda el JSON -->
-      <input type="hidden" name="Bordado" id="id_Bordado">
-    </div>
+        <div id="confeccion-campo" class="confeccion-wrapper hidden">
+            <div class="form-group mb-3">
+                {{ calculadora_form.Confeccion.label_tag }}
+                {{ calculadora_form.Confeccion }}
+            </div>
+        </div>
+        <hr>
 
-    <hr>
-    <!-- Botón principal para mostrar/ocultar el campo "Pegado" -->
-    <button type="button" class="btn btn-primary" onclick="toggleCampo('pegado-campo', this, 'pegado')">
-      Agregar pegado
-    </button>
+        <button type="button" class="btn btn-primary" onclick="toggleCampo('bordado-campo', this, 'bordado')">
+            Agregar bordado
+        </button>
+        <div id="bordado-campo" class="bordado-wrapper hidden">
+            <div id="bordados-container"></div>
+            <button type="button" class="btn btn-primary btn-sm" id="agregar-bordado">
+                Agregar bordado adicional
+            </button>
+            <input type="hidden" name="Bordado" id="id_Bordado">
+        </div>
+        <hr>
 
-    <!-- Contenedor oculto del campo Pegado -->
-    <div id="pegado-campo" class="pegado-wrapper hidden">
-      <div id="pegados-container"></div>
-      <button type="button" class="btn btn-primary btn-sm" id="agregar-pegado">
-        Agregar pegado adicional
-      </button>
+        <button type="button" class="btn btn-primary" onclick="toggleCampo('pegado-campo', this, 'pegado')">
+            Agregar pegado
+        </button>
+        <div id="pegado-campo" class="pegado-wrapper hidden">
+            <div id="pegados-container"></div>
+            <button type="button" class="btn btn-primary btn-sm" id="agregar-pegado">
+                Agregar pegado adicional
+            </button>
+            <input type="hidden" name="Pegado" id="id_Pegado">
+        </div>
+        <hr>
 
-      <!-- Campo oculto donde se guarda el JSON -->
-      <input type="hidden" name="Pegado" id="id_Pegado">
-    </div>
+        <button type="button" class="btn btn-primary" onclick="toggleCampo('broche-campo', this, 'broche')">
+            Agregar broche
+        </button>
+        <div id="broche-campo" class="broche-wrapper hidden">
+            <div id="broches-container"></div>
+            <button type="button" class="btn btn-primary btn-sm" id="agregar-broche">
+                Agregar broche adicional
+            </button>
+            <input type="hidden" name="Broche" id="id_Broche">
+        </div>
+        <hr>
 
-    <hr>
+        <button type="button" class="btn btn-primary" onclick="toggleCampo('plantrel-campo', this, 'plantrel')">
+            Agregar plantrel
+        </button>
+        <div id="plantrel-campo" class="plantrel-wrapper hidden">
+            <div id="plantreles-container"></div>
+            <button type="button" class="btn btn-primary btn-sm" id="agregar-plantrel">
+                Agregar plantrel adicional
+            </button>
+            <input type="hidden" name="Plantrel" id="id_Plantrel">
+        </div>
+        <hr>
 
-    <!-- Botón principal para mostrar/ocultar el campo "Broche" -->
-    <button type="button" class="btn btn-primary" onclick="toggleCampo('broche-campo', this, 'broche')">
-      Agregar broche
-    </button>
+        <button type="button" class="btn btn-primary" onclick="toggleCampo('cinta-campo', this, 'cinta')">
+            Agregar cinta
+        </button>
+        <div id="cinta-campo" class="cinta-wrapper hidden">
+            <div id="cinta-container"></div>
+            <button type="button" class="btn btn-primary btn-sm" id="agregar-cinta">
+                Agregar cinta adicional
+            </button>
+            <input type="hidden" name="Cinta" id="id_Cinta">
+        </div>
+        <hr>
 
-    <!-- Contenedor oculto por defecto -->
-    <div id="broche-campo" class="broche-wrapper hidden">
-      <div id="broches-container"></div>
-      <button type="button" class="btn btn-primary btn-sm" id="agregar-broche">
-        Agregar broche adicional
-      </button>
+        <button type="button" class="btn btn-primary" onclick="toggleCampo('cierre-campo', this, 'cierre')">
+            Agregar cierre
+        </button>
+        <div id="cierre-campo" class="cierre-wrapper hidden">
+            <div id="cierre-container"></div>
+            <button type="button" class="btn btn-primary btn-sm" id="agregar-cierre">
+                Agregar cierre adicional
+            </button>
+            <input type="hidden" name="Cierre" id="id_Cierre">
+        </div>
+        <hr>
 
-      <!-- Campo oculto donde se guarda el JSON -->
-      <input type="hidden" name="Broche" id="id_Broche">
-    </div>
+        <button type="button" class="btn btn-primary" onclick="toggleCampo('elastico-campo', this, 'elástico')">
+            Agregar elástico
+        </button>
+        <div id="elastico-campo" class="elastico-wrapper hidden">
+            <div id="elastico-container"></div>
+            <button type="button" class="btn btn-primary btn-sm" id="agregar-elastico">
+                Agregar elástico adicional
+            </button>
+            <input type="hidden" name="Elastico" id="id_Elastico">
+        </div>
+        <hr>
 
-    <hr>
+        <button type="button" class="btn btn-primary" onclick="toggleCampo('boton-campo', this, 'botón')">
+            Agregar botón
+        </button>
+        <div id="boton-campo" class="boton-wrapper hidden">
+            <div id="boton-container"></div>
+            <button type="button" class="btn btn-primary btn-sm" id="agregar-boton">
+                Agregar botón adicional
+            </button>
+            <input type="hidden" name="Boton" id="id_Boton">
+        </div>
+        <hr>
 
-    <!-- Botón principal para mostrar/ocultar el campo "Plantrel" -->
-    <button type="button" class="btn btn-primary" onclick="toggleCampo('plantrel-campo', this, 'plantrel')">
-      Agregar plantrel
-    </button>
+        <button type="button" class="btn btn-primary" onclick="toggleCampo('velcro-campo', this, 'velcro')">
+            Agregar velcro
+        </button>
+        <div id="velcro-campo" class="velcro-wrapper hidden">
+            <div id="velcro-container"></div>
+            <button type="button" class="btn btn-primary btn-sm" id="agregar-velcro">
+                Agregar velcro adicional
+            </button>
+            <input type="hidden" name="Velcro" id="id_Velcro">
+        </div>
+        <hr>
 
-    <!-- Contenedor oculto del campo Plantrel -->
-    <div id="plantrel-campo" class="plantrel-wrapper hidden">
-      <div id="plantreles-container"></div>
-      <button type="button" class="btn btn-primary btn-sm" id="agregar-plantrel">
-        Agregar plantrel adicional
-      </button>
+        <button type="button" class="btn btn-primary" onclick="toggleCampo('sesgo-campo', this, 'sesgo')">
+            Agregar sesgo
+        </button>
+        <div id="sesgo-campo" class="sesgo-wrapper hidden">
+            <div id="sesgo-container"></div>
+            <button type="button" class="btn btn-primary btn-sm" id="agregar-sesgo">
+                Agregar sesgo adicional
+            </button>
+            <input type="hidden" name="Sesgo" id="id_Sesgo">
+        </div>
+        <hr>
 
-      <!-- Campo oculto donde se guarda el JSON -->
-      <input type="hidden" name="Plantrel" id="id_plantrel">
-    </div>
+        <button type="button" class="btn btn-primary" onclick="toggleCampo('extra-campo', this, 'costo extra')">
+            Agregar costo extra
+        </button>
+        <div id="extra-campo" class="extra-wrapper hidden">
+            <div id="extra-container"></div>
+            <button type="button" class="btn btn-primary btn-sm" id="agregar-extra">
+                Agregar costo extra adicional
+            </button>
+            <input type="hidden" name="Extra" id="id_Extra" value="[]">
+        </div>
+        <hr>
 
+        {% if form.instance.Bordado %}
+        <script id="bordado-json" type="application/json">
+            {{ form.instance.Bordado|safe }}
+        </script>
+        {% endif %}
+        {% if form.instance.Pegado %}
+        <script id="pegado-json" type="application/json">
+            {{ form.instance.Pegado|safe }}
+        </script>
+        {% endif %}
+        {% if form.instance.Cinta %}
+        <script id="cinta-json" type="application/json">
+            {{ form.instance.Cinta|safe }}
+        </script>
+        {% endif %}
+        {% if form.instance.Cierre %}
+        <script id="cierre-json" type="application/json">
+            {{ form.instance.Cierre|safe }}
+        </script>
+        {% endif %}
+        {% if form.instance.Broche %}
+        <script id="broche-json" type="application/json">
+            {{ form.instance.Broche|safe }}
+        </script>
+        {% endif %}
+        {% if form.instance.Elastico %}
+        <script id="elastico-json" type="application/json">
+            {{ form.instance.Elastico|safe }}
+        </script>
+        {% endif %}
+        {% if form.instance.Boton %}
+        <script id="boton-json" type="application/json">
+            {{ form.instance.Boton|safe }}
+        </script>
+        {% endif %}
+        {% if form.instance.Plantrel %}
+        <script id="plantrel-json" type="application/json">
+            {{ form.instance.Plantrel|safe }}
+        </script>
+        {% endif %}
+        {% if form.instance.Velcro %}
+        <script id="velcro-json" type="application/json">
+            {{ form.instance.Velcro|safe }}
+        </script>
+        {% endif %}
+        {% if form.instance.Sesgo %}
+        <script id="sesgo-json" type="application/json">
+            {{ form.instance.Sesgo|safe }}
+        </script>
+        {% endif %}
+        {% if form.instance.Extra %}
+        <script id="extra-json" type="application/json">
+            {{ form.instance.Extra|safe }}
+        </script>
+        {% endif %}
 
-
-    <hr>
-    <!-- Botón principal para mostrar/ocultar el campo "Cinta" -->
-    <button type="button" class="btn btn-primary" onclick="toggleCampo('cinta-campo', this, 'cinta')">
-      Agregar cinta
-    </button>
-
-    <!-- Contenedor oculto por defecto -->
-    <div id="cinta-campo" class="cinta-wrapper hidden">
-      <div id="cinta-container"></div>
-      <button type="button" class="btn btn-primary btn-sm" id="agregar-cinta">
-        Agregar cinta adicional
-      </button>
-      <input type="hidden" name="Cinta" id="id_Cinta">
-    </div>
-
-    <hr>
-
-
-    <!-- Botón principal para mostrar/ocultar el campo "Cierre" -->
-    <button type="button" class="btn btn-primary" onclick="toggleCampo('cierre-campo', this, 'cierre')">
-      Agregar cierre
-    </button>
-
-    <!-- Contenedor oculto del campo Cierre -->
-    <div id="cierre-campo" class="cierre-wrapper hidden">
-      <div id="cierre-container"></div>
-      <button type="button" class="btn btn-primary btn-sm" id="agregar-cierre">
-        Agregar cierre adicional
-      </button>
-      <input type="hidden" name="Cierre" id="id_Cierre">
-    </div>
-
-
-    <hr>
-    {% if form.instance.Bordado %}
-    <script id="bordado-json" type="application/json">
-    {{ form.instance.Bordado|safe }}
-  </script>
-    {% endif %}
-
-
-
-
-
-
-    <!-- Botón principal para mostrar/ocultar -->
-    <button type="button" class="btn btn-primary" onclick="toggleCampo('elastico-campo', this, 'elástico')">
-      Agregar elástico
-    </button>
-
-    <!-- Contenedor oculto por defecto -->
-    <div id="elastico-campo" class="elastico-wrapper hidden">
-      <div id="elastico-container"></div>
-      <button type="button" class="btn btn-primary btn-sm" id="agregar-elastico">
-        Agregar elástico adicional
-      </button>
-      <input type="hidden" name="Elastico" id="id_Elastico">
-    </div>
-
-
-    <hr>
-
-    <!-- Botón principal para mostrar/ocultar el campo "Botón" -->
-    <button type="button" class="btn btn-primary" onclick="toggleCampo('boton-campo', this, 'botón')">
-      Agregar botón
-    </button>
-
-    <!-- Contenedor oculto del campo Botón -->
-    <div id="boton-campo" class="boton-wrapper hidden">
-      <div id="boton-container"></div>
-      <button type="button" class="btn btn-primary btn-sm" id="agregar-boton">
-        Agregar botón adicional
-      </button>
-      <input type="hidden" name="Boton" id="id_Boton">
-    </div>
-
-
-    <hr>
-
-
-
-
-
-
-    <!-- Botón principal para mostrar/ocultar -->
-    <button type="button" class="btn btn-primary" onclick="toggleCampo('velcro-campo', this, 'velcro')">
-      Agregar velcro
-    </button>
-
-    <!-- Contenedor oculto por defecto -->
-    <div id="velcro-campo" class="velcro-wrapper hidden">
-      <div id="velcro-container"></div>
-      <button type="button" class="btn btn-primary btn-sm" id="agregar-velcro">
-        Agregar velcro adicional
-      </button>
-      <input type="hidden" name="Velcro" id="id_Velcro">
-    </div>
-
-    <hr>
-
-    <!-- Botón para sesgo -->
-    <button type="button" class="btn btn-primary" onclick="toggleCampo('sesgo-campo', this, 'sesgo')">Agregar
-      sesgo</button>
-
-    <div id="sesgo-campo" class="sesgo-wrapper hidden">
-      <div id="sesgo-container"></div>
-      <button type="button" class="btn btn-primary btn-sm" id="agregar-sesgo">Agregar sesgo adicional</button>
-      <input type="hidden" name="Sesgo" id="id_Sesgo">
-    </div>
-
-    <hr>
-
-    <!-- Botón para costo extra -->
-    <button type="button" class="btn btn-primary" onclick="toggleCampo('extra-campo', this, 'costo extra')">Agregar
-      costo extra</button>
-
-    <div id="extra-campo" class="extra-wrapper hidden">
-      <div id="extra-container"></div>
-      <button type="button" class="btn btn-primary btn-sm" id="agregar-extra">Agregar costo extra adicional</button>
-      <input type="hidden" name="Extra" id="id_Extra" value="[]">
-    </div>
-
-
-
-
-
-    {% if cintas %}
-    {{ cintas|json_script:"cintas-data" }}
-    {% endif %}
-    
-    {% if cierres %}
-    {{ cierres|json_script:"cierres-data" }}
-    {% endif %}
-    
-    
-    
-    {% if elasticos %}
-    {{ elasticos|json_script:"elasticos-data" }}
-    {% endif %}
-    
-    
-    {% if botones %}
-    {{ botones|json_script:"botones-data" }}
-    {% endif %}
-    
-    
-    {% if velcros %}
-    {{ velcros|json_script:"velcros-data" }}
-    {% endif %}
-    
-    
-    {% if sesgos %}
-    {{ sesgos|json_script:"sesgos-data" }}
-    {% endif %}
-    
-    
-    {% if form.instance.Bordado %}
-    <script id="bordado-json" type="application/json">
-        {{ form.instance.Bordado|safe }}
-      </script>
-    {% endif %}
-
-    <button type="submit" class="btn btn-download">Guardar</button>
-    {% else %}
-    <button type="submit" class="btn btn-primary">Buscar</button>
-    {% endif %}
-
-  </form> <!-- 🧱 Este es el final del formulario -->
+        <button type="submit" class="btn btn-download">Guardar</button>
+        {% else %}
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        {% endif %}
+    </form>
 </div>
-
-<!-- ✅ Fuera del form -->
-
-
 {% endblock %}
